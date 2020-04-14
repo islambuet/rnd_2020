@@ -1,0 +1,2 @@
+<?php
+$lang['LABEL_COMPANY_NAME'] = 'A R MALIK SEEDS PVT. LTD';
