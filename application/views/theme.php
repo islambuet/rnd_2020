@@ -69,12 +69,24 @@ $CI = & get_instance();
         <!-- for date-->
         <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxdatetimeinput.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxcalendar.js'); ?>"></script>
+
+        <!-- For notificaiotn -->
+        <script type="text/javascript" src="<?php echo base_url('theme/js/notify.js'); ?>"></script>
         <?php $CI->load->view('js_variables'); ?>
         <div id="system_main_container">
+            <?php
+            $user=User_helper::get_user();
+            if($user)
+            {
+                $CI->load->view('home/logged');
+            }
+            ?>
 
         </div>
         <!-- loader when ajax request -->
         <div id="system_loading"><img src="<?php echo base_url('images/spinner.gif'); ?>"></div>
+
+
 
 
         <!-- System JS -->

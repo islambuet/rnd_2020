@@ -6,21 +6,37 @@ class Home extends Root_controller
     public function __construct()
     {
         parent::__construct();
-
+        $this->lang->load('home/login');
     }
-
     public function index()
     {
-        $this->login_page();
-
+        $this->login();
     }
     public function login()
     {
-        $this->logged_page();
+        $user=User_helper::get_user();
+        if($user)
+        {
+            $this->logged_page();
+        }
+        else
+        {
+            $this->session->set_userdata("user_id", 1);
+            $this->logged_page(true,array('system_message'=>$this->lang->line('MSG_LOGIN_SUCCESS')));
+
+        }
+        //$this->logged_page();
+        //$ajax['status']=false;
+        //$ajax['system_message']="UserName and Password wrong\nTry again.";
+        //$ajax['system_message_type']="info";
+        //$ajax['system_message_duration']=10000;
+        //$this->json_return($ajax);
 
     }
     public function logout()
     {
-        $this->login_page();
+
+        $this->session->set_userdata('user_id','');
+        $this->login_page(array('system_message'=>$this->lang->line('MSG_LOGOUT_SUCCESS')));
     }
 }

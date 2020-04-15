@@ -28,11 +28,12 @@ function load_style(content)
         }
     }
 }
-function display_message(message)
+/*
+*type=success,info,warn,error
+ */
+function display_message(message,type,duration)
 {
-    console.log(message);
-    //$("#system_message").html(message);
-    //$("#system_message").animate({right:"100px"}).animate({right:"30px"}).delay(3000).animate({right:"100px"}).animate({right:"-5000px"});
+    $.notify(message,{'className':type,'autoHideDelay':duration});
 }
 $(document).ready(function ()
 {
@@ -78,7 +79,17 @@ $(document).ready(function ()
             $("#system_loading").hide();
             if(xhr.responseJSON.system_message)
             {
-                display_message(xhr.responseJSON.system_message);
+                var message_type='success';
+                if(xhr.responseJSON.system_message_type)
+                {
+                    message_type=xhr.responseJSON.system_message_type;
+                }
+                var duration=5000;
+                if(xhr.responseJSON.system_message_duration)
+                {
+                    duration=xhr.responseJSON.system_message_duration;
+                }
+                display_message(xhr.responseJSON.system_message,message_type,duration);
             }
             if(xhr.responseJSON.system_page_title)
             {
@@ -92,7 +103,7 @@ $(document).ready(function ()
     {
 
         $('#system_loading').hide();
-        display_message("Internet/Server Error");
+        display_message("Internet/Server Error","warn",5000);
 
     });
 

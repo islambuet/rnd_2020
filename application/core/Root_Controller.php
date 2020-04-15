@@ -14,7 +14,15 @@ class Root_Controller extends CI_Controller
 		parent::__construct();
         if ($this->input->is_ajax_request())
         {
+            $user=User_helper::get_user();
+            if(!$user)
+            {
 
+            }
+            else
+            {
+
+            }
         }
         else
         {
@@ -28,21 +36,26 @@ class Root_Controller extends CI_Controller
         echo json_encode($array);
         exit();
     }
-    public function login_page($message="",$message_warning='',$username='')
+    public function login_page($message=array())
     {
         $ajax['status']=true;
-        $data=array();
-        //$data['message_warning']=$message_warning;
-        //$data['username']=$username;
-        $ajax['system_content'][]=array("id"=>"#system_main_container","html"=>$this->load->view("home/login",$data,true));
-        if($message)
+        $ajax['system_content'][]=array("id"=>"#system_main_container","html"=>$this->load->view("home/login",'',true));
+        if(isset($message['system_message']))
         {
-            $ajax['system_message']=$message;
+            $ajax['system_message']=$message['system_message'];
+            if(isset($message['system_message_type']))
+            {
+                $ajax['system_message_type']=$message['system_message_type'];
+            }
+            if(isset($message['system_message_duration']))
+            {
+                $ajax['system_message_duration']=$message['system_message_duration'];
+            }
         }
         $ajax['system_page_url']=site_url();
         $this->json_return($ajax);
     }
-    public function logged_page($dashboard=true,$message="")
+    public function logged_page($dashboard=true,$message=array())
     {
         $ajax['status']=true;
         $ajax['system_content'][]=array("id"=>"#system_main_container","html"=>$this->load->view("home/logged",'',true));
@@ -50,9 +63,17 @@ class Root_Controller extends CI_Controller
         {
             $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view("home/dashboard",'',true));
         }
-        if($message)
+        if(isset($message['system_message']))
         {
-            $ajax['system_message']=$message;
+            $ajax['system_message']=$message['system_message'];
+            if(isset($message['system_message_type']))
+            {
+                $ajax['system_message_type']=$message['system_message_type'];
+            }
+            if(isset($message['system_message_duration']))
+            {
+                $ajax['system_message_duration']=$message['system_message_duration'];
+            }
         }
         $ajax['system_page_url']=site_url();
         $this->json_return($ajax);
