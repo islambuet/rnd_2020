@@ -84,7 +84,7 @@ $CI = & get_instance();
 
         </div>
         <!-- loader when ajax request -->
-        <div id="system_loading"><img src="<?php echo base_url('images/spinner.gif'); ?>"></div>
+        <div id="system_loading"><img src="<?php echo Upload_helper::$IMAGE_BASE_URL.'images/spinner.gif'; ?>"></div>
 
 
 
@@ -93,6 +93,7 @@ $CI = & get_instance();
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/functions.js?version='.time()); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/ajax.js?version='.time()); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/html_elements_action.js?version='.time()); ?>"></script>
+        <script type="text/javascript" src="<?php echo base_url('theme/js/system/html_ids_action.js?version='.time()); ?>"></script>
         <script type="text/javascript">
             //initiate first ajax
             $(document).ready(function ()

@@ -21,7 +21,7 @@ class Home extends Root_controller
         }
         else
         {
-            $this->session->set_userdata("user_id", 1);
+            $this->session->set_userdata("user_id", 2);
             $this->logged_page(true,array('system_message'=>$this->lang->line('MSG_LOGIN_SUCCESS')));
 
         }

@@ -6,14 +6,18 @@ $(document).ready(function ()
     //binds form submission with ajax
     $(document).on("submit", "form", function(event)
     {
-        if($(this).is('[class*="report_form"]'))
-        {
-            window.open('','form_popup','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=1300,height=500,left = 10,top = 10,scrollbars=yes');
-            this.target = 'form_popup';
-            return;
-        }
         if($(this).hasClass('system_ajax'))
         {
+            event.preventDefault();
+
+            if($(this).is('[data-confirm-message]'))
+            {
+                var sure = confirm($(this).attr('data-confirm-message'));
+                if(!sure)
+                {
+                    return;
+                }
+            }
             var form_data=new FormData(this);
             var file;
             for(var i=0;i<system_resized_image_files.length;i++)
@@ -24,7 +28,7 @@ $(document).ready(function ()
                     form_data.set(file.key,file.value,file.name);
                 }
             }
-            event.preventDefault();
+
             $.ajax({
                 url: $(this).attr("action"),
                 type: $(this).attr("method"),

@@ -1,8 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
 <?php
 $CI = & get_instance();
-$CI->lang->load('home/login');
-
 ?>
 <div class="container">
 
@@ -13,7 +11,7 @@ $CI->lang->load('home/login');
                 <div class="card-body p-4">
                         <div>
                             <div class="text-center">
-                                <img src="<?php echo base_url('images/logo-black.png'); ?>" alt="<?php echo $CI->lang->line('LABEL_COMPANY_NAME'); ?>" height="30">
+                                <img src="<?php echo Upload_helper::$IMAGE_BASE_URL.'images/logo-black.png'; ?>" alt="<?php echo $CI->lang->line('LABEL_COMPANY_NAME'); ?>" height="30">
                             </div>
                             <p class="mt-2"><?php echo $CI->lang->line('LABEL_LOGIN_FILL_UP'); ?></p>
                         </div>
@@ -27,8 +25,8 @@ $CI->lang->load('home/login');
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input class="form-control" type="password" name="password" id="password" placeholder="<?php echo $CI->lang->line('LABEL_PASSWORD'); ?>">
-                                        <div id="eye_password" class="input-group-append" style="cursor: pointer;">
+                                        <input class="form-control" type="password" name="password" placeholder="<?php echo $CI->lang->line('LABEL_PASSWORD'); ?>">
+                                        <div class="input-group-append eye_password" style="cursor: pointer;">
                                             <span class="input-group-text"><i class="fe-eye"></i></span>
                                         </div>
                                     </div>
@@ -47,25 +45,3 @@ $CI->lang->load('home/login');
     </div>
     <!-- end row -->
 </div>
-<script type="text/javascript">
-    //initiate first ajax
-    $(document).ready(function ()
-    {
-        //login form password eye button to show password
-        $(document).off('click', '#eye_password');
-        $(document).on('click', '#eye_password', function(event)
-        {
-            if($('#password').attr('type')=='password')
-            {
-                $('#eye_password').find('i').removeClass('fe-eye').addClass('fe-eye-off');
-                $('#password').attr('type','text');
-            }
-            else
-            {
-                $('#eye_password').find('i').removeClass('fe-eye-off').addClass('fe-eye');
-                $('#password').attr('type','password');
-            }
-
-        });
-    });
-</script>

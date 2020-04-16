@@ -36,22 +36,26 @@ class Root_Controller extends CI_Controller
         echo json_encode($array);
         exit();
     }
+    public function set_message($message,&$data)
+    {
+        if(isset($message['system_message']))
+        {
+            $data['system_message']=$message['system_message'];
+            if(isset($message['system_message_type']))
+            {
+                $data['system_message_type']=$message['system_message_type'];
+            }
+            if(isset($message['system_message_duration']))
+            {
+                $data['system_message_duration']=$message['system_message_duration'];
+            }
+        }
+    }
     public function login_page($message=array())
     {
         $ajax['status']=true;
         $ajax['system_content'][]=array("id"=>"#system_main_container","html"=>$this->load->view("home/login",'',true));
-        if(isset($message['system_message']))
-        {
-            $ajax['system_message']=$message['system_message'];
-            if(isset($message['system_message_type']))
-            {
-                $ajax['system_message_type']=$message['system_message_type'];
-            }
-            if(isset($message['system_message_duration']))
-            {
-                $ajax['system_message_duration']=$message['system_message_duration'];
-            }
-        }
+        $this->set_message($message,$ajax);
         $ajax['system_page_url']=site_url();
         $this->json_return($ajax);
     }
@@ -63,18 +67,7 @@ class Root_Controller extends CI_Controller
         {
             $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view("home/dashboard",'',true));
         }
-        if(isset($message['system_message']))
-        {
-            $ajax['system_message']=$message['system_message'];
-            if(isset($message['system_message_type']))
-            {
-                $ajax['system_message_type']=$message['system_message_type'];
-            }
-            if(isset($message['system_message_duration']))
-            {
-                $ajax['system_message_duration']=$message['system_message_duration'];
-            }
-        }
+        $this->set_message($message,$ajax);
         $ajax['system_page_url']=site_url();
         $this->json_return($ajax);
     }
