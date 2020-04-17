@@ -7,9 +7,10 @@ if (!defined('BASEPATH'))
 //require APPPATH . "third_party/MX/Controller.php";
 
 class Root_Controller extends CI_Controller
-{	
-
-	function __construct() 
+{
+    public $EXTERNAL_CONTROLLERS = array('home');
+    public $OFFLINE_CONTROLLERS = array('home','sys_site_offline');
+	function __construct()
 	{
 		parent::__construct();
         if ($this->input->is_ajax_request())
@@ -17,12 +18,16 @@ class Root_Controller extends CI_Controller
             $user=User_helper::get_user();
             if(!$user)
             {
-
+                if(!in_array(strtolower($this->router->class),$this->EXTERNAL_CONTROLLERS))
+                {
+                    $this->login_page(array('system_message'=>$this->lang->line("MSG_SESSION_TIME_OUT")));
+                }
             }
             else
             {
 
             }
+
         }
         else
         {

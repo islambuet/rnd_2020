@@ -91,6 +91,7 @@ $CI = & get_instance();
 
         <!-- System JS -->
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/functions.js?version='.time()); ?>"></script>
+        <script type="text/javascript" src="<?php echo base_url('theme/js/system/hook_functions.js?version='.time()); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/ajax.js?version='.time()); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/html_elements_action.js?version='.time()); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/system/html_ids_action.js?version='.time()); ?>"></script>

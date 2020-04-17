@@ -9,7 +9,7 @@ class Test extends CI_Controller {
 //        echo '<pre>';
 //        print_r(Mobile_sms_helper::send_sms(Mobile_sms_helper::$API_SENDER_ID_MALIK_SEEDS,'01713090962','Your mobile verification code for login: 285683'));
 //        echo '</pre>';
-        $this->session->set_userdata("user_id", 1);
+        $this->session->set_userdata("user_id", 2);
 
     }
 }
