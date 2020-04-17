@@ -62,8 +62,8 @@ class User extends Root_controller
                 $this->db->trans_complete();   //DB Transaction Handle END
                 if ($this->db->trans_status() === TRUE)
                 {
-                    $this->message['system_message']=$this->lang->line("MSG_SAVE_DONE_PROFILE_PICTURE");
-                    $this->profile_picture();
+                    $user->image_location=$data_user_info['image_location'];
+                    $this->dashboard_page(array('system_message'=>$this->lang->line("MSG_SAVE_DONE_PROFILE_PICTURE")));
                 }
                 else
                 {
@@ -90,13 +90,9 @@ class User extends Root_controller
     }
     public function edit_password()//edit
     {
-        $user=User_helper::get_user();
-        $user_id=$user->user_id;
-
-        $data['user_info']=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,array('image_location','name'),array('user_id ='.$user_id,'revision =1'),1);
         $ajax['status']=true;
         $this->set_message($this->message,$ajax);
-        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url."/edit_password",$data,true));
+        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url."/edit_password",'',true));
         $ajax['system_page_url']=site_url($this->controller_url.'/edit_password');
         $this->json_return($ajax);
 
@@ -123,8 +119,8 @@ class User extends Root_controller
             $this->db->trans_complete();   //DB Transaction Handle END
             if ($this->db->trans_status() === TRUE)
             {
-                $this->message['system_message']=$this->lang->line("MSG_SAVE_DONE_PASSWORD");
-                $this->edit_password();
+                $user->username_password_same=false;
+                $this->dashboard_page(array('system_message'=>$this->lang->line("MSG_SAVE_DONE_PASSWORD")));
             }
             else
             {
@@ -145,13 +141,22 @@ class User extends Root_controller
             $this->message['system_message']=validation_errors();
             return false;
         }
-
         $user = User_helper::get_user();
         $info=Query_helper::get_info(TABLE_RND_SETUP_USER,array('id'),array('id ='.$user->user_id,'password ="'.md5($this->input->post('password')).'"'),1);
 
         if(!$info)
         {
-            $this->message['system_message']="Old Password did not Match";
+            $this->message['system_message']=$this->lang->line('MSG_OLD_PASSWORD_WRONG');
+            return false;
+        }
+        if($this->input->post('password')==$this->input->post('new_password'))
+        {
+            $this->message['system_message']=$this->lang->line('MSG_OLD_NEW_PASSWORD_SAME');
+            return false;
+        }
+        if($user->user_name==$this->input->post('new_password'))
+        {
+            $this->message['system_message']=$this->lang->line('MSG_USERNAME_PASSWORD_SAME');
             return false;
         }
 

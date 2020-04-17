@@ -63,7 +63,7 @@ $(document).ready(function ()
     {
         if(xhr.responseJSON)
         {
-            if(xhr.responseJSON.system_redirect_url)
+            if(xhr.responseJSON.system_redirect_url)//full reload
             {
                 system_resized_image_files=[];
                 window.location.replace(xhr.responseJSON.system_redirect_url);

@@ -17,7 +17,7 @@ class Home extends Root_controller
         $user=User_helper::get_user();
         if($user)
         {
-            $this->logged_page();
+            $this->dashboard_page();
         }
         else
         {
@@ -26,7 +26,7 @@ class Home extends Root_controller
                 $info=User_helper::login($this->input->post('username'),$this->input->post('password'));
                 if($info['status_code']=='111')
                 {
-                    $this->logged_page(true,array('system_message'=>$info['message']));
+                    $this->dashboard_page(true,array('system_message'=>$info['message']));
                 }
                 elseif($info['status_code']=='1101')//otp form
                 {
@@ -46,7 +46,7 @@ class Home extends Root_controller
                 $info=User_helper::login_mobile_verification($this->input->post('code_verification'));
                 if($info['status_code']=='1111')
                 {
-                    $this->logged_page(true,array('system_message'=>$info['message']));
+                    $this->dashboard_page(array('system_message'=>$info['message']));
                 }
                 elseif($info['status_code']=='10')
                 {

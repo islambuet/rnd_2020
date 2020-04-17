@@ -25,6 +25,14 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
     <div class="card-body">
         <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_url.'/user/save_edit_password');?>" method="post">
             <input type="hidden" class="system_save_new_status" name="system_save_new_status" value="0" />
+            <?php
+            if($user->username_password_same)
+            {
+                ?>
+                <h4 class="text-danger text-center mb-2"><?php echo $CI->lang->line('LABEL_USERNAME_PASSWORD_SAME'); ?></h4>
+                <?php
+            }
+            ?>
             <div class="row mb-2">
                 <div class="col-4">
                     <label class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_CURRENT_PASSWORD');?><span class="text-danger">*</span></label>

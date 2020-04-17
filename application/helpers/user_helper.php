@@ -13,6 +13,7 @@ class User_helper
         $this->username_password_same=false;
         //user
         $result=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('id ='.$id),1);
+        $this->user_name=$result['user_name'];
         if($result && (md5($result['user_name'])==$result['password']))
         {
             $this->username_password_same=true;
@@ -56,7 +57,6 @@ class User_helper
     public static function login($username, $password)
     {
         $CI = & get_instance();
-        $CI->load->config('system_configuration');
         $time=time();
         $user=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('user_name ="'.$username.'"', 'status ="'.SYSTEM_STATUS_ACTIVE.'"'),1);
         //1st digit  0=>!user   0

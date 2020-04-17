@@ -12,7 +12,7 @@ $action_buttons[]=array(
 $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 
 ?>
-<div class="card">
+<div class="card mt-2">
     <div class="card-header font-weight-bold">
         <?php echo $CI->lang->line('LABEL_TITLE_CHANGE_PROFILE_PICTURE'); ?>
     </div>
