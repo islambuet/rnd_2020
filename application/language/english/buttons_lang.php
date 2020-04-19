@@ -9,7 +9,8 @@ $lang['BUTTON_DETAILS'] = 'Details';
 $lang['BUTTON_REFRESH'] = 'Refresh';
 $lang['BUTTON_CLEAR'] = 'Clear';
 $lang['BUTTON_DELETE'] = 'Delete';
-$lang['DELETE_CONFIRM'] = 'Are You sure to delete?';
+$lang['BUTTON_PREFERENCE'] = 'Preference';
+
 $lang['BUTTON_PRINT'] = 'Print';
 $lang['BUTTON_DOWNLOAD'] = 'Download';
 $lang['BUTTON_CSV'] = 'Download Csv';

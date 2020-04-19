@@ -37,6 +37,33 @@ class System_helper
             return $time;
         }
     }
+    //getting preference
+    public static function get_preference($user_id,$controller,$method,$headers)
+    {
+        $CI = & get_instance();
+        $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user_id,'controller ="' .$controller.'"','method ="'.$method.'"'),1);
+        $data=$headers;
+        if($result)
+        {
+            if($result['preferences']!=null)
+            {
+                $preferences=json_decode($result['preferences'],true);
+                foreach($data as $key=>$value)
+                {
+                    if(isset($preferences[$key]))
+                    {
+                        //$data[$key]=$value;
+                        $data[$key]['preference']=$preferences[$key];//should be value of set
+                    }
+                    else
+                    {
+                        $data[$key]['preference']=0;
+                    }
+                }
+            }
+        }
+        return $data;
+    }
     /*public static function invalid_try($action='',$action_id='',$other_info='')
     {
         $CI =& get_instance();
