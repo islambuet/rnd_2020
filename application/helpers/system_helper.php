@@ -40,7 +40,6 @@ class System_helper
     //getting preference
     public static function get_preference($user_id,$controller,$method,$headers)
     {
-        $CI = & get_instance();
         $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user_id,'controller ="' .$controller.'"','method ="'.$method.'"'),1);
         $data=$headers;
         if($result)
@@ -64,6 +63,98 @@ class System_helper
         }
         return $data;
     }
+    //loading preference task
+    public static function system_preference($method)
+    {
+        $CI =& get_instance();
+        $user = User_helper::get_user();
+        if(isset($CI->permissions['action6']) && ($CI->permissions['action6']==1))
+        {
+            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $CI->controller_url, $method, $CI->get_jqx_items($method));
+            $data['return_method']=$method;
+            $ajax['status']=true;
+            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$CI->load->view("preference_add_edit",$data,true));
+            $ajax['system_page_url']=site_url($CI->controller_url.'/system_preference/'.$method);
+            $CI->json_return($ajax);
+        }
+        else
+        {
+            $ajax['status']=false;
+            $CI->set_message(array('system_message'=>$CI->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
+            $CI->json_return($ajax);
+        }
+
+    }
+    //saving preference
+    public static function save_preference()
+    {
+        $CI =& get_instance();
+
+        $return_method=$CI->input->post('return_method');
+        $user = User_helper::get_user();
+        if(!(isset($CI->permissions['action6']) && ($CI->permissions['action6']==1)))
+        {
+            $ajax['status']=false;
+            $CI->set_message(array('system_message'=>$CI->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
+            $CI->json_return($ajax);
+            die();
+        }
+        else
+        {
+            $preference_items=$CI->input->post('preference_items');
+            if(!$preference_items)
+            {
+                $ajax['status']=false;
+                $CI->set_message(array('system_message'=>$CI->lang->line("ALERT_SELECT_ONE_ITEM"),'system_message_type'=>'error'),$ajax);
+                $CI->json_return($ajax);
+                die();
+            }
+
+            $time=time();
+            $CI->db->trans_start();  //DB Transaction Handle START
+            $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user->user_id,'controller ="' .$CI->controller_url.'"','method ="'.$return_method.'"'),1);
+            if($result)
+            {
+                $data['user_updated']=$user->user_id;
+                $data['date_updated']=$time;
+                $data['preferences']=json_encode($preference_items);
+                Query_helper::update(TABLE_SYSTEM_USER_PREFERENCE,$data,array('id='.$result['id']),false);
+            }
+            else
+            {
+                $data['user_id']=$user->user_id;
+                $data['controller']=$CI->controller_url;
+                $data['method']="$return_method";
+                $data['user_created']=$user->user_id;
+                $data['date_created']=$time;
+                $data['preferences']=json_encode($preference_items);
+                Query_helper::add(TABLE_SYSTEM_USER_PREFERENCE,$data,false);
+            }
+
+            $CI->db->trans_complete();   //DB Transaction Handle END
+            $ajax['status']=true;
+            if ($CI->db->trans_status() === TRUE)
+            {
+                $CI->message['system_message']=$CI->lang->line("MSG_SAVE_DONE");
+                if(method_exists($CI,$return_method))
+                {
+                    $CI->$return_method();
+                }
+                else
+                {
+                    $CI->index();
+                }
+
+            }
+            else
+            {
+                $ajax['status']=false;
+                $CI->set_message(array('system_message'=>$CI->lang->line("MSG_SAVE_FAIL"),'system_message_type'=>'error'),$ajax);
+                $CI->json_return($ajax);
+            }
+        }
+    }
+
     /*public static function invalid_try($action='',$action_id='',$other_info='')
     {
         $CI =& get_instance();
@@ -79,94 +170,8 @@ class System_helper
         $data['date_created_string']=System_helper::display_date_time($time);
         $CI->db->insert($CI->config->item('table_system_history_hack'), $data);
     }
-    //saving preference
-    public static function get_preference($user_id,$controller,$method,$headers)
-    {
-        $CI = & get_instance();
-        $result=Query_helper::get_info($CI->config->item('table_system_user_preference'),'*',array('user_id ='.$user_id,'controller ="' .$controller.'"','method ="'.$method.'"'),1);
-        $data=$headers;
-        if($result)
-        {
-            if($result['preferences']!=null)
-            {
-                $preferences=json_decode($result['preferences'],true);
-                foreach($data as $key=>$value)
-                {
-                    if(isset($preferences[$key]))
-                    {
-                        //$data[$key]=$value;
-                        $data[$key]=$preferences[$key];//should be value of set
-                    }
-                    else
-                    {
-                        $data[$key]=0;
-                    }
-                }
-            }
-        }
-        return $data;
-    }
-    //saving preference
-    public static function save_preference()
-    {
-        $CI =& get_instance();
-        $preference_method_name=$CI->input->post('preference_method_name');
-        $method=isset($preference_method_name)?$preference_method_name:'list';
-        $user = User_helper::get_user();
-        if(!(isset($CI->permissions['action6']) && ($CI->permissions['action6']==1)))
-        {
-            $ajax['status']=false;
-            $ajax['system_message']=$CI->lang->line("YOU_DONT_HAVE_ACCESS");
-            $CI->json_return($ajax);
-            die();
-        }
-        else
-        {
-            $system_preference_items=$CI->input->post('system_preference_items');
-            if(!$system_preference_items)
-            {
-                $ajax['status']=false;
-                $ajax['system_message']=$CI->lang->line("MSG_SELECT_ONE");
-                $CI->json_return($ajax);
-                die();
-            }
 
-            $time=time();
-            $CI->db->trans_start();  //DB Transaction Handle START
-            $result=Query_helper::get_info($CI->config->item('table_system_user_preference'),'*',array('user_id ='.$user->user_id,'controller ="' .$CI->controller_url.'"','method ="'.$method.'"'),1);
-            if($result)
-            {
-                $data['user_updated']=$user->user_id;
-                $data['date_updated']=$time;
-                $data['preferences']=json_encode($system_preference_items);
-                Query_helper::update($CI->config->item('table_system_user_preference'),$data,array('id='.$result['id']),false);
-            }
-            else
-            {
-                $data['user_id']=$user->user_id;
-                $data['controller']=$CI->controller_url;
-                $data['method']="$method";
-                $data['user_created']=$user->user_id;
-                $data['date_created']=$time;
-                $data['preferences']=json_encode($system_preference_items);
-                Query_helper::add($CI->config->item('table_system_user_preference'),$data,false);
-            }
 
-            $CI->db->trans_complete();   //DB Transaction Handle END
-            $ajax['status']=true;
-            if ($CI->db->trans_status() === TRUE)
-            {
-                $CI->message=$CI->lang->line("MSG_SAVED_SUCCESS");
-                $CI->index($method);
-            }
-            else
-            {
-                $ajax['status']=false;
-                $ajax['system_message']=$CI->lang->line("MSG_SAVED_FAIL");
-                $CI->json_return($ajax);
-            }
-        }
-    }
     public static function get_users_info($user_ids)
     {
         //can be upgrade select field from user_info

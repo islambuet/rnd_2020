@@ -9,7 +9,7 @@ if(isset($CI->permissions['action1']) && ($CI->permissions['action1']==1))
     $action_buttons[]=array(
         'label'=>$CI->lang->line("BUTTON_NEW"),
         'class'=>'system_ajax',
-        'href'=>site_url($CI->controller_url.'/add')
+        'href'=>site_url($CI->controller_url.'/system_add')
     );
 }
 if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))

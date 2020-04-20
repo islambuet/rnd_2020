@@ -76,7 +76,7 @@ class Sys_user_group extends Root_Controller
      *      cellsformat
     */
 
-    private function get_jqx_items($method)
+    public function get_jqx_items($method)
     {
         $data=array();
         if($method=='system_list')
@@ -88,6 +88,16 @@ class Sys_user_group extends Root_Controller
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"'));
         }
         return $data;
+    }
+    public function system_preference($method='system_list')
+    {
+        //if necessary can rewrite it
+        System_helper::system_preference($method);
+    }
+    public function system_save_preference()
+    {
+        //if necessary can rewrite it
+        System_helper::save_preference();
     }
     public function system_list()
     {
@@ -105,7 +115,6 @@ class Sys_user_group extends Root_Controller
         else
         {
             $ajax['status']=false;
-            $this->set_message($this->message,$ajax);
             $this->set_message(array('system_message'=>$this->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
             $this->json_return($ajax);
         }

@@ -11,4 +11,10 @@ $lang['LABEL_NAME'] = 'Name';
 $lang['LABEL_ORDERING'] = 'Ordering';
 $lang['LABEL_STATUS'] = 'Status';
 $lang['LABEL_TITLE_JQX_COLUMN_HANDLER'] = 'Show/hide columns controller';
+$lang['LABEL_TITLE_PREFERENCE_ADD_EDIT'] = 'Preference Settings';
+
+$lang['MSG_SAVE_DONE'] = 'Successfully Saved';
+$lang['MSG_SAVE_FAIL'] = 'Failed to Save!';
+
+
 
