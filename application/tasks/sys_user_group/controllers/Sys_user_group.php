@@ -3,13 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Sys_user_group extends Root_Controller
 {
-    public $controller_url;
+    public $controller_name;
     public $permissions;
     public $message;
     public function __construct()
     {
         parent::__construct();
-        $this->controller_url = strtolower(get_class($this));
+        $this->controller_name = strtolower(get_class($this));
         $this->permissions = User_helper::get_permission(get_class($this));
         $this->message = array();
 
@@ -20,7 +20,7 @@ class Sys_user_group extends Root_Controller
             $this->permissions['action2']=1;
         }
 
-        $this->lang->load($this->controller_url.'/sys_user_group');
+        $this->lang->load($this->controller_name.'/sys_user_group');
     }
     public function index()
     {
@@ -105,11 +105,11 @@ class Sys_user_group extends Root_Controller
         {
             $user = User_helper::get_user();
             $method='system_list';
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_url, $method, $this->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_name, $method, $this->get_jqx_items($method));
             $ajax['status']=true;
-            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/list',$data,true));
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_url.'/system_list');
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_list');
             $this->json_return($ajax);
         }
         else
@@ -166,9 +166,9 @@ class Sys_user_group extends Root_Controller
                 'ordering'=>99,
                 'status'=>SYSTEM_STATUS_ACTIVE
             );
-            $ajax['system_page_url']=site_url($this->controller_url.'/system_add');
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_add');
             $ajax['status']=true;
-            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/add_edit',$data,true));
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
             $this->json_return($ajax);
         }
@@ -195,9 +195,9 @@ class Sys_user_group extends Root_Controller
                 $this->action_error($this->lang->line("MSG_INVALID_USER_GROUP"));
             }
             $ajax['status']=true;
-            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/add_edit',$data,true));
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_url.'/system_edit/'.$item_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit/'.$item_id);
             $this->json_return($ajax);
         }
         else
@@ -312,12 +312,12 @@ class Sys_user_group extends Root_Controller
             $data['role_status']=$this->get_role_status($item_id);
             $data['item_id']=$item_id;
             $ajax['status']=true;
-            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url.'/role',$data,true));
+            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name.'/role',$data,true));
             if($this->message)
             {
                 $ajax['system_message']=$this->message;
             }
-            $ajax['system_page_url']=site_url($this->controller_url.'/system_role/'.$item_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_role/'.$item_id);
             $this->json_return($ajax);
         }
         else

@@ -23,7 +23,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
         <?php echo $CI->lang->line('LABEL_TITLE_CHANGE_PASSWORD'); ?>
     </div>
     <div class="card-body">
-        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_url.'/save_edit_password');?>" method="post">
+        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_name.'/save_edit_password');?>" method="post">
             <input type="hidden" class="system_save_new_status" name="system_save_new_status" value="0" />
             <?php
             if($user->username_password_same)

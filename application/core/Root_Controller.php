@@ -46,10 +46,10 @@ class Root_Controller extends CI_Controller
                     {
                         //load the user/edit_password task
                         $this->lang->load('user/user');
-                        $this->controller_url='user';
+                        $this->controller_name='user';
                         $ajax['status']=true;
-                        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url."/edit_password",'',true));
-                        $ajax['system_page_url']=site_url($this->controller_url.'/edit_password');
+                        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/edit_password",'',true));
+                        $ajax['system_page_url']=site_url($this->controller_name.'/edit_password');
                         $this->json_return($ajax);//go
                     }
                 }
@@ -131,9 +131,9 @@ class Root_Controller extends CI_Controller
             else if($user->username_password_same)
             {
                 $this->lang->load('user/user');
-                $this->controller_url='user';
-                $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url."/edit_password",'',true));
-                $ajax['system_page_url']=site_url($this->controller_url.'/edit_password');
+                $this->controller_name='user';
+                $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/edit_password",'',true));
+                $ajax['system_page_url']=site_url($this->controller_name.'/edit_password');
             }
 
         }

@@ -4,13 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class User extends Root_controller
 {
     public $message;
-    public $controller_url;
+    public $controller_name;
     public function __construct()
     {
         parent::__construct();
         $this->message = array();
-        $this->controller_url = strtolower(get_class($this));
-        $this->lang->load($this->controller_url.'/user');
+        $this->controller_name = strtolower(get_class($this));
+        $this->lang->load($this->controller_name.'/user');
         $this->lang->load('upload');
 
     }
@@ -22,8 +22,8 @@ class User extends Root_controller
         $data['user_info']=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,array('image_location','name'),array('user_id ='.$user_id,'revision =1'),1);
         $ajax['status']=true;
         $this->set_message($this->message,$ajax);
-        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url."/profile_picture",$data,true));
-        $ajax['system_page_url']=site_url($this->controller_url.'/profile_picture');
+        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/profile_picture",$data,true));
+        $ajax['system_page_url']=site_url($this->controller_name.'/profile_picture');
         $this->json_return($ajax);
 
     }
@@ -92,8 +92,8 @@ class User extends Root_controller
     {
         $ajax['status']=true;
         $this->set_message($this->message,$ajax);
-        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_url."/edit_password",'',true));
-        $ajax['system_page_url']=site_url($this->controller_url.'/edit_password');
+        $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/edit_password",'',true));
+        $ajax['system_page_url']=site_url($this->controller_name.'/edit_password');
         $this->json_return($ajax);
 
     }

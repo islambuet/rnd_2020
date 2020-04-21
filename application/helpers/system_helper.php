@@ -70,11 +70,11 @@ class System_helper
         $user = User_helper::get_user();
         if(isset($CI->permissions['action6']) && ($CI->permissions['action6']==1))
         {
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $CI->controller_url, $method, $CI->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $CI->controller_name, $method, $CI->get_jqx_items($method));
             $data['return_method']=$method;
             $ajax['status']=true;
             $ajax['system_content'][]=array("id"=>"#system_content","html"=>$CI->load->view("preference_add_edit",$data,true));
-            $ajax['system_page_url']=site_url($CI->controller_url.'/system_preference/'.$method);
+            $ajax['system_page_url']=site_url($CI->controller_name.'/system_preference/'.$method);
             $CI->json_return($ajax);
         }
         else
@@ -108,7 +108,7 @@ class System_helper
 
             $time=time();
             $CI->db->trans_start();  //DB Transaction Handle START
-            $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user->user_id,'controller ="' .$CI->controller_url.'"','method ="'.$return_method.'"'),1);
+            $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user->user_id,'controller ="' .$CI->controller_name.'"','method ="'.$return_method.'"'),1);
             if($result)
             {
                 $data['user_updated']=$user->user_id;
@@ -119,7 +119,7 @@ class System_helper
             else
             {
                 $data['user_id']=$user->user_id;
-                $data['controller']=$CI->controller_url;
+                $data['controller']=$CI->controller_name;
                 $data['method']="$return_method";
                 $data['user_created']=$user->user_id;
                 $data['date_created']=$time;

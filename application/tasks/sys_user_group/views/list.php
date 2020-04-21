@@ -9,7 +9,7 @@ if(isset($CI->permissions['action1']) && ($CI->permissions['action1']==1))
     $action_buttons[]=array(
         'label'=>$CI->lang->line("BUTTON_NEW"),
         'class'=>'system_ajax',
-        'href'=>site_url($CI->controller_url.'/system_add')
+        'href'=>site_url($CI->controller_name.'/system_add')
     );
 }
 if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
@@ -19,7 +19,7 @@ if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
         'label'=>$CI->lang->line("BUTTON_EDIT"),
         'class'=>'button_jqx_action',
         'data-target-element'=>$jqx_container,
-        'data-action-link'=>site_url($CI->controller_url.'/system_edit')
+        'data-action-link'=>site_url($CI->controller_name.'/system_edit')
     );
 }
 if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
@@ -29,7 +29,7 @@ if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
         'label'=>$CI->lang->line("BUTTON_ROLE"),
         'class'=>'button_jqx_action',
         'data-target-element'=>$jqx_container,
-        'data-action-link'=>site_url($CI->controller_url.'/system_role')
+        'data-action-link'=>site_url($CI->controller_name.'/system_role')
     );
 }
 if (isset($CI->permissions['action6']) && ($CI->permissions['action6'] == 1)) {
@@ -37,13 +37,13 @@ if (isset($CI->permissions['action6']) && ($CI->permissions['action6'] == 1)) {
     (
         'label'=>$CI->lang->line("BUTTON_PREFERENCE"),
         'class'=>'system_ajax',
-        'href' => site_url($CI->controller_url . '/system_preference')
+        'href' => site_url($CI->controller_name . '/system_preference')
     );
 }
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_REFRESH"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_url.'/system_list')
+    'href'=>site_url($CI->controller_name.'/system_list')
 
 );
 
@@ -72,7 +72,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
 
-        var url = "<?php echo site_url($CI->controller_url.'/system_get_items_list'); ?>";
+        var url = "<?php echo site_url($CI->controller_name.'/system_get_items_list'); ?>";
         // prepare the data
         var source =
         {

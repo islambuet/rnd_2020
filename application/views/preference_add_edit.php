@@ -7,7 +7,7 @@ $action_buttons=array();
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_CANCEL"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_url.'/'.$return_method)
+    'href'=>site_url($CI->controller_name.'/'.$return_method)
 );
 $action_buttons[]=array(
     'type'=>'button',
@@ -18,7 +18,7 @@ $action_buttons[]=array(
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_REFRESH"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_url.'/system_preference/'.$return_method)
+    'href'=>site_url($CI->controller_name.'/system_preference/'.$return_method)
 );
 $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 ?>
@@ -27,7 +27,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
         <?php echo $CI->lang->line('LABEL_TITLE_PREFERENCE_ADD_EDIT'); ?>
     </div>
     <div class="card-body">
-        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_url.'/system_save_preference');?>" method="post">
+        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_name.'/system_save_preference');?>" method="post">
             <input type="hidden" id="method_name" name="return_method" value="<?php echo $return_method; ?>" />
             <div class="row">
                 <div class="col-12 text-center text-danger mb-2">

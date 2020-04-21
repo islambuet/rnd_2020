@@ -6,7 +6,7 @@ $action_buttons=array();
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_CANCEL"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_url)
+    'href'=>site_url($CI->controller_name)
 );
 $action_buttons[]=array(
     'type'=>'button',
@@ -23,7 +23,7 @@ $action_buttons[]=array(
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_REFRESH"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_url.'/system_role/'.$item_id)
+    'href'=>site_url($CI->controller_name.'/system_role/'.$item_id)
 );
 $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 echo '<pre>';
@@ -36,7 +36,7 @@ echo '</pre>';
         <?php echo sprintf($CI->lang->line('LABEL_TITLE_USER_GROUP_ROLE'),$item_id);?>
     </div>
     <div class="card-body">
-        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_url.'/system_save_role');?>" method="post">
+        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_name.'/system_save_role');?>" method="post">
             <input type="hidden" id="id" name="id" value="<?php echo $item_id; ?>" />
             <input type="hidden" id="system_save_new_status" name="system_save_new_status" value="0" />
             <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->user_id; ?>" />
