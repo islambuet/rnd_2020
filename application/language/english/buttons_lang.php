@@ -3,6 +3,7 @@
 $lang['BUTTON_NEW'] = 'New';
 $lang['BUTTON_EDIT'] = 'Edit';
 $lang['BUTTON_BACK'] = 'Back';
+$lang['BUTTON_CANCEL'] = 'Cancel';
 $lang['BUTTON_SAVE'] = 'Save';
 $lang['BUTTON_SAVE_NEW'] = 'Save and New';
 $lang['BUTTON_DETAILS'] = 'Details';

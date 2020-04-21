@@ -11,21 +11,25 @@ $CI=& get_instance();
             </h5>
         </div>
         <div id="system_jqx_column_handler_container" class="collapse" aria-labelledby="system_jqx_column_handler_container_label" data-parent="#system_jqx_column_handler_parent_container">
-            <div class="card-body">
-                <?php
-                foreach($system_jqx_items as $key=>$jqx_item)
-                {
-                    if($jqx_item['jqx_column'])
+            <div class="card-body row">
+
+                    <?php
+                    foreach($system_jqx_items as $key=>$jqx_item)
                     {
-                        ?>
-                        <div class="form-check form-check-inline">
-                            <input id="<?php echo 'jqx_column_handler_'.$key;?>" class="form-check-input system_jqx_column_handler" data-target-element="<?php echo $jqx_container;?>" type="checkbox" value="<?php echo $key;?>" <?php if($jqx_item['preference']){echo 'checked';}?>>
-                            <label class="form-check-label" for="<?php echo 'jqx_column_handler_'.$key;?>"><?php echo $jqx_item['text']; ?></label>
-                        </div>
-                        <?php
+                        if($jqx_item['jqx_column'])
+                        {
+                            ?>
+                            <div class="col-6 col-sm-4 p-2">
+                                <div class="form-check form-check-inline">
+                                    <input id="<?php echo 'jqx_column_handler_'.$key;?>" class="form-check-input system_jqx_column_handler" data-target-element="<?php echo $jqx_container;?>" type="checkbox" value="<?php echo $key;?>" <?php if($jqx_item['preference']){echo 'checked';}?>>
+                                    <label class="form-check-label" for="<?php echo 'jqx_column_handler_'.$key;?>"><?php echo $jqx_item['text']; ?></label>
+                                </div>
+                            </div>
+                            <?php
+                        }
                     }
-                }
-                ?>
+                    ?>
+
             </div>
         </div>
     </div>

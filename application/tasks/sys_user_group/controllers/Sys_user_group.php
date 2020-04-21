@@ -81,7 +81,7 @@ class Sys_user_group extends Root_Controller
         $data=array();
         if($method=='system_list')
         {
-            $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>0,'jqx_column'=>false);
+            $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
             $data['total_task']= array('text'=>$this->lang->line('LABEL_TOTAL_TASK'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
@@ -114,9 +114,7 @@ class Sys_user_group extends Root_Controller
         }
         else
         {
-            $ajax['status']=false;
-            $this->set_message(array('system_message'=>$this->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
-            $this->json_return($ajax);
+            $this->access_denied();
         }
     }
     public function system_get_items_list()
@@ -157,36 +155,29 @@ class Sys_user_group extends Root_Controller
         }
         $this->json_return($user_groups);
     }
-    private function system_add()
+    public function system_add()
     {
         if(isset($this->permissions['action1']) && ($this->permissions['action1']==1))
         {
-            $data['title']='Create New User Group';
             $data['item']=array
             (
                 'id'=>0,
                 'name'=>'',
-                'type'=>'',
                 'ordering'=>99,
-                'status'=>$this->config->item('system_status_active')
+                'status'=>SYSTEM_STATUS_ACTIVE
             );
-            $ajax['system_page_url']=site_url($this->controller_url.'/index/add');
+            $ajax['system_page_url']=site_url($this->controller_url.'/system_add');
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/add_edit',$data,true));
-            if($this->message)
-            {
-                $ajax['system_message']=$this->message;
-            }
+            $this->set_message($this->message,$ajax);
             $this->json_return($ajax);
         }
         else
         {
-            $ajax['status']=false;
-            $ajax['system_message']=$this->lang->line('YOU_DONT_HAVE_ACCESS');
-            $this->json_return($ajax);
+            $this->access_denied();
         }
     }
-    private function system_edit($id)
+    public function system_edit($id=0)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
@@ -198,24 +189,111 @@ class Sys_user_group extends Root_Controller
             {
                 $item_id=$id;
             }
-            $data['item']=Query_helper::get_info($this->config->item('table_system_user_group'),'*',array('id ='.$item_id),1);
-            $data['title']='Edit User Group ('.$data['item']['name'].')';
+            $data['item']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('id ='.$item_id),1);
+            if(!$data['item'])
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_USER_GROUP"));
+            }
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/add_edit',$data,true));
-            if($this->message)
-            {
-                $ajax['system_message']=$this->message;
-            }
-            $ajax['system_page_url']=site_url($this->controller_url.'/index/edit/'.$item_id);
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_url.'/system_edit/'.$item_id);
             $this->json_return($ajax);
         }
         else
         {
-            $ajax['status']=false;
-            $ajax['system_message']=$this->lang->line('YOU_DONT_HAVE_ACCESS');
-            $this->json_return($ajax);
+            $this->access_denied();
         }
     }
+    public function system_save_add_edit()
+    {
+        $user=User_helper::get_user();
+        $time = time();
+        $id=$this->input->post('id');
+        $system_user_token = $this->input->post("system_user_token");
+        $item = $this->input->post('item');
+
+        if($id>0)
+        {
+            if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
+            {
+                $this->access_denied();
+            }
+        }
+        else
+        {
+            if(!(isset($this->permissions['action1']) && ($this->permissions['action1']==1)))
+            {
+                $this->access_denied();
+            }
+        }
+        if(!$this->check_validation_add_edit())
+        {
+            $ajax['status']=false;
+            $this->message['system_message_type']='error';
+            $this->message['system_message_duration']='30000';
+            $this->set_message($this->message,$ajax);
+            $this->json_return($ajax);
+        }
+        $system_user_token_info = Token_helper::get_token($system_user_token);
+        if($system_user_token_info['status'])
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
+            $this->system_list();
+        }
+
+        {
+            $data=$item;
+            $this->db->trans_start(); //DB Transaction Handle START
+            if($id>0)
+            {
+                $data['user_updated']=$user->user_id;
+                $data['date_updated']=$time;
+                Query_helper::update(TABLE_SYSTEM_USER_GROUP,$data,array('id='.$id));
+            }
+            else
+            {
+                $data['user_created']=$user->user_id;
+                $data['date_created']=time();
+                Query_helper::add(TABLE_SYSTEM_USER_GROUP,$data);
+            }
+            Token_helper::update_token($system_user_token_info['id'], $system_user_token);
+
+            $this->db->trans_complete(); //DB Transaction Handle END
+            if ($this->db->trans_status()===true)
+            {
+                $save_and_new=$this->input->post('system_save_new_status');
+                $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE_USER_GROUP');
+                if($save_and_new==1)
+                {
+                    $this->system_add();
+                }
+                else
+                {
+                    $this->system_list();
+                }
+            }
+            else
+            {
+                $this->action_error($this->lang->line("MSG_SAVE_FAIL_USER_GROUP"));
+            }
+        }
+    }
+    private function check_validation_add_edit()
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('', '');
+        $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_USER_GROUP_NAME'),'required');
+        if($this->form_validation->run()==false)
+        {
+            $this->message['system_message']=validation_errors();
+            return false;
+        }
+        return true;
+    }
+
+
+
     private function system_assign_group_role($id)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
@@ -274,83 +352,7 @@ class Sys_user_group extends Root_Controller
         return $roles;
     }
 
-    private function system_save()
-    {
-        $id=$this->input->post('id');
-        $user=User_helper::get_user();
-        if($id>0)
-        {
-            if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
-            {
-                $ajax['status']=false;
-                $ajax['system_message']=$this->lang->line('YOU_DONT_HAVE_ACCESS');
-                $this->json_return($ajax);
-            }
-        }
-        else
-        {
-            if(!(isset($this->permissions['action1']) && ($this->permissions['action1']==1)))
-            {
-                $ajax['status']=false;
-                $ajax['system_message']=$this->lang->line('YOU_DONT_HAVE_ACCESS');
-                $this->json_return($ajax);
-            }
-        }
-        if(!$this->check_validation())
-        {
-            $ajax['status']=false;
-            $ajax['system_message']=$this->message;
-            $this->json_return($ajax);
-        }
-        else
-        {
-            $data=$this->input->post('item');
-            $this->db->trans_start(); //DB Transaction Handle START
-            if($id>0)
-            {
-                $data['user_updated']=$user->user_id;
-                $data['date_updated']=time();
-                Query_helper::update($this->config->item('table_system_user_group'),$data,array('id='.$id));
-            }
-            else
-            {
-                $data['user_created']=$user->user_id;
-                $data['date_created']=time();
-                Query_helper::add($this->config->item('table_system_user_group'),$data);
-            }
-            $this->db->trans_complete(); //DB Transaction Handle END
-            if ($this->db->trans_status()===true)
-            {
-                $save_and_new=$this->input->post('system_save_new_status');
-                $this->message=$this->lang->line('MSG_SAVED_SUCCESS');
-                if($save_and_new==1)
-                {
-                    $this->system_add();
-                }
-                else
-                {
-                    $this->system_list();
-                }
-            }
-            else
-            {
-                $ajax['status']=false;
-                $ajax['system_message']=$this->lang->line('MSG_SAVED_FAIL');
-                $this->json_return($ajax);
-            }
-        }
-    }
-    private function check_validation()
-    {
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_NAME'),'required');
-        if($this->form_validation->run()==false)
-        {
-            $this->message=validation_errors();
-            return false;
-        }
-        return true;
-    }
+
     private function system_save_assign_group_role()
     {
         $item_id=$this->input->post('id');

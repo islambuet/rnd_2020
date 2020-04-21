@@ -17,7 +17,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
         <?php echo $CI->lang->line('LABEL_TITLE_CHANGE_PROFILE_PICTURE'); ?>
     </div>
     <div class="card-body">
-        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_url.'/user/save_profile_picture');?>" method="post">
+        <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_url.'/save_profile_picture');?>" method="post">
             <input type="hidden" class="system_save_new_status" name="system_save_new_status" value="0" />
             <div class="row mb-2">
                 <div class="col-4">

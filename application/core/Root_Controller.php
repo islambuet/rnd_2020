@@ -154,6 +154,18 @@ class Root_Controller extends CI_Controller
         $ajax['system_page_url']=site_url();
         $this->json_return($ajax);
     }
+    public function access_denied()
+    {
+        $ajax['status']=false;
+        $this->set_message(array('system_message'=>$this->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
+        $this->json_return($ajax);
+    }
+    public function action_error($message)
+    {
+        $ajax['status']=false;
+        $this->set_message(array('system_message'=>$message,'system_message_type'=>'error','system_message_duration'=>10000),$ajax);
+        $this->json_return($ajax);
+    }
 
 }
 

@@ -5,7 +5,7 @@ $CI=& get_instance();
 
 $action_buttons=array();
 $action_buttons[]=array(
-    'label'=>$CI->lang->line("BUTTON_BACK"),
+    'label'=>$CI->lang->line("BUTTON_CANCEL"),
     'class'=>'system_ajax',
     'href'=>site_url($CI->controller_url.'/'.$return_method)
 );
@@ -40,7 +40,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     if($jqx_item['jqx_column'])
                     {
                         ?>
-                        <div class="col-6 col-sm-4">
+                        <div class="col-6 col-sm-4 p-2">
                             <input id="<?php echo 'jqx_column_handler_'.$key;?>" name="preference_items[<?php echo $key;?>]" type="checkbox" value="1" <?php if($jqx_item['preference']){echo 'checked';}?>>
                             <label for="<?php echo 'jqx_column_handler_'.$key;?>"><?php echo $jqx_item['text']; ?></label>
                         </div>

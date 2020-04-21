@@ -18,5 +18,7 @@ CONST TABLE_SYSTEM_USER_PREFERENCE=  'arm_rnd_2020.system_user_preference';
 
 CONST TABLE_SYSTEM_SESSION=  'arm_rnd_2020.system_session';//login session
 CONST TABLE_SYSTEM_CONFIGURATION=  'arm_rnd_2020.system_configuration';//configuration system values
-CONST TABLE_SYSTEM_SETUP_PRINT=  'arm_sms_2018_19.system_setup_print';//printing page setup
+CONST TABLE_SYSTEM_SETUP_PRINT=  'arm_rnd_2020.system_setup_print';//printing page setup
+CONST TABLE_SYSTEM_TOKEN=  'arm_rnd_2020.system_token';//printing page setup
+
 

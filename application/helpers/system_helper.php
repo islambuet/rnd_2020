@@ -79,9 +79,7 @@ class System_helper
         }
         else
         {
-            $ajax['status']=false;
-            $CI->set_message(array('system_message'=>$CI->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
-            $CI->json_return($ajax);
+            $CI->access_denied();
         }
 
     }
@@ -94,9 +92,7 @@ class System_helper
         $user = User_helper::get_user();
         if(!(isset($CI->permissions['action6']) && ($CI->permissions['action6']==1)))
         {
-            $ajax['status']=false;
-            $CI->set_message(array('system_message'=>$CI->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
-            $CI->json_return($ajax);
+            $CI->access_denied();
             die();
         }
         else

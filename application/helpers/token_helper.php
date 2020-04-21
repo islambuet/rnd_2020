@@ -7,7 +7,7 @@ class Token_helper
     {
         $CI =& get_instance();
         $user = User_helper::get_user();
-        $result=Query_helper::get_info($CI->config->item('table_system_token'),array('id, token'),array('user_id='.$user->user_id),1);
+        $result=Query_helper::get_info(TABLE_SYSTEM_TOKEN,array('id, token'),array('user_id='.$user->user_id),1);
         if($result)
         {
             if($result['token']==$token)
@@ -32,7 +32,7 @@ class Token_helper
             $data['token']=$token;
             $data['date_updated']=time();
             $CI->db->set('revision_count', 'revision_count+1', FALSE);
-            Query_helper::update($CI->config->item('table_system_token'), $data,array("id = ".$id));
+            Query_helper::update(TABLE_SYSTEM_TOKEN, $data,array("id = ".$id),false);
         }
         else
         {
@@ -40,7 +40,7 @@ class Token_helper
             $data['user_id']=$user->user_id;
             $data['token']=$token;
             $data['date_updated']=time();
-            Query_helper::add($CI->config->item('table_system_token'), $data);
+            Query_helper::add(TABLE_SYSTEM_TOKEN, $data,false);
         }
     }
 }

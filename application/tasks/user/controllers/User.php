@@ -50,7 +50,7 @@ class User extends Root_controller
                 $revision_history_data=array();
                 $revision_history_data['date_updated']=$time;
                 $revision_history_data['user_updated']=$user->user_id;
-                Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$user_id));
+                Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$user_id),false);
 
                 $this->db->trans_start();  //DB Transaction Handle START
                 $this->db->where('user_id',$user_id);
@@ -124,9 +124,7 @@ class User extends Root_controller
             }
             else
             {
-                $ajax['status']=false;
-                $this->set_message(array('system_message'=>$this->lang->line("MSG_SAVE_FAIL_PASSWORD"),'system_message_type'=>'error'),$ajax);
-                $this->json_return($ajax);
+                $this->action_error($this->lang->line("MSG_SAVE_FAIL_PASSWORD"));
             }
         }
     }
