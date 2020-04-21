@@ -306,7 +306,6 @@ class Sys_user_group extends Root_Controller
             {
                 $item_id=$id;
             }
-            $this->lang->load('sys_module_task/sys_module_task');
             $this->load->helper("module_task");
             $data['modules_tasks']=Module_task_helper::get_modules_tasks_table_tree();
             $data['role_status']=$this->get_role_status($item_id);
@@ -352,42 +351,37 @@ class Sys_user_group extends Root_Controller
         }
         return $roles;
     }
-    public function system_save_role()
-    {
-        $this->load->helper("module_task");
-        $user=User_helper::get_user();
-        $time = time();
-        $system_user_token = $this->input->post("system_user_token");
-        $item_id=$this->input->post('id');
-        $tasks=$this->input->post('tasks');
 
+
+    private function system_save_role()
+    {
+        $item_id=$this->input->post('id');
+        $user=User_helper::get_user();
         if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
         {
-            $this->access_denied();
+            $ajax['status']=false;
+            $ajax['system_message']=$this->lang->line('YOU_DONT_HAVE_ACCESS');
+            $this->json_return($ajax);
         }
-        $system_user_token_info = Token_helper::get_token($system_user_token);
-        if($system_user_token_info['status'])
-        {
-            $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
-            $this->system_list();
-        }
+        $tasks=$this->input->post('tasks');
+        $time=time();
 
         $this->db->trans_start(); //DB Transaction Handle START
 
         $revision_history_data=array();
         $revision_history_data['date_updated']=$time;
         $revision_history_data['user_updated']=$user->user_id;
-        Query_helper::update(TABLE_SYSTEM_USER_GROUP_ROLE,$revision_history_data,array('revision=1','user_group_id='.$item_id),false);
+        Query_helper::update($this->config->item('table_system_user_group_role'),$revision_history_data,array('revision=1','user_group_id='.$item_id));
 
         $this->db->where('user_group_id',$item_id);
         $this->db->set('revision','revision+1',false);
-        $this->db->update(TABLE_SYSTEM_USER_GROUP_ROLE);
+        $this->db->update($this->config->item('table_system_user_group_role'));
         if(is_array($tasks))
         {
             foreach($tasks as $task_id=>$task)
             {
                 $data=array();
-                for($i=0;$i<Module_task_helper::$MAX_MODULE_ACTIONS;$i++)
+                for($i=0;$i<$this->config->item('system_max_actions');$i++)
                 {
                     if(isset($task['action'.$i]) && ($task['action'.$i]==1))
                     {
@@ -398,7 +392,7 @@ class Sys_user_group extends Root_Controller
                         $data['action'.$i]=0;
                     }
                 }
-                for($i=0;$i<Module_task_helper::$MAX_MODULE_ACTIONS;$i++)
+                for($i=0;$i<$this->config->item('system_max_actions');$i++)
                 {
                     if($data['action'.$i])
                     {
@@ -410,21 +404,21 @@ class Sys_user_group extends Root_Controller
                 $data['user_group_id']=$item_id;
                 $data['user_created']=$user->user_id;
                 $data['date_created']=$time;
-                Query_helper::add(TABLE_SYSTEM_USER_GROUP_ROLE,$data,false);
+                Query_helper::add($this->config->item('table_system_user_group_role'),$data);
             }
         }
-        Token_helper::update_token($system_user_token_info['id'], $system_user_token);
-
         $this->db->trans_complete(); //DB Transaction Handle END
 
         if ($this->db->trans_status()===true)
         {
-            $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE_ROLE');
+            $this->message=$this->lang->line('MSG_ROLE_ASSIGN_SUCCESS');
             $this->system_list();
         }
         else
         {
-            $this->action_error($this->lang->line("MSG_SAVE_FAIL_ROLE"));
+            $ajax['status']=false;
+            $ajax['system_message']=$this->lang->line('MSG_ROLE_ASSIGN_FAIL');
+            $this->json_return($ajax);
         }
     }
 }
