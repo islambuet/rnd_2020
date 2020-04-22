@@ -20,48 +20,12 @@ class Sys_user_group extends Root_Controller
             $this->permissions['action2']=1;
         }
 
-        $this->lang->load($this->controller_name.'/sys_user_group');
+        $this->lang->load($this->controller_name.'/'.$this->controller_name);
     }
     public function index()
     {
         $this->system_list();
     }
-
-    /*public function index($action='list',$id=0)
-    {
-        if($action=='list')
-        {
-            $this->system_list();
-        }
-        elseif($action=='get_items')
-        {
-            $this->system_get_items();
-        }
-        elseif($action=='add')
-        {
-            $this->system_add();
-        }
-        elseif($action=='edit')
-        {
-            $this->system_edit($id);
-        }
-        elseif($action=='assign_group_role')
-        {
-            $this->system_assign_group_role($id);
-        }
-        elseif($action=='save')
-        {
-            $this->system_save();
-        }
-        elseif($action=='save_assign_group_role')
-        {
-            $this->system_save_assign_group_role();
-        }
-        else
-        {
-            $this->system_list();
-        }
-    }*/
     /*get_jqx_items
      *
      * preference =default preference
@@ -166,10 +130,10 @@ class Sys_user_group extends Root_Controller
                 'ordering'=>99,
                 'status'=>SYSTEM_STATUS_ACTIVE
             );
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_add');
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_add');
             $this->json_return($ajax);
         }
         else
@@ -313,18 +277,13 @@ class Sys_user_group extends Root_Controller
             $data['item_id']=$item_id;
             $ajax['status']=true;
             $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name.'/role',$data,true));
-            if($this->message)
-            {
-                $ajax['system_message']=$this->message;
-            }
+            $this->set_message($this->message,$ajax);
             $ajax['system_page_url']=site_url($this->controller_name.'/system_role/'.$item_id);
             $this->json_return($ajax);
         }
         else
         {
-            $ajax['status']=false;
-            $ajax['system_message']=$this->lang->line('YOU_DONT_HAVE_ACCESS');
-            $this->json_return($ajax);
+            $this->access_denied();
         }
     }
     private function get_role_status($user_group_id)

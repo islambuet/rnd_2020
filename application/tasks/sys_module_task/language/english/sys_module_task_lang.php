@@ -22,6 +22,11 @@ $lang['LABEL_SHORT_ACTION7'] = 'Frd';
 
 
 $lang['LABEL_MODULE_TASK_NAME'] = 'Module/task';
+$lang['LABEL_TITLE_MODULE_TASK_LIST'] = 'Modules and tasks';
+$lang['LABEL_CONTROLLER_NAME'] = 'Controller';
+$lang['LABEL_MODULE_TYPE'] = 'Type';
+$lang['LABEL_TITLE_MODULE_TASK_NEW'] = 'Create New Module/Task';
+$lang['LABEL_TITLE_MODULE_TASK_EDIT'] = 'Edit (%s)';
 
 
 

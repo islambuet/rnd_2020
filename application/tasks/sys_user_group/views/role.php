@@ -42,7 +42,7 @@ echo '</pre>';
             <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->user_id; ?>" />
 
             <div class="overflow-auto" style="height: 500px">
-                <table id="table_modules" class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered">
                     <thead class="text-center thead-light">
                     <tr>
                         <th colspan="<?php echo $modules_tasks['max_level'];?>"><?php echo $CI->lang->line("LABEL_MODULE_TASK_NAME");?></th>

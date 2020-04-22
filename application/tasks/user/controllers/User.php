@@ -10,7 +10,7 @@ class User extends Root_controller
         parent::__construct();
         $this->message = array();
         $this->controller_name = strtolower(get_class($this));
-        $this->lang->load($this->controller_name.'/user');
+        $this->lang->load($this->controller_name.'/'.$this->controller_name);
         $this->lang->load('upload');
 
     }

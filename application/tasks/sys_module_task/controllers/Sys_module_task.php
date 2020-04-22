@@ -2,54 +2,46 @@
 
 class Sys_module_task extends Root_Controller
 {
-    public $controller_url;
+    public $controller_name;
     public $permissions;
     public $message;
     public function __construct()
     {
         parent::__construct();
-        $this->controller_url = strtolower(get_class($this));
+        $this->controller_name = strtolower(get_class($this));
         $this->permissions = User_helper::get_permission(get_class($this));
         $this->message = array();
-        $this->lang->load($this->controller_url.'/'.$this->controller_url);
+        $this->lang->load($this->controller_name.'/'.$this->controller_name);
     }
     public function index()
     {
         $this->system_list();
     }
-
-
-
-    private function system_list()
+    public function system_list()
     {
+        $this->load->helper("module_task");
+
         $data['title']="Module and Task";
         if(isset($this->permissions['action0'])&&($this->permissions['action0']==1))
         {
-            $data['items']=Task_helper::get_modules_tasks_table_tree();
-
+            $data['modules_tasks']=Module_task_helper::get_modules_tasks_table_tree();
             $ajax['status']=true;
-            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/list',$data,true));
-            if($this->message)
-            {
-                $ajax['system_message']=$this->message;
-            }
-            $ajax['system_page_url']=site_url($this->controller_url);
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list',$data,true));
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_list');
             $this->json_return($ajax);
         }
         else
         {
-            $ajax['status']=false;
-            $ajax['system_message']=$this->lang->line("YOU_DONT_HAVE_ACCESS");
-            $this->json_return($ajax);
+            $this->access_denied();
         }
         /**/
 
     }
-    private function system_add()
+    public function system_add()
     {
         if(isset($this->permissions['action1'])&&($this->permissions['action1']==1))
         {
-            $data['title']="Create New Module/Task";
             $data["item"] = Array(
                 'id' => 0,
                 'name' => '',
@@ -57,26 +49,20 @@ class Sys_module_task extends Root_Controller
                 'parent' => 0,
                 'controller' => '',
                 'ordering' => 99,
-                'icon' => 'menu.png',
-                'status' => $this->config->item('system_status_active'),
+                'status' => SYSTEM_STATUS_ACTIVE,
                 'status_notification' => '',
             );
-            $ajax['system_page_url']=site_url($this->controller_url."/index/add");
-            //$data['crops'] = System_helper::get_ordered_crops();
-            $data['modules']=$this->get_modules_tasks('Module');
+
+            //$data['modules']=$this->get_modules_tasks('Module');
             $ajax['status']=true;
-            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_url.'/add_edit',$data,true));
-            if($this->message)
-            {
-                $ajax['system_message']=$this->message;
-            }
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_add');
             $this->json_return($ajax);
         }
         else
         {
-            $ajax['status']=false;
-            $ajax['system_message']=$this->lang->line("YOU_DONT_HAVE_ACCESS");
-            $this->json_return($ajax);
+            $this->access_denied();
         }
     }
     private function system_edit($id)
