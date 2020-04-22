@@ -15,6 +15,9 @@ $CI = & get_instance();
 
         <!-- Bootstrap CSS CDN -->
         <link href="<?php echo base_url('theme/css/bootstrap.min.css');?>" rel="stylesheet" type="text/css">
+        <!-- Bootstrap CSS CDN -->
+        <link href="<?php echo base_url('theme/css/jquery-ui-1.12.1/jquery-ui.css');?>" rel="stylesheet" type="text/css">
+        <link href="<?php echo base_url('theme/css/jquery-ui-1.12.1/jquery-ui.theme.css');?>" rel="stylesheet" type="text/css">
         <!-- Scrollbar Custom CSS -->
         <link href="<?php echo base_url('theme/css/jquery.mCustomScrollbar.css');?>" rel="stylesheet" type="text/css">
         <!-- icons CSS -->
@@ -29,6 +32,7 @@ $CI = & get_instance();
     <body>
         <!-- jQuery -->
         <script type="text/javascript" src="<?php echo base_url('theme/js/jquery-3.4.1.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo base_url('theme/js/jquery-ui.js'); ?>"></script>
         <!-- Popper.JS for scrollbar-->
         <script type="text/javascript" src="<?php echo base_url('theme/js/popper.min.js'); ?>"></script>
         <!-- jQuery Custom Scroller CDN -->

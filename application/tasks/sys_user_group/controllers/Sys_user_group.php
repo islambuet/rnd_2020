@@ -193,11 +193,7 @@ class Sys_user_group extends Root_Controller
         }
         if(!$this->check_validation_add_edit())
         {
-            $ajax['status']=false;
-            $this->message['system_message_type']='error';
-            $this->message['system_message_duration']='30000';
-            $this->set_message($this->message,$ajax);
-            $this->json_return($ajax);
+            $this->validation_error($this->message['system_message']);
         }
         $system_user_token_info = Token_helper::get_token($system_user_token);
         if($system_user_token_info['status'])

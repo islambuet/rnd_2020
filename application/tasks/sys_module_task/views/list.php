@@ -53,7 +53,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                     {
                                         //echo $module_task['prefix'];
                                         ?>
-                                        <a href="<?php echo site_url($CI->controller_name.'/system_edit/'.$item['module_task']['id']); ?>"><?php echo $item['module_task']['name']; ?></a>
+                                        <a class="system_ajax" href="<?php echo site_url($CI->controller_name.'/system_edit/'.$item['module_task']['id']); ?>"><?php echo $item['module_task']['name']; ?></a>
                                     <?php
                                     }
                                     ?>

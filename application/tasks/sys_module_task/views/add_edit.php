@@ -26,18 +26,34 @@ $action_buttons[]=array(
     'class'=>'button_action_clear',
     'data-target-element'=>'#save_form'
 );
+if($item['id']>0)
+{
+    $action_buttons[]=array(
+        'label'=>$CI->lang->line("BUTTON_REFRESH"),
+        'class'=>'system_ajax',
+        'href'=>site_url($CI->controller_name.'/system_edit/'.$item['id'])
+    );
+}
+else
+{
+    $action_buttons[]=array(
+        'label'=>$CI->lang->line("BUTTON_REFRESH"),
+        'class'=>'system_ajax',
+        'href'=>site_url($CI->controller_name.'/system_add')
+    );
+}
 $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 
 
-$controller_folder=dir(APPPATH.'controllers');
-$array=array();
+$controller_folder=dir(APPPATH.'tasks');
+$controller_list=array();
 while(($controller=$controller_folder->read())!==false)
 {
     if($controller=='.' || $controller=='..')
     {
         continue;
     }
-    $array[]=pathinfo($controller,PATHINFO_FILENAME);
+    $controller_list[]=ucfirst(pathinfo($controller,PATHINFO_FILENAME));
 }
 $controller_folder->close();
 ?>
@@ -71,6 +87,51 @@ $controller_folder->close();
             </div>
             <div class="row mb-2">
                 <div class="col-4">
+                    <label for="name" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_MODULE_TYPE');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="type" name="item[type]" class="form-control">
+                        <option value="MODULE"
+                            <?php
+                            if($item['type']=='MODULE')
+                            {
+                                echo ' selected';
+                            }
+                            ?> >Module
+                        </option>
+                        <option value="TASK"
+                            <?php
+                            if($item['type']=='TASK')
+                            {
+                                echo ' selected';
+                            }
+                            ?> >Task</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="name" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_PARENT');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="parent" name="item[parent]" class="form-control" tabindex="-1">
+                        <option value="0"><?php echo $CI->lang->line('LABEL_SELECT'); ?></option>
+                        <?php
+                        foreach($modules_tasks['tree'] as $module)
+                        {
+                            if($module['module_task']['type']=='MODULE')
+                            {
+                            ?>
+                            <option value='<?php echo $module['module_task']['id']; ?>' <?php if($module['module_task']['id']==$item['parent']){ echo ' selected';} ?>><?php echo $module['prefix'].$module['module_task']['name']; ?></option>
+                            <?php
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
                     <label for="name" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_CONTROLLER_NAME');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">
@@ -85,6 +146,65 @@ $controller_folder->close();
                     <input type="text" class="form-control" name="item[ordering]" id="ordering" value="<?php echo $item['ordering']; ?>" >
                 </div>
             </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="ordering" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_STATUS');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="status" name="item[status]" class="form-control" tabindex="-1">
+                        <option value="<?php echo SYSTEM_STATUS_ACTIVE; ?>"
+                            <?php
+                            if($item['status']==SYSTEM_STATUS_ACTIVE)
+                            {
+                                echo ' selected';
+                            }
+                            ?> ><?php echo SYSTEM_STATUS_ACTIVE; ?>
+                        </option>
+                        <option value="<?php echo SYSTEM_STATUS_INACTIVE; ?>"
+                            <?php
+                            if($item['status']==SYSTEM_STATUS_INACTIVE)
+                            {
+                                echo ' selected';
+                            }
+                            ?> ><?php echo SYSTEM_STATUS_INACTIVE; ?>
+                        </option>
+                        <option value="<?php echo SYSTEM_STATUS_DELETE; ?>"
+                            <?php
+                            if($item['status']==SYSTEM_STATUS_DELETE)
+                            {
+                                echo ' selected';
+                            }
+                            ?> ><?php echo SYSTEM_STATUS_DELETE; ?>
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="ordering" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_STATUS_NOTIFICATION');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="status_notification" name="item[status_notification]" class="form-control">
+                        <option value="<?php echo SYSTEM_STATUS_NO; ?>"
+                            <?php
+                            if($item['status_notification']==SYSTEM_STATUS_NO)
+                            {
+                                echo ' selected';
+                            }
+                            ?> ><?php echo SYSTEM_STATUS_NO; ?>
+                        </option>
+                        <option value="<?php echo SYSTEM_STATUS_YES; ?>"
+                            <?php
+                            if($item['status_notification']==SYSTEM_STATUS_YES)
+                            {
+                                echo ' selected';
+                            }
+                            ?> ><?php echo SYSTEM_STATUS_YES; ?>
+                        </option>
+                    </select>
+                </div>
+            </div>
+
         </form>
     </div>
 </div>
@@ -92,8 +212,13 @@ $controller_folder->close();
     jQuery(document).ready(function()
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
+        var controller_list=<?php echo json_encode($controller_list); ?>;
+        $("#controller").jqxInput({minLength: 1,  source: controller_list });
+        //$("#controller").autocomplete({ source: controller_list });
 
-        var availableTags=<?php echo json_encode($array); ?>;
-        $('#controller').autocomplete({source:availableTags});
+        //$("#item_date").jqxDateTimeInput({formatString:'dd-MMM-yyyy',value: new Date(<?php echo time(); ?> * 1000), animationType: 'slide',readonly: true,width:'100%'});
+
+
+
     });
 </script>

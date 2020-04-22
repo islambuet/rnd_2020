@@ -27,6 +27,11 @@ $lang['LABEL_CONTROLLER_NAME'] = 'Controller';
 $lang['LABEL_MODULE_TYPE'] = 'Type';
 $lang['LABEL_TITLE_MODULE_TASK_NEW'] = 'Create New Module/Task';
 $lang['LABEL_TITLE_MODULE_TASK_EDIT'] = 'Edit (%s)';
+$lang['LABEL_PARENT'] = 'Parent';
+$lang['LABEL_STATUS_NOTIFICATION'] = 'App Notification';
+
+$lang['MSG_SAVE_DONE_MODULE_TASK'] = 'Module/Task Saved Successfully.';
+$lang['MSG_SAVE_FAIL_MODULE_TASK'] = 'Module/Task Save Failed.';
 
 
 

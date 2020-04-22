@@ -88,21 +88,7 @@ class Root_Controller extends CI_Controller
             return false;
         }
     }
-    public function set_message($message,&$data)
-    {
-        if(isset($message['system_message']))
-        {
-            $data['system_message']=$message['system_message'];
-            if(isset($message['system_message_type']))
-            {
-                $data['system_message_type']=$message['system_message_type'];
-            }
-            if(isset($message['system_message_duration']))
-            {
-                $data['system_message_duration']=$message['system_message_duration'];
-            }
-        }
-    }
+
     public function login_page($message=array())
     {
         $ajax['status']=true;
@@ -154,16 +140,34 @@ class Root_Controller extends CI_Controller
         $ajax['system_page_url']=site_url();
         $this->json_return($ajax);
     }
+
+    public function set_message($message,&$data)
+    {
+        if(isset($message['system_message']))
+        {
+            $data['system_message']=$message['system_message'];
+            if(isset($message['system_message_type']))
+            {
+                $data['system_message_type']=$message['system_message_type'];
+            }
+            if(isset($message['system_message_duration']))
+            {
+                $data['system_message_duration']=$message['system_message_duration'];
+            }
+        }
+    }
     public function access_denied()
     {
-        $ajax['status']=false;
-        $this->set_message(array('system_message'=>$this->lang->line("MSG_ACCESS_DENIED_PAGE"),'system_message_type'=>'error'),$ajax);
-        $this->json_return($ajax);
+        $this->action_error($this->lang->line("MSG_ACCESS_DENIED_PAGE"),5000);
     }
-    public function action_error($message)
+    public function validation_error($message)
+    {
+        $this->action_error($message,30000);
+    }
+    public function action_error($message,$duration=10000)
     {
         $ajax['status']=false;
-        $this->set_message(array('system_message'=>$message,'system_message_type'=>'error','system_message_duration'=>10000),$ajax);
+        $this->set_message(array('system_message'=>$message,'system_message_type'=>'error','system_message_duration'=>$duration),$ajax);
         $this->json_return($ajax);
     }
 

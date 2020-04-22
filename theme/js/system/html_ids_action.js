@@ -18,6 +18,21 @@ $(document).ready(function ()
             input.attr('type','password');
         }
     });
+    //input type datepicker handler
+    $(document).on("click", ".datepicker_handeler", function(event)
+    {
+
+        var input=$(this).siblings('input');
+        if(input.datepicker( "widget" ).is(":visible"))
+        {
+            input.datepicker('hide');
+        }
+        else
+        {
+            input.datepicker('show');
+        }
+
+    });
 
     //save button click form submit
     $(document).on("click", ".button_action_save", function(event)
