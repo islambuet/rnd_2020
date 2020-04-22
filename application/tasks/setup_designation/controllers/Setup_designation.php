@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Sys_module_task extends Root_Controller
+class Setup_designation extends Root_Controller
 {
     public $controller_name;
     public $permissions;
@@ -11,7 +11,6 @@ class Sys_module_task extends Root_Controller
         $this->controller_name = strtolower(get_class($this));
         $this->permissions = User_helper::get_permission(get_class($this));
         $this->message = array();
-        $this->load->helper("module_task");
         $this->lang->load($this->controller_name.'/'.$this->controller_name);
     }
     public function index()
@@ -20,10 +19,9 @@ class Sys_module_task extends Root_Controller
     }
     public function system_list()
     {
-        $this->load->helper("module_task");
         if(isset($this->permissions['action0'])&&($this->permissions['action0']==1))
         {
-            $data['modules_tasks']=Module_task_helper::get_modules_tasks_table_tree();
+            $data['items']=$this->get_designation_table_tree();
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list',$data,true));
             $this->set_message($this->message,$ajax);
@@ -34,8 +32,48 @@ class Sys_module_task extends Root_Controller
         {
             $this->access_denied();
         }
-        /**/
+    }
+    private function get_designation_table_tree()
+    {
+        $CI=& get_instance();
+        $CI->db->from(TABLE_RND_SETUP_DESIGNATION);
+        $CI->db->order_by('ordering');
+        $results=$CI->db->get()->result_array();
+        $children=array();
+        foreach($results as $result)
+        {
+            $children[$result['parent']]['ids'][$result['id']]=$result['id'];
+            $children[$result['parent']]['designations'][$result['id']]=$result;
+        }
+        $level0=$children[0]['designations'];
+        $tree=array();
+        $max_level=1;
+        foreach ($level0 as $designation)
+        {
+            $this->get_sub_designation_tree($designation,'',1,$max_level,$tree,$children);
+        }
+        return array('max_level'=>$max_level,'tree'=>$tree);
+    }
 
+    private function get_sub_designation_tree($designation,$prefix,$level,&$max_level,&$tree,$children)
+    {
+        if($level>$max_level)
+        {
+            $max_level=$level;
+        }
+        $tree[]=array('prefix'=>$prefix,'level'=>$level,'designation'=>$designation);
+        $subs=array();
+        if(isset($children[$designation['id']]))
+        {
+            $subs=$children[$designation['id']]['designations'];
+        }
+        if(sizeof($subs)>0)
+        {
+            foreach($subs as $sub)
+            {
+                $this->get_sub_designation_tree($sub,$prefix.'- ',$level+1,$max_level,$tree,$children);
+            }
+        }
     }
     public function system_add()
     {
@@ -44,15 +82,11 @@ class Sys_module_task extends Root_Controller
             $data["item"] = Array(
                 'id' => 0,
                 'name' => '',
-                'type' => '',
                 'parent' => 0,
-                'controller' => '',
                 'ordering' => 99,
-                'status' => SYSTEM_STATUS_ACTIVE,
-                'status_notification' => '',
+                'status' => SYSTEM_STATUS_ACTIVE
             );
-
-            $data['modules_tasks']=Module_task_helper::get_modules_tasks_table_tree();
+            $data['designations']=$this->get_designation_table_tree();
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
@@ -68,9 +102,8 @@ class Sys_module_task extends Root_Controller
     {
         if(isset($this->permissions['action2'])&&($this->permissions['action2']==1))
         {
-
-            $data['item']=Query_helper::get_info(TABLE_SYSTEM_TASK,'*',array('id ='.$id),1);
-            $data['modules_tasks']=Module_task_helper::get_modules_tasks_table_tree();
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_DESIGNATION,'*',array('id ='.$id),1);
+            $data['designations']=$this->get_designation_table_tree();
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
@@ -119,20 +152,20 @@ class Sys_module_task extends Root_Controller
         {
             $data['user_updated'] = $user->user_id;
             $data['date_updated'] = $time;
-            Query_helper::update(TABLE_SYSTEM_TASK,$data,array("id = ".$id));
+            Query_helper::update(TABLE_RND_SETUP_DESIGNATION,$data,array("id = ".$id));
         }
         else
         {
             $data['user_created'] = $user->user_id;
             $data['date_created'] = time();
-            Query_helper::add(TABLE_SYSTEM_TASK,$data);
+            Query_helper::add(TABLE_RND_SETUP_DESIGNATION,$data);
         }
         Token_helper::update_token($system_user_token_info['id'], $system_user_token);
         $this->db->trans_complete();   //DB Transaction Handle END
         if ($this->db->trans_status() === TRUE)
         {
             $save_and_new=$this->input->post('system_save_new_status');
-            $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE_MODULE_TASK');
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
             if($save_and_new==1)
             {
                 $this->system_add();
@@ -144,7 +177,7 @@ class Sys_module_task extends Root_Controller
         }
         else
         {
-            $this->action_error($this->lang->line("MSG_SAVE_FAIL_MODULE_TASK"));
+            $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
         }
 
     }
@@ -154,12 +187,6 @@ class Sys_module_task extends Root_Controller
         $this->form_validation->set_error_delimiters('', '');
 
         $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_MODULE_TASK_NAME'),'required');
-        $this->form_validation->set_rules('item[type]',$this->lang->line('LABEL_MODULE_TYPE'),'required');
-        $item=$this->input->post('item');
-        if($item['type']=='TASK')
-        {
-            $this->form_validation->set_rules('item[controller]',$this->lang->line('LABEL_CONTROLLER_NAME'),'required');
-        }
         $this->form_validation->set_rules('item[status]',$this->lang->line('LABEL_STATUS'),'required');
         if($this->form_validation->run()==false)
         {

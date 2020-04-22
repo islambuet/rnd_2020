@@ -27,7 +27,7 @@ class Root_Controller extends CI_Controller
             {
                 if($this->is_site_offline())
                 {
-                    if(!(in_array($user->user_group,array(1))))
+                    if(!(in_array($user->user_group,array(1,2))))
                     {
                         if(!((strtolower($this->router->class)=='home')&&(strtolower($this->router->method)=='logout')))//not logout-- logout allowed
                         {
