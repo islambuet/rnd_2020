@@ -12,14 +12,15 @@ $lang['MSG_SAVE_ALREADY'] = "This Data Already Saved.\nTry another one.";
 $lang['ALERT_SELECT_ONE_ITEM'] = 'Select an Item.';
 
 //html elements
-$lang['LABEL_ID'] = 'id';
-$lang['LABEL_NAME'] = 'Name';
-$lang['LABEL_ORDERING'] = 'Ordering';
-$lang['LABEL_STATUS'] = 'Status';
 $lang['LABEL_TITLE_JQX_COLUMN_HANDLER'] = 'Show/hide columns controller';
 $lang['LABEL_TITLE_PREFERENCE_ADD_EDIT'] = 'Preference Settings';
 
 
+$lang['LABEL_ID'] = 'id';
+$lang['LABEL_NAME'] = 'Name';
+$lang['LABEL_ORDERING'] = 'Ordering';
+$lang['LABEL_STATUS'] = 'Status';
+$lang['LABEL_REMARKS'] = 'Remarks';
 $lang['LABEL_SELECT'] = 'Select';
 
 

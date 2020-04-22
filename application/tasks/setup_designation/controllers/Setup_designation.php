@@ -186,7 +186,7 @@ class Setup_designation extends Root_Controller
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('', '');
 
-        $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_MODULE_TASK_NAME'),'required');
+        $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_NAME'),'required');
         $this->form_validation->set_rules('item[status]',$this->lang->line('LABEL_STATUS'),'required');
         if($this->form_validation->run()==false)
         {
