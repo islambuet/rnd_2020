@@ -16,6 +16,7 @@ class Query_helper
                 $time=time();
                 $historyData = Array(
                     'controller'=>$CI->router->class,
+                    'method'=>$CI->router->method,
                     'table_id'=>$id,
                     'table_name'=>$table_name,
                     'data'=>json_encode($data),
@@ -62,6 +63,7 @@ class Query_helper
 
                     $historyData = Array(
                         'controller'=>$CI->router->class,
+                        'method'=>$CI->router->method,
                         'table_id'=>$row['id'],
                         'table_name'=>$table_name,
                         'data'=>json_encode($data),

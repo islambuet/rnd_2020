@@ -62,8 +62,9 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                             }
                             ?>
                             <td><?php if($item['module_task']['type']=='TASK'){echo $CI->lang->line('TASK');}else{echo $CI->lang->line('MODULE');} ?></td>
-                            <td><?php echo $item['module_task']['ordering']; ?></td>
                             <td><?php echo $item['module_task']['controller']; ?></td>
+                            <td><?php echo $item['module_task']['ordering']; ?></td>
+
                         </tr>
                     <?php
                     }
