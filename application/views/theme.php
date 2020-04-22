@@ -25,7 +25,6 @@ $CI = & get_instance();
         <link href="<?php echo base_url('theme/css/style.css?version='.time());?>" rel="stylesheet" type="text/css">
 
 
-
     </head>
     <body>
         <!-- jQuery -->
@@ -66,6 +65,8 @@ $CI = & get_instance();
         <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxtooltip.js'); ?>"></script>
         <!-- popup-->
         <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxwindow.js'); ?>"></script>
+        <!-- jqxinput-->
+        <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxinput.js'); ?>"></script>
         <!-- for date-->
         <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxdatetimeinput.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('theme/js/jqx/jqxcalendar.js'); ?>"></script>
