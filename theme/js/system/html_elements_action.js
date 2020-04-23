@@ -62,6 +62,18 @@ $(document).ready(function ()
         //system_ajax
         if($(this).hasClass('system_ajax'))
         {
+
+            if(($(this).parents('nav#system_left_sidebar').length)>0)//left side bar
+            {
+                $('#system_left_sidebar').removeClass('inactive');
+                $('#system_content').removeClass('inactive_left_sidebar');
+                $('#system_right_sidebar').removeClass('active');
+            }
+            if(($(this).parents('nav#system_right_sidebar').length)>0)//right side bar
+            {
+                $('#system_right_sidebar').removeClass('active');
+            }
+
             event.preventDefault();
             //if link has confirm message
             if($(this).is('[data-message-confirm]'))
