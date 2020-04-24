@@ -239,4 +239,86 @@ class Setup_users extends Root_Controller
         }
         return true;
     }
+    public function system_edit_password($id=0)
+    {
+        if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
+        {
+            $user=User_helper::get_user();
+            if(($this->input->post('id')))
+            {
+                $item_id=$this->input->post('id');
+            }
+            else
+            {
+                $item_id=$id;
+            }
+            $data['user_info']=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,'*',array('user_id ='.$item_id,'revision =1'),1);
+            if(!$data['user_info'])
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+            }
+            $ajax['status']=true;
+            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/edit_password",$data,true));
+            if($this->message)
+            {
+                $ajax['system_message']=$this->message;
+            }
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit_password/'.$item_id);
+            $this->json_return($ajax);
+        }
+        else
+        {
+            $this->access_denied();
+        }
+    }
+    public function system_save_edit_password()//only edit--add removed
+    {
+        $user=User_helper::get_user();
+        $time = time();
+        $id=$this->input->post('id');
+
+        $system_user_token = $this->input->post("system_user_token");
+
+
+        if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
+        {
+            $this->access_denied();
+        }
+        $item=Query_helper::get_info(TABLE_RND_SETUP_USER,array('id','employee_id','user_name','status'),array('id ='.$id),1);
+        if(!$item)
+        {
+            $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+        }
+
+        $system_user_token_info = Token_helper::get_token($system_user_token);
+        if($system_user_token_info['status'])
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
+            $this->system_list();
+        }
+
+        {
+            $this->db->trans_start(); //DB Transaction Handle START
+            $data=array();
+            $data['password']=md5($this->input->post('new_password'));
+            $data['user_updated'] = $user->user_id;
+            $data['date_updated'] = $time;
+            Query_helper::update(TABLE_RND_SETUP_USER,$data,array('id='.$id));
+
+            Token_helper::update_token($system_user_token_info['id'], $system_user_token);
+
+            $this->db->trans_complete(); //DB Transaction Handle END
+            if ($this->db->trans_status()===true)
+            {
+                $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
+                $this->system_list();
+
+            }
+            else
+            {
+                $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
+            }
+        }
+    }
+
 }
