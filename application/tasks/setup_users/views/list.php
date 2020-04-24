@@ -14,6 +14,27 @@ if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
         'data-action-link'=>site_url($CI->controller_name.'/system_edit')
     );
 }
+if(isset($CI->permissions['action4']) && ($CI->permissions['action4']==1))
+{
+    $action_buttons[]=array(
+        'type'=>'button',
+        'label'=>$CI->lang->line("BUTTON_DOWNLOAD_PRINT"),
+        'class'=>'button_jqx_action_download',
+        'data-title'=>$CI->lang->line('LABEL_TITLE_LIST'),
+        'data-target-element'=>$jqx_container,
+        'data-print'=>true
+    );
+}
+if(isset($CI->permissions['action5']) && ($CI->permissions['action5']==1))
+{
+    $action_buttons[]=array(
+        'type'=>'button',
+        'label'=>$CI->lang->line("BUTTON_DOWNLOAD_NOPRINT"),
+        'class'=>'button_jqx_action_download',
+        'data-title'=>$CI->lang->line('LABEL_TITLE_LIST'),
+        'data-target-element'=>$jqx_container
+    );
+}
 if (isset($CI->permissions['action6']) && ($CI->permissions['action6'] == 1)) {
     $action_buttons[] = array
     (

@@ -111,6 +111,34 @@ $(document).ready(function ()
         $(jqx_grid_id).jqxGrid('endupdate');
 
     });
+    $(document).on("click", ".button_jqx_action_download", function(event)
+    {
+        var jqx_grid_id=$(this).attr('data-target-element');
+
+        var gridContent = $(jqx_grid_id).jqxGrid('exportdata', 'html');
+        var newWindow = window.open('', '', 'width=800, height=500,menubar=yes,toolbar=no,scrollbars=yes'),
+            document = newWindow.document.open(),
+            pageContent =
+                '<!DOCTYPE html>\n' +
+                    '<html>\n' +
+                    '<head>\n' +
+                    '<meta charset="utf-8" />\n' +
+                    '<title>'+$(this).attr('data-title')+'</title>\n' +
+                    '</head>\n' +
+                    '<body>\n' + gridContent + '\n</body>\n</html>';
+        document.write(pageContent);
+        document.close();
+        if($(this).is('[data-print]'))
+        {
+            if($(this).attr('data-print')==true)
+            {
+                newWindow.print();
+            }
+        }
+
+
+    });
+
 
 
 
