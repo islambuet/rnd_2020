@@ -20,7 +20,11 @@ $lang['LABEL_ID'] = 'id';
 $lang['LABEL_NAME'] = 'Name';
 $lang['LABEL_ORDERING'] = 'Ordering';
 $lang['LABEL_STATUS'] = 'Status';
+
 $lang['LABEL_REMARKS'] = 'Remarks';
+$lang['LABEL_APPROVE_REJECT'] = 'Approve/Reject';
+$lang['LABEL_REMARKS_REJECT'] = 'Reject Reason';
+
 $lang['LABEL_SELECT'] = 'Select';
 
 

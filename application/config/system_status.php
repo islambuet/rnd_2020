@@ -18,6 +18,6 @@ CONST SYSTEM_STATUS_INACTIVE= 'In-Active';
 CONST SYSTEM_STATUS_DELETE= 'Deleted';
 
 CONST SYSTEM_STATUS_PENDING= 'Pending';
-CONST system_status_forwarded= 'Forwarded';
-CONST system_status_approved= 'Approved';
-CONST system_status_rejected= 'Rejected';
+CONST SYSTEM_STATUS_FORWARDED= 'Forwarded';
+CONST SYSTEM_STATUS_APPROVED= 'Approved';
+CONST SYSTEM_STATUS_REJECTED= 'Rejected';

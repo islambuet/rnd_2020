@@ -5,17 +5,20 @@ $user=User_helper::get_user();
 $action_buttons=array();
 $jqx_container='#system_jqx_container';
 $action_buttons[]=array(
-    'label'=>$CI->lang->line("BUTTON_LIST_PENDING"),
+    'label'=>$CI->lang->line("BUTTON_LIST_ALL"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_name.'/system_list')
+    'href'=>site_url($CI->controller_name.'/system_list_all')
 
 );
-if(isset($CI->permissions['action1']) && ($CI->permissions['action1']==1))
+
+if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
 {
     $action_buttons[]=array(
-        'label'=>$CI->lang->line("BUTTON_NEW"),
-        'class'=>'system_ajax',
-        'href'=>site_url($CI->controller_name.'/system_add')
+        'type'=>'button',
+        'label'=>$CI->lang->line("BUTTON_APPROVE_REJECT"),
+        'class'=>'button_jqx_action',
+        'data-target-element'=>$jqx_container,
+        'data-action-link'=>site_url($CI->controller_name.'/system_edit')
     );
 }
 if(isset($CI->permissions['action4']) && ($CI->permissions['action4']==1))
@@ -44,13 +47,13 @@ if (isset($CI->permissions['action6']) && ($CI->permissions['action6'] == 1)) {
     (
         'label'=>$CI->lang->line("BUTTON_PREFERENCE"),
         'class'=>'system_ajax',
-        'href' => site_url($CI->controller_name . '/system_preference/system_list_all')
+        'href' => site_url($CI->controller_name . '/system_preference')
     );
 }
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_REFRESH"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_name.'/system_list_all')
+    'href'=>site_url($CI->controller_name.'/system_list')
 
 );
 
@@ -59,7 +62,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 ?>
 <div class="card mt-2">
     <div class="card-header font-weight-bold">
-        <?php echo $CI->lang->line('LABEL_TITLE_LIST_ALL'); ?>
+        <?php echo $CI->lang->line('LABEL_TITLE_LIST'); ?>
     </div>
     <div class="card-body">
         <?php
@@ -79,7 +82,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
 
-        var url = "<?php echo site_url($CI->controller_name.'/system_get_items_list_all'); ?>";
+        var url = "<?php echo site_url($CI->controller_name.'/system_get_items_list'); ?>";
         // prepare the data
         var source =
         {

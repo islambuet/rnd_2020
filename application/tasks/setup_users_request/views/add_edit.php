@@ -72,6 +72,8 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                 </div>
                 <div class="col-lg-4 col-8">
                     <input type="text" name="item[user_name]" id="user_name" class="form-control" value="<?php echo $item['user_name']; ?>">
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_USER_NAME_RULE');?><</small>
+
                 </div>
             </div>
             <div class="row mb-2">
@@ -112,7 +114,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     <label for="designation" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_DESIGNATION_NAME');?></label>
                 </div>
                 <div class="col-lg-4 col-8">
-                    <select id="designation" name="user_info[designation]" class="form-control">
+                    <select id="designation" name="item[designation]" class="form-control">
                         <option value=""><?php echo $CI->lang->line('LABEL_SELECT'); ?></option>
                         <?php
                         foreach($designations as $designation)
@@ -130,7 +132,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     <label for="user_type_id" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_USER_TYPE');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">
-                    <select id="user_type_id" name="user_info[user_type_id]" class="form-control">
+                    <select id="user_type_id" name="item[user_type_id]" class="form-control">
                         <option value=""><?php echo $CI->lang->line('LABEL_SELECT'); ?></option>
                         <?php
                         foreach($user_types as $user_type)

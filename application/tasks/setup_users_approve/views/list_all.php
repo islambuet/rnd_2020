@@ -10,14 +10,6 @@ $action_buttons[]=array(
     'href'=>site_url($CI->controller_name.'/system_list')
 
 );
-if(isset($CI->permissions['action1']) && ($CI->permissions['action1']==1))
-{
-    $action_buttons[]=array(
-        'label'=>$CI->lang->line("BUTTON_NEW"),
-        'class'=>'system_ajax',
-        'href'=>site_url($CI->controller_name.'/system_add')
-    );
-}
 if(isset($CI->permissions['action4']) && ($CI->permissions['action4']==1))
 {
     $action_buttons[]=array(

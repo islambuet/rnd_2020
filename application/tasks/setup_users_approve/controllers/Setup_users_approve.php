@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Setup_users_request extends Root_Controller
+class Setup_users_approve extends Root_Controller
 {
     public $controller_name;
     public $permissions;
@@ -13,6 +13,7 @@ class Setup_users_request extends Root_Controller
         $this->permissions = User_helper::get_permission(get_class($this));
         $this->message = array();
         $this->lang->load('setup_users/setup_users');
+        $this->lang->load('setup_users_request/setup_users_request');
         $this->lang->load($this->controller_name.'/'.$this->controller_name);
     }
     public function index()
@@ -138,38 +139,9 @@ class Setup_users_request extends Root_Controller
         $items=$this->db->get()->result_array();
         $this->json_return($items);
     }
-    public function system_add()
-    {
-        if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
-        {
-            $data['item'] = array(
-                'id' => 0,
-                'employee_id' => '',
-                'user_name' => '',
-                'name' => '',
-                'email' => '',
-                'mobile_no' => '',
-                'mobile_no_personal' => '',
-                'user_type_id' => '',
-                'designation' => ''
-            );
-
-            $data['designations']=Query_helper::get_info(TABLE_RND_SETUP_DESIGNATION,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
-            $data['user_types']=Query_helper::get_info(TABLE_RND_SETUP_USER_TYPE,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
-
-            $ajax['status']=true;
-            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
-            $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_add');
-            $this->json_return($ajax);
-        }
-        else
-        {
-            $this->access_denied();
-        }
-    }
     public function system_edit($id=0)
     {
+        $user=User_helper::get_user();
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
             if(($this->input->post('id')))
@@ -190,6 +162,14 @@ class Setup_users_request extends Root_Controller
                 $this->message['system_message']=$this->lang->line('MSG_FORWARDED_ALREADY');
                 $this->system_list();
             }
+            if($user->user_group==1)
+            {
+                $data['user_groups']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
+            }
+            else
+            {
+                $data['user_groups']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"','id !=1'));
+            }
             $data['designations']=Query_helper::get_info(TABLE_RND_SETUP_DESIGNATION,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
             $data['user_types']=Query_helper::get_info(TABLE_RND_SETUP_USER_TYPE,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
 
@@ -208,18 +188,22 @@ class Setup_users_request extends Root_Controller
     {
         $user=User_helper::get_user();
         $time = time();
-        $id=$this->input->post('id');
+        $item_id=$this->input->post('id');
 
         $system_user_token = $this->input->post("system_user_token");
-        $data=$this->input->post('item');
+        $status=$this->input->post('status');
+        $item=$this->input->post('item');
+        $data_user_info=$this->input->post('user_info');
 
-        if($id>0)
+
+
+        if($item_id>0)
         {
             if(!(isset($this->permissions['action2'])&&($this->permissions['action2']==1)))
             {
                 $this->access_denied();
             }
-            $item_old=Query_helper::get_info(TABLE_RND_SETUP_USER_REQUEST,'*',array('id ='.$id),1);
+            $item_old=Query_helper::get_info(TABLE_RND_SETUP_USER_REQUEST,'*',array('id ='.$item_id),1);
             if(!$item_old)
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
@@ -232,16 +216,31 @@ class Setup_users_request extends Root_Controller
         }
         else
         {
-            if(!(isset($this->permissions['action1'])&&($this->permissions['action1']==1)))
-            {
-                $this->access_denied();
-
-            }
+            $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
         }
         if(!$this->check_validation_add_edit())
         {
             $this->validation_error($this->message['system_message']);
         }
+        if($status==SYSTEM_STATUS_APPROVED)
+        {
+            $item['user_name']=trim($item['user_name']);
+            $item['employee_id']=trim($item['employee_id']);
+            $duplicate_username_check=Query_helper::get_info(TABLE_RND_SETUP_USER,array('user_name'),array('user_name ="'.$item['user_name'].'"'),1);
+            if($duplicate_username_check)
+            {
+                $this->action_error($this->lang->line("MSG_USER_NAME_EXISTS"));
+            }
+            if($item['employee_id'])
+            {
+                $duplicate_employee_id_check=Query_helper::get_info(TABLE_RND_SETUP_USER,array('employee_id'),array('employee_id ="'.$item['employee_id'].'"'),1);
+                if($duplicate_employee_id_check)
+                {
+                    $this->action_error($this->lang->line("MSG_EMPLOYEE_ID_EXISTS"));
+                }
+            }
+        }
+
         $system_user_token_info = Token_helper::get_token($system_user_token);
         if($system_user_token_info['status'])
         {
@@ -249,17 +248,41 @@ class Setup_users_request extends Root_Controller
             $this->system_list();
         }
         $this->db->trans_start();  //DB Transaction Handle START
-        if($id>0)
+        if($status==SYSTEM_STATUS_REJECTED)
         {
-            $data['user_updated'] = $user->user_id;
-            $data['date_updated'] = $time;
-            Query_helper::update(TABLE_RND_SETUP_USER_REQUEST,$data,array("id = ".$id));
+            $data=array();
+            $data['remarks_reject']=$this->input->post('remarks_reject');
+            $data['user_approved'] = $user->user_id;
+            $data['date_approved'] = $time;
+            $data['status'] = $status;
+            Query_helper::update(TABLE_RND_SETUP_USER_REQUEST,$data,array("id = ".$item_id));
         }
         else
         {
-            $data['user_created'] = $user->user_id;
-            $data['date_created'] = time();
-            Query_helper::add(TABLE_RND_SETUP_USER_REQUEST,$data);
+            $item['password']=md5($item['user_name']);
+            $item['status']=SYSTEM_STATUS_ACTIVE;
+            $item['user_created'] = $user->user_id;
+            $item['date_created'] = $time;
+            $user_id_new=Query_helper::add(TABLE_RND_SETUP_USER,$item);
+            if($user_id_new===false)
+            {
+                $this->db->trans_complete();
+                $this->action_error($this->lang->line("MSG_SAVED_FAIL"));
+            }
+            else
+            {
+                $data_user_info['user_id']=$user_id_new;
+                $data_user_info['user_created'] = $user->user_id;
+                $data_user_info['date_created'] = $time;
+                $data_user_info['revision'] = 1;
+                Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data_user_info,false);
+                $data=array();
+                $data['user_approved'] = $user->user_id;
+                $data['date_approved'] = $time;
+                $data['status'] = $status;
+                $data['user_id'] = $user_id_new;
+                Query_helper::update(TABLE_RND_SETUP_USER_REQUEST,$data,array("id = ".$item_id));
+            }
         }
         Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 
@@ -279,8 +302,18 @@ class Setup_users_request extends Root_Controller
     {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('', '');
-        $this->form_validation->set_rules('item[user_name]',$this->lang->line('LABEL_USER_NAME'),'required');
-        $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_NAME'),'required');
+        $this->form_validation->set_rules('status',$this->lang->line('LABEL_APPROVE_REJECT'),'required');
+        $status=$this->input->post('status');
+        if($status==SYSTEM_STATUS_APPROVED)
+        {
+            $this->form_validation->set_rules('item[user_name]',$this->lang->line('LABEL_USER_NAME'),'required');
+            $this->form_validation->set_rules('user_info[name]',$this->lang->line('LABEL_NAME'),'required');
+        }
+        elseif($status==SYSTEM_STATUS_REJECTED)
+        {
+            $this->form_validation->set_rules('remarks_reject',$this->lang->line('LABEL_REMARKS_REJECT'),'required');
+        }
+
         if($this->form_validation->run()==false)
         {
             $this->message['system_message']=validation_errors();
