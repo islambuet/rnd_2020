@@ -18,3 +18,6 @@ $lang['BUTTON_DOWNLOAD_CSV'] = 'Download Csv';
 $lang['BUTTON_LOAD_MORE'] = 'Load More';
 $lang['BUTTON_DOCUMENT'] = 'Documents';
 $lang['BUTTON_REPORT'] = 'View Report';
+
+$lang['BUTTON_LIST_PENDING'] = 'Pending List';
+$lang['BUTTON_LIST_ALL'] = 'All List';
