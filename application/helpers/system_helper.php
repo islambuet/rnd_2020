@@ -165,7 +165,7 @@ class System_helper
         $data['date_created']=$time;
         $data['date_created_string']=System_helper::display_date_time($time);
         $CI->db->insert($CI->config->item('table_system_history_hack'), $data);
-    }
+    }*/
 
 
     public static function get_users_info($user_ids)
@@ -173,10 +173,12 @@ class System_helper
         //can be upgrade select field from user_info
         //but no more join query
         $CI =& get_instance();
-        $CI->db->from($CI->config->item('table_login_setup_user').' user');
-        $CI->db->select('user.id,user.employee_id,user.user_name,user.status');
-        $CI->db->join($CI->config->item('table_login_setup_user_info').' user_info','user.id = user_info.user_id','INNER');
-        $CI->db->select('user_info.name,user_info.ordering,user_info.blood_group,user_info.mobile_no');
+        $CI->db->from(TABLE_RND_SETUP_USER.' user');
+        $CI->db->select('user.employee_id,user.user_name,user.status');
+        $CI->db->join(TABLE_RND_SETUP_USER_INFO.' user_info','user.id = user_info.user_id','INNER');
+        $CI->db->select('user_info.*');
+        $CI->db->select('user_info.id user_info_id');//overwrite info table id as
+        $CI->db->select('user.id');//over write info table id
         $CI->db->where('user_info.revision',1);
         if(sizeof($user_ids)>0)
         {
@@ -186,8 +188,8 @@ class System_helper
         $users=array();
         foreach($results as $result)
         {
-            $users[$result['id']]=$result;
+            $users[$result['user_id']]=$result;
         }
         return $users;
-    }    */
+    }
 }

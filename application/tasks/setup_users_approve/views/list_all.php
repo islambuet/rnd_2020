@@ -10,6 +10,13 @@ $action_buttons[]=array(
     'href'=>site_url($CI->controller_name.'/system_list')
 
 );
+$action_buttons[]=array(
+    'type'=>'button',
+    'label'=>$CI->lang->line("BUTTON_DETAILS"),
+    'class'=>'button_jqx_action',
+    'data-target-element'=>$jqx_container,
+    'data-action-link'=>site_url($CI->controller_name.'/system_details')
+);
 if(isset($CI->permissions['action4']) && ($CI->permissions['action4']==1))
 {
     $action_buttons[]=array(

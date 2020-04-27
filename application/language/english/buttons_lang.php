@@ -22,3 +22,4 @@ $lang['BUTTON_REPORT'] = 'View Report';
 $lang['BUTTON_LIST_PENDING'] = 'Pending List';
 $lang['BUTTON_LIST_ALL'] = 'All List';
 $lang['BUTTON_APPROVE_REJECT'] = 'Approve/Reject';
+

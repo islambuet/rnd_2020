@@ -11,9 +11,33 @@ $lang['MSG_SAVE_ALREADY'] = "This Data Already Saved.\nTry another one.";
 
 $lang['ALERT_SELECT_ONE_ITEM'] = 'Select an Item.';
 
+//Moderators
+$lang['LABEL_CREATED_BY'] = 'Created By';
+$lang['LABEL_CREATED_DATE'] = 'Created Date';
+$lang['LABEL_CREATED_TIME'] = 'Created Time';
+
+$lang['LABEL_UPDATED_BY'] = 'Updated By';
+$lang['LABEL_UPDATED_DATE'] = 'Updated Date';
+$lang['LABEL_UPDATED_TIME'] = 'Updated Time';
+
+$lang['LABEL_APPROVED_BY'] = 'Approved By';
+$lang['LABEL_APPROVED_DATE'] = 'Approved Date';
+$lang['LABEL_APPROVED_TIME'] = 'Approved Time';
+
+$lang['LABEL_REJECTED_BY'] = 'Rejected By';
+$lang['LABEL_REJECTED_DATE'] = 'Rejected Date';
+$lang['LABEL_REJECTED_TIME'] = 'Rejected Time';
+
+$lang['LABEL_FORWARDED_BY'] = 'Forwarded By';
+$lang['LABEL_FORWARDED_DATE'] = 'Forwarded Date';
+$lang['LABEL_FORWARDED_TIME'] = 'Forwarded Time';
+
+
+
 //html elements
 $lang['LABEL_TITLE_JQX_COLUMN_HANDLER'] = 'Show/hide columns controller';
 $lang['LABEL_TITLE_PREFERENCE_ADD_EDIT'] = 'Preference Settings';
+$lang['LABEL_TITLE_INFO_MODERATION'] = 'Moderation Info';
 
 
 $lang['LABEL_ID'] = 'id';
@@ -26,8 +50,4 @@ $lang['LABEL_APPROVE_REJECT'] = 'Approve/Reject';
 $lang['LABEL_REMARKS_REJECT'] = 'Reject Reason';
 
 $lang['LABEL_SELECT'] = 'Select';
-
-
-
-
 

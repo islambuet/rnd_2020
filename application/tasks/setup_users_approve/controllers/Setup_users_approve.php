@@ -327,4 +327,85 @@ class Setup_users_approve extends Root_Controller
         }
         return true;
     }
+    public function system_details($id=0)
+    {
+        if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
+        {
+            if(($this->input->post('id')))
+            {
+                $item_id=$this->input->post('id');
+            }
+            else
+            {
+                $item_id=$id;
+            }
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_USER_REQUEST,'*',array('id ='.$item_id),1);
+            if(!$data['item'])
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+            }
+            $data['moderation_info']=$this->get_moderation_info($data['item']);
+
+
+            $ajax['status']=true;
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view('setup_users_request/details',$data,true));
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_details/'.$item_id);
+            $this->json_return($ajax);
+        }
+        else
+        {
+            $this->access_denied();
+        }
+    }
+    private function get_moderation_info($item)
+    {
+        $moderate_user_ids=array();
+
+        $moderate_user_ids[$item['user_created']]=$item['user_created'];
+        if($item['user_updated']>0)
+        {
+            $moderate_user_ids[$item['user_updated']]=$item['user_updated'];
+        }
+        if($item['user_approved']>0)
+        {
+            $moderate_user_ids[$item['user_approved']]=$item['user_approved'];
+        }
+        $moderate_users=System_helper::get_users_info($moderate_user_ids);
+        $moderation_info=array();
+        if($item['status']==SYSTEM_STATUS_PENDING)
+        {
+            $moderation_info[]=array('class'=>'col-12 text-center p-2 btn-warning','text'=>$this->lang->line('MSG_PENDING_YET'));
+        }
+        $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_CREATED_BY'));
+        $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>$moderate_users[$item['user_created']]['name']);
+        $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_CREATED_TIME'));
+        $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>System_helper::display_date_time($item['date_created']));
+        if($item['user_updated']>0)
+        {
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_UPDATED_BY'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>$moderate_users[$item['user_updated']]['name']);
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_UPDATED_TIME'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>System_helper::display_date_time($item['date_updated']));
+        }
+        if($item['status']==SYSTEM_STATUS_APPROVED)
+        {
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=> $this->lang->line('LABEL_APPROVED_BY'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>$moderate_users[$item['user_approved']]['name']);
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_APPROVED_TIME'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>System_helper::display_date_time($item['date_approved']));
+        }
+        elseif($item['status']==SYSTEM_STATUS_REJECTED)
+        {
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=> $this->lang->line('LABEL_REJECTED_BY'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>$moderate_users[$item['user_approved']]['name']);
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_REJECTED_TIME'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2','text'=>System_helper::display_date_time($item['date_approved']));
+            $moderation_info[]=array('class'=>'col-6 col-sm-3 p-2 text-right','text'=>$this->lang->line('LABEL_REMARKS_REJECT'));
+            $moderation_info[]=array('class'=>'col-6 col-sm-9 p-2','text'=>($item['remarks_reject']));
+        }
+
+        return $moderation_info;
+
+    }
 }
