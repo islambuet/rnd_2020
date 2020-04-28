@@ -13,18 +13,15 @@ class User_helper
         $this->username_password_same=false;
         //user
         $result=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('id ='.$id),1);
-        $this->user_name=$result['user_name'];
-        if($result && (md5($result['user_name'])==$result['password']))
-        {
-            $this->username_password_same=true;
-        }
-        //user info
-        $result=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,'*',array('user_id ='.$id,'revision =1'),1);
         if ($result)
         {
             foreach ($result as $key => $value)
             {
                 $this->$key = $value;
+            }
+            if(md5($result['user_name'])==$result['password'])
+            {
+                $this->username_password_same=true;
             }
         }
     }
@@ -125,8 +122,7 @@ class User_helper
                 }
                 if($mobile_verification_required)//3rd digit 0=>mobile verification required
                 {
-                    $user_info=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,'*',array('user_id ='.$user['id'] ,'revision =1'),1);
-                    if($user_info && (strlen($user_info['mobile_no'])>0))
+                    if((strlen($user['mobile_no'])>0))
                     {
                         //send verification code
                         $verification_code=mt_rand(1000,999999);
@@ -138,7 +134,7 @@ class User_helper
 
                         $CI->load->helper('mobile_sms');
                         $CI->lang->load('mobile_sms');
-                        $mobile_no=$user_info['mobile_no'];
+                        $mobile_no=$user['mobile_no'];
                         Mobile_sms_helper::send_sms(Mobile_sms_helper::$API_SENDER_ID_MALIK_SEEDS,$mobile_no,sprintf($CI->lang->line('SMS_LOGIN_OTP'),$verification_code),'text');
                         $CI->session->set_userdata("rnd_login_mobile_verification_id", $verification_id);
                         return array('status_code'=>'1101','message'=>'','message_warning'=>$CI->lang->line('WARNING_LOGIN_FAIL_1101'));
@@ -172,11 +168,22 @@ class User_helper
                 }
                 else//3rd digit 1
                 {
-                    $data['status']=SYSTEM_STATUS_INACTIVE;
-                    $data['remarks_status_change']=sprintf($CI->lang->line('REMARKS_USER_SUSPEND_WRONG_PASSWORD'),$data['password_wrong_consecutive']);
-                    $data['date_status_changed'] = $time;
-                    $data['user_status_changed'] = -1;
-                    Query_helper::update(TABLE_RND_SETUP_USER,$data,array("id = ".$user['id']),false);
+                    $data_current=array();
+                    $data_current['status']=$user['status'];
+                    $data_new=array();
+                    $data_new['status']=SYSTEM_STATUS_INACTIVE;
+                    Query_helper::update(TABLE_RND_SETUP_USER,$data_new,array("id = ".$user['id']),false);
+                    $data = Array(
+                        'controller'=>$CI->router->class,
+                        'method'=>$CI->router->method,
+                        'user_id'=>$user['id'],
+                        'remarks'=>json_encode(array('reason_status_inactive'=>sprintf($CI->lang->line('REMARKS_USER_SUSPEND_WRONG_PASSWORD'),$data['password_wrong_consecutive']))),
+                        'current_value'=>json_encode($data_current),
+                        'new_value'=>json_encode($data_new),
+                        'date_created'=>$time,
+                        'user_created'=>-1
+                    );
+                    Query_helper::add(TABLE_RND_SETUP_USER_HISTORY,$data,false);
                     return array('status_code'=>'101','message'=>$CI->lang->line('MSG_LOGIN_FAIL_101'),'message_warning'=>$CI->lang->line('WARNING_LOGIN_FAIL_101'));
                 }
             }

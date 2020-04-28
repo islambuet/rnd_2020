@@ -10,7 +10,8 @@ $config['test']= 'test';//dummy config to avoid loading error config file
 
 
 CONST TABLE_RND_SETUP_USER = 'arm_rnd_2020.rnd_setup_user';
-CONST TABLE_RND_SETUP_USER_INFO = 'arm_rnd_2020.rnd_setup_user_info';
+//CONST TABLE_RND_SETUP_USER_INFO = 'arm_rnd_2020.rnd_setup_user_info';
+CONST TABLE_RND_SETUP_USER_HISTORY = 'arm_rnd_2020.rnd_setup_user_history';
 CONST TABLE_RND_SETUP_USER_REQUEST = 'arm_rnd_2020.rnd_setup_user_request';
 
 
