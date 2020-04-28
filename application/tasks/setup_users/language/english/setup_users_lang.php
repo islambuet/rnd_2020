@@ -1,8 +1,9 @@
 <?php
 $lang['LABEL_TITLE_LIST'] = 'Users List';
 $lang['LABEL_TITLE_EDIT'] = 'Edit User(%s)';
+$lang['LABEL_TITLE_CHANGE_CREDENTIAL'] = 'Change Credential User(%s)';
 
-$lang['LABEL_TITLE_CHANGE_PASSWORD'] = 'Change password(%s)';
+$lang['LABEL_TITLE_CHANGE_PASSWORD'] = 'Change password';
 
 $lang['MSG_INVALID_ITEM'] = 'Invalid User';
 $lang['LABEL_EMPLOYEE_ID'] = 'Employee Id';
@@ -12,7 +13,8 @@ $lang['LABEL_DESIGNATION_NAME'] = 'Designation';
 $lang['LABEL_MOBILE_NO'] = 'Mobile No';
 $lang['LABEL_EMAIL'] = 'Email';
 
-$lang['BUTTON_PASSWORD'] = 'Change Password';
+$lang['BUTTON_EDIT'] = 'Edit Basic';
+$lang['BUTTON_EDIT_CREDENTIAL'] = 'Change Credential';
 
 $lang['LABEL_TITLE_CREDENTIALS'] = 'Credentials';
 $lang['LABEL_TITLE_GROUPS'] = 'UserGroup, User Type, Designation';

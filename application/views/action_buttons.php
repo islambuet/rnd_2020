@@ -47,7 +47,7 @@
                 elseif($type=='button')
                 {
                     ?>
-                    <button <?php echo $attributes; ?>><?php echo $label; ?></button>
+                    <button type="button" <?php echo $attributes; ?>><?php echo $label; ?></button>
                     <?php
                 }
                 ?>

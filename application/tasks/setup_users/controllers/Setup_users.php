@@ -239,7 +239,7 @@ class Setup_users extends Root_Controller
         }
         return true;
     }
-    public function system_edit_password($id=0)
+    public function system_edit_credential($id=0)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
@@ -257,13 +257,21 @@ class Setup_users extends Root_Controller
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
             }
+            if($user->user_group==1)
+            {
+                $data['user_groups']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
+            }
+            else
+            {
+                $data['user_groups']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"','id !=1'));
+            }
             $ajax['status']=true;
-            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/edit_password",$data,true));
+            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/edit_credential",$data,true));
             if($this->message)
             {
                 $ajax['system_message']=$this->message;
             }
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit_password/'.$item_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit_credential/'.$item_id);
             $this->json_return($ajax);
         }
         else
@@ -271,7 +279,7 @@ class Setup_users extends Root_Controller
             $this->access_denied();
         }
     }
-    public function system_save_edit_password()//only edit--add removed
+    public function system_save_edit_password()
     {
         $user=User_helper::get_user();
         $time = time();
@@ -289,14 +297,20 @@ class Setup_users extends Root_Controller
         {
             $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
         }
-
+        //validation
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('', '');
+        $this->form_validation->set_rules('new_password',$this->lang->line('LABEL_NEW_PASSWORD'),'required');
+        if($this->form_validation->run()==false)
+        {
+            $this->validation_error(validation_errors());
+        }
         $system_user_token_info = Token_helper::get_token($system_user_token);
         if($system_user_token_info['status'])
         {
             $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
             $this->system_list();
         }
-
         {
             $this->db->trans_start(); //DB Transaction Handle START
             $data=array();
@@ -320,5 +334,89 @@ class Setup_users extends Root_Controller
             }
         }
     }
+    public function system_save_edit_user_group()
+    {
+        $user=User_helper::get_user();
+        $time = time();
+        $id=$this->input->post('id');
+
+        $system_user_token = $this->input->post("system_user_token");
+        $user_group=$this->input->post('user_group');
+
+        if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
+        {
+            $this->access_denied();
+        }
+        $item=Query_helper::get_info(TABLE_RND_SETUP_USER,array('id','employee_id','user_name','status'),array('id ='.$id),1);
+        if(!$item)
+        {
+            $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+        }
+        if($user_group==1 && $user->user_group!=1)
+        {
+            $this->access_denied();
+        }
+
+        $system_user_token_info = Token_helper::get_token($system_user_token);
+        if($system_user_token_info['status'])
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
+            $this->system_list();
+        }
+
+        {
+            if(isset($data_user_info['date_birth']))
+            {
+                $data_user_info['date_birth']=System_helper::get_time($data_user_info['date_birth']);
+                if($data_user_info['date_birth']===0)
+                {
+                    unset($data_user_info['date_birth']);
+                }
+            }
+            if(isset($data_user_info['date_join']))
+            {
+                $data_user_info['date_join']=System_helper::get_time($data_user_info['date_join']);
+                if($data_user_info['date_join']===0)
+                {
+                    unset($data_user_info['date_join']);
+                }
+            }
+            $data=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,'*',array('user_id ='.$id,'revision =1'),1);
+            $this->db->trans_start(); //DB Transaction Handle START
+
+            $revision_history_data=array();
+            $revision_history_data['date_updated']=$time;
+            $revision_history_data['user_updated']=$user->user_id;
+            Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$id),false);
+
+            $this->db->set('revision', 'revision+1', FALSE);
+            Query_helper::update(TABLE_RND_SETUP_USER_INFO,array(),array('user_id='.$id), false);
+
+
+            unset($data['id']);
+            unset($data['date_updated']);
+            unset($data['user_updated']);
+            $data['user_group']=$user_group;
+            $data['user_created'] = $user->user_id;
+            $data['date_created'] = $time;
+            $data['revision'] = 1;
+            Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data, false);
+
+
+            Token_helper::update_token($system_user_token_info['id'], $system_user_token);
+
+            $this->db->trans_complete(); //DB Transaction Handle END
+            if ($this->db->trans_status()===true)
+            {
+                $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
+                $this->system_list();
+            }
+            else
+            {
+                $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
+            }
+        }
+    }
+
 
 }
