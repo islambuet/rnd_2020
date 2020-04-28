@@ -20,7 +20,7 @@ class Query_helper
                     'table_id'=>$id,
                     'table_name'=>$table_name,
                     'data'=>json_encode($data),
-                    'user_id'=>$user->user_id,
+                    'user_id'=>$user->id,
                     'action'=>'INSERT',
                     'date'=>$time
                 );
@@ -67,7 +67,7 @@ class Query_helper
                         'table_id'=>$row['id'],
                         'table_name'=>$table_name,
                         'data'=>json_encode($data),
-                        'user_id'=>$user->user_id,
+                        'user_id'=>$user->id,
                         'action'=>'UPDATE',
                         'date'=>$time
                     );

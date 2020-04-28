@@ -70,7 +70,7 @@ class System_helper
         $user = User_helper::get_user();
         if(isset($CI->permissions['action6']) && ($CI->permissions['action6']==1))
         {
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $CI->controller_name, $method, $CI->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->id, $CI->controller_name, $method, $CI->get_jqx_items($method));
             $data['return_method']=$method;
             $ajax['status']=true;
             $ajax['system_content'][]=array("id"=>"#system_content","html"=>$CI->load->view("preference_add_edit",$data,true));
@@ -108,20 +108,20 @@ class System_helper
 
             $time=time();
             $CI->db->trans_start();  //DB Transaction Handle START
-            $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user->user_id,'controller ="' .$CI->controller_name.'"','method ="'.$return_method.'"'),1);
+            $result=Query_helper::get_info(TABLE_SYSTEM_USER_PREFERENCE,'*',array('user_id ='.$user->id,'controller ="' .$CI->controller_name.'"','method ="'.$return_method.'"'),1);
             if($result)
             {
-                $data['user_updated']=$user->user_id;
+                $data['user_updated']=$user->id;
                 $data['date_updated']=$time;
                 $data['preferences']=json_encode($preference_items);
                 Query_helper::update(TABLE_SYSTEM_USER_PREFERENCE,$data,array('id='.$result['id']),false);
             }
             else
             {
-                $data['user_id']=$user->user_id;
+                $data['user_id']=$user->id;
                 $data['controller']=$CI->controller_name;
                 $data['method']="$return_method";
-                $data['user_created']=$user->user_id;
+                $data['user_created']=$user->id;
                 $data['date_created']=$time;
                 $data['preferences']=json_encode($preference_items);
                 Query_helper::add(TABLE_SYSTEM_USER_PREFERENCE,$data,false);
@@ -157,7 +157,7 @@ class System_helper
         $user = User_helper::get_user();
         $time=time();
         $data=array();
-        $data['user_id']=$user->user_id;
+        $data['user_id']=$user->id;
         $data['controller']=$CI->router->class;
         $data['action']=$action;
         $data['action_id']=$action_id;

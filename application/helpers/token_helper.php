@@ -7,7 +7,7 @@ class Token_helper
     {
         $CI =& get_instance();
         $user = User_helper::get_user();
-        $result=Query_helper::get_info(TABLE_SYSTEM_TOKEN,array('id, token'),array('user_id='.$user->user_id),1);
+        $result=Query_helper::get_info(TABLE_SYSTEM_TOKEN,array('id, token'),array('user_id='.$user->id),1);
         if($result)
         {
             if($result['token']==$token)
@@ -37,7 +37,7 @@ class Token_helper
         else
         {
             $data=array();
-            $data['user_id']=$user->user_id;
+            $data['user_id']=$user->id;
             $data['token']=$token;
             $data['date_updated']=time();
             Query_helper::add(TABLE_SYSTEM_TOKEN, $data,false);
