@@ -166,8 +166,6 @@ class System_helper
         $data['date_created_string']=System_helper::display_date_time($time);
         $CI->db->insert($CI->config->item('table_system_history_hack'), $data);
     }*/
-
-
     public static function get_users_info($user_ids)
     {
         //can be upgrade select field from user_info
@@ -191,5 +189,21 @@ class System_helper
             $users[$result['user_id']]=$result;
         }
         return $users;
+    }
+    public static function history_user($user_id,$current_value=array(),$new_value=array(),$remarks=array())
+    {
+        $CI =& get_instance();
+        $user = User_helper::get_user();
+        $data = Array(
+            'controller'=>$CI->router->class,
+            'method'=>$CI->router->method,
+            'remarks'=>json_encode($remarks),
+            'user_id'=>$user_id,
+            'current_value'=>json_encode($current_value),
+            'new_value'=>json_encode($new_value),
+            'date_created'=>time(),
+            'user_created'=>$user->id
+        );
+        Query_helper::add(TABLE_RND_SETUP_USER_HISTORY,$data,false);
     }
 }

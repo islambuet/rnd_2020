@@ -17,9 +17,8 @@ class User extends Root_controller
     public function profile_picture()//edit
     {
         $user=User_helper::get_user();
-        $user_id=$user->user_id;
+        $data['user_info']=(array)$user;
 
-        $data['user_info']=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,array('image_location','name'),array('user_id ='.$user_id,'revision =1'),1);
         $ajax['status']=true;
         $this->set_message($this->message,$ajax);
         $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name."/profile_picture",$data,true));
@@ -30,39 +29,26 @@ class User extends Root_controller
     public function save_profile_picture()
     {
         $user = User_helper::get_user();
-        $user_id=$user->user_id;
-        $time=time();
+        $user_id=$user->id;
         $uploaded_image = Upload_helper::upload_file("images/profiles/".$user_id);
 
         if(array_key_exists('image_profile',$uploaded_image))
         {
             if($uploaded_image['image_profile']['status'])
             {
-
-                $data_user_info=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,array('*'),array('user_id ='.$user_id,'revision =1'),1);
-                unset($data_user_info['id']);
-                $data_user_info['user_created'] = $user->user_id;
-                $data_user_info['date_created'] = $time;
-                $data_user_info['revision'] = 1;
-                $data_user_info['image_name']=$uploaded_image['image_profile']['info']['file_name'];
-                $data_user_info['image_location']="images/profiles/".$user_id.'/'.$uploaded_image['image_profile']['info']['file_name'];
-
-                $revision_history_data=array();
-                $revision_history_data['date_updated']=$time;
-                $revision_history_data['user_updated']=$user->user_id;
-                Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$user_id),false);
-
-                $this->db->trans_start();  //DB Transaction Handle START
-                $this->db->where('user_id',$user_id);
-                $this->db->set('revision', 'revision+1', FALSE);
-                $this->db->update(TABLE_RND_SETUP_USER_INFO);
+                $data_current['image_name']=$user->image_name;
+                $data_current['image_location']=$user->image_location;
 
 
-                Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data_user_info);
+                $data_new['image_name']=$uploaded_image['image_profile']['info']['file_name'];
+                $data_new['image_location']="images/profiles/".$user_id.'/'.$uploaded_image['image_profile']['info']['file_name'];
+                Query_helper::update(TABLE_RND_SETUP_USER,$data_new,array("id = ".$user->id),false);
+                System_helper::history_user($user->id,$data_current,$data_new);
+
                 $this->db->trans_complete();   //DB Transaction Handle END
                 if ($this->db->trans_status() === TRUE)
                 {
-                    $user->image_location=$data_user_info['image_location'];
+                    $user->image_location=$data_new['image_location'];
                     $this->dashboard_page(array('system_message'=>$this->lang->line("MSG_SAVE_DONE_PROFILE_PICTURE")));
                 }
                 else
@@ -111,10 +97,14 @@ class User extends Root_controller
         else
         {
             $this->db->trans_start();  //DB Transaction Handle START
-            $data['password']=md5($this->input->post('new_password'));
-            $data['user_updated'] = $user->user_id;
-            $data['date_updated'] = time();
-            Query_helper::update(TABLE_RND_SETUP_USER,$data,array("id = ".$user->user_id));
+
+            $data_current['password']=$user->password;
+            $data_new['password']=md5($this->input->post('new_password'));
+
+            Query_helper::update(TABLE_RND_SETUP_USER,$data_new,array("id = ".$user->id),false);
+            System_helper::history_user($user->id,$data_current,$data_new);
+
+            Query_helper::update(TABLE_RND_SETUP_USER,$data_new,array("id = ".$user->id),false);
 
             $this->db->trans_complete();   //DB Transaction Handle END
             if ($this->db->trans_status() === TRUE)
@@ -140,9 +130,7 @@ class User extends Root_controller
             return false;
         }
         $user = User_helper::get_user();
-        $info=Query_helper::get_info(TABLE_RND_SETUP_USER,array('id'),array('id ='.$user->user_id,'password ="'.md5($this->input->post('password')).'"'),1);
-
-        if(!$info)
+        if($user->password!= md5($this->input->post('password')))
         {
             $this->message['system_message']=$this->lang->line('MSG_OLD_PASSWORD_WRONG');
             return false;
