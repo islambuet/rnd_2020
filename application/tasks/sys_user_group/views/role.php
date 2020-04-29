@@ -75,23 +75,12 @@ echo '</pre>';
                                         {
                                             //echo $module_task['prefix'];
                                             ?>
-                                            <label>
-                                            <?php
-                                                if($module_task['module_task']['type']=='TASK')
-                                                {
-                                                    ?>
-                                                    <input type="checkbox" data-id='<?php echo $module_task['module_task']['id'];?>' class="task_action">
-                                                <?php
-                                                }
-                                                echo $module_task['module_task']['name'];
-                                            ?>
-                                            </label>
+                                            <label><input type="checkbox" data-id='<?php echo $module_task['module_task']['id'];?>' class="task_action <?php echo $module_task['parent_class'];?>"><?php echo $module_task['module_task']['name'];?></label>
                                             <?php
                                         }
                                         ?>
                                     </td>
                                     <?php
-
                                 }
                                 ?>
 
@@ -104,7 +93,7 @@ echo '</pre>';
                                         if($module_task['module_task']['type']=='TASK')
                                         {
                                             ?>
-                                            <label><input type="checkbox" title="<?php echo $CI->lang->line('LABEL_ACTION'.$i); ?>" class="header_action_<?php echo $i;?> task_action_<?php echo $module_task['module_task']['id'];?>"  <?php if(in_array($module_task['module_task']['id'],$role_status['action'.$i])){echo 'checked';}?> value="1" name='tasks[<?php echo $module_task['module_task']['id'];?>][action<?php echo $i; ?>]'> <?php echo $CI->lang->line('LABEL_SHORT_ACTION'.$i); ?></label>
+                                            <label><input type="checkbox" title="<?php echo $CI->lang->line('LABEL_ACTION'.$i); ?>" class="header_action_<?php echo $i;?> <?php echo $module_task['parent_class'];?> <?php echo 'parent_'.$module_task['module_task']['id'];?>"  <?php if(in_array($module_task['module_task']['id'],$role_status['action'.$i])){echo 'checked';}?> value="1" name='tasks[<?php echo $module_task['module_task']['id'];?>][action<?php echo $i; ?>]'> <?php echo $CI->lang->line('LABEL_SHORT_ACTION'.$i); ?></label>
                                         <?php
                                         }
                                         ?>
@@ -143,14 +132,15 @@ echo '</pre>';
         $(document).off("click", ".task_action");
         $(document).on("click",'.task_action',function()
         {
+
             if($(this).is(':checked'))
             {
                 //$('.task_action_'+$(this).attr('data-id')+':not(.header_action_3,.header_action_4)').prop('checked', true);
-                $('.task_action_'+$(this).attr('data-id')+':not(.header_action_3)').prop('checked', true);
+                $('.parent_'+$(this).attr('data-id')+':not(.header_action_3)').prop('checked', true);
             }
             else
             {
-                $('.task_action_'+$(this).attr('data-id')).prop('checked', false);
+                $('.parent_'+$(this).attr('data-id')).prop('checked', false);
             }
         });
     });

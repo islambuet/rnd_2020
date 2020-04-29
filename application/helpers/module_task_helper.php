@@ -23,17 +23,17 @@ class Module_task_helper
         $max_level=1;
         foreach ($level0 as $module)
         {
-            Module_task_helper::get_sub_modules_tasks_tree($module,'',1,$max_level,$tree,$children);
+            Module_task_helper::get_sub_modules_tasks_tree($module,'','',1,$max_level,$tree,$children);
         }
         return array('max_level'=>$max_level,'tree'=>$tree);
     }
-    public static function get_sub_modules_tasks_tree($module,$prefix,$level,&$max_level,&$tree,$children)
+    public static function get_sub_modules_tasks_tree($module,$parent_class,$prefix,$level,&$max_level,&$tree,$children)
     {
         if($level>$max_level)
         {
             $max_level=$level;
         }
-        $tree[]=array('prefix'=>$prefix,'level'=>$level,'module_task'=>$module);
+        $tree[]=array('parent_class'=>$parent_class,'prefix'=>$prefix,'level'=>$level,'module_task'=>$module);
         $subs=array();
         if(isset($children[$module['id']]))
         {
@@ -43,7 +43,7 @@ class Module_task_helper
         {
             foreach($subs as $sub)
             {
-                Module_task_helper::get_sub_modules_tasks_tree($sub,$prefix.'- ',$level+1,$max_level,$tree,$children);
+                Module_task_helper::get_sub_modules_tasks_tree($sub,$parent_class.' parent_'.$module['id'],$prefix.'- ',$level+1,$max_level,$tree,$children);
             }
         }
     }
