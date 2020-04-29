@@ -82,7 +82,7 @@ class Setup_users_request extends Root_Controller
         {
             $user = User_helper::get_user();
             $method='system_list';
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_name, $method, $this->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->id, $this->controller_name, $method, $this->get_jqx_items($method));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list',$data,true));
             $this->set_message($this->message,$ajax);
@@ -112,7 +112,7 @@ class Setup_users_request extends Root_Controller
         {
             $user = User_helper::get_user();
             $method='system_list_all';
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_name, $method, $this->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->id, $this->controller_name, $method, $this->get_jqx_items($method));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list_all',$data,true));
             $this->set_message($this->message,$ajax);
@@ -251,13 +251,13 @@ class Setup_users_request extends Root_Controller
         $this->db->trans_start();  //DB Transaction Handle START
         if($id>0)
         {
-            $data['user_updated'] = $user->user_id;
+            $data['user_updated'] = $user->id;
             $data['date_updated'] = $time;
             Query_helper::update(TABLE_RND_SETUP_USER_REQUEST,$data,array("id = ".$id));
         }
         else
         {
-            $data['user_created'] = $user->user_id;
+            $data['user_created'] = $user->id;
             $data['date_created'] = time();
             Query_helper::add(TABLE_RND_SETUP_USER_REQUEST,$data);
         }

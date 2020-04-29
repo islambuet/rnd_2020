@@ -13,10 +13,7 @@ $lang['LABEL_DESIGNATION_NAME'] = 'Designation';
 $lang['LABEL_MOBILE_NO'] = 'Mobile No';
 $lang['LABEL_EMAIL'] = 'Email';
 
-$lang['BUTTON_EDIT'] = 'Edit Basic';
-$lang['BUTTON_EDIT_CREDENTIAL'] = 'Change Credential';
 
-$lang['LABEL_TITLE_CREDENTIALS'] = 'Credentials';
 $lang['LABEL_TITLE_GROUPS'] = 'UserGroup, User Type, Designation';
 $lang['LABEL_TITLE_PERSONAL_INFO'] = 'Employee Personal Information';
 $lang['LABEL_TITLE_ADDRESS'] = 'Address';

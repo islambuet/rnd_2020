@@ -83,7 +83,7 @@ class Setup_users_approve extends Root_Controller
         {
             $user = User_helper::get_user();
             $method='system_list';
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_name, $method, $this->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->id, $this->controller_name, $method, $this->get_jqx_items($method));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list',$data,true));
             $this->set_message($this->message,$ajax);
@@ -113,7 +113,7 @@ class Setup_users_approve extends Root_Controller
         {
             $user = User_helper::get_user();
             $method='system_list_all';
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_name, $method, $this->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->id, $this->controller_name, $method, $this->get_jqx_items($method));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list_all',$data,true));
             $this->set_message($this->message,$ajax);
@@ -193,9 +193,6 @@ class Setup_users_approve extends Root_Controller
         $system_user_token = $this->input->post("system_user_token");
         $status=$this->input->post('status');
         $item=$this->input->post('item');
-        $data_user_info=$this->input->post('user_info');
-
-
 
         if($item_id>0)
         {
@@ -252,7 +249,7 @@ class Setup_users_approve extends Root_Controller
         {
             $data=array();
             $data['remarks_reject']=$this->input->post('remarks_reject');
-            $data['user_approved'] = $user->user_id;
+            $data['user_approved'] = $user->id;
             $data['date_approved'] = $time;
             $data['status'] = $status;
             Query_helper::update(TABLE_RND_SETUP_USER_REQUEST,$data,array("id = ".$item_id));
@@ -261,7 +258,7 @@ class Setup_users_approve extends Root_Controller
         {
             $item['password']=md5($item['user_name']);
             $item['status']=SYSTEM_STATUS_ACTIVE;
-            $item['user_created'] = $user->user_id;
+            $item['user_created'] = $user->id;
             $item['date_created'] = $time;
             $user_id_new=Query_helper::add(TABLE_RND_SETUP_USER,$item);
             if($user_id_new===false)
@@ -271,13 +268,8 @@ class Setup_users_approve extends Root_Controller
             }
             else
             {
-                $data_user_info['user_id']=$user_id_new;
-                $data_user_info['user_created'] = $user->user_id;
-                $data_user_info['date_created'] = $time;
-                $data_user_info['revision'] = 1;
-                Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data_user_info,false);
                 $data=array();
-                $data['user_approved'] = $user->user_id;
+                $data['user_approved'] = $user->id;
                 $data['date_approved'] = $time;
                 $data['status'] = $status;
                 $data['user_id'] = $user_id_new;
@@ -307,7 +299,7 @@ class Setup_users_approve extends Root_Controller
         if($status==SYSTEM_STATUS_APPROVED)
         {
             $this->form_validation->set_rules('item[user_name]',$this->lang->line('LABEL_USER_NAME'),'required');
-            $this->form_validation->set_rules('user_info[name]',$this->lang->line('LABEL_NAME'),'required');
+            $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_NAME'),'required');
         }
         elseif($status==SYSTEM_STATUS_REJECTED)
         {

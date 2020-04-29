@@ -57,7 +57,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
         <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_name.'/system_save_add_edit');?>" method="post">
             <input type="hidden" class="system_save_new_status" name="system_save_new_status" value="0" />
             <input type="hidden" id="id" name="id" value="<?php echo $item['id']; ?>" />
-            <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->user_id; ?>" />
+            <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->id; ?>" />
             <div class="row mb-2">
                 <div class="col-4">
                     <label for="status" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_APPROVE_REJECT');?><span class="text-danger">*</span></label>
@@ -86,7 +86,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="user_group" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_USER_GROUP');?><span class="text-danger">*</span></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <select id="user_group" name="user_info[user_group]" class="form-control">
+                        <select id="user_group" name="item[user_group]" class="form-control">
                             <option value=""><?php echo $this->lang->line('LABEL_SELECT');?></option>
                             <?php
                             foreach($user_groups as $user_group)
@@ -120,7 +120,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="name" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_NAME');?><span class="text-danger">*</span></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <input type="text" name="user_info[name]" id="name" class="form-control" value="<?php echo $item['name'];?>"/>
+                        <input type="text" name="item[name]" id="name" class="form-control" value="<?php echo $item['name'];?>"/>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -128,7 +128,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="email" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_EMAIL');?></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <input type="text" name="user_info[email]" id="email" class="form-control" value="<?php echo $item['email'];?>"/>
+                        <input type="text" name="item[email]" id="email" class="form-control" value="<?php echo $item['email'];?>"/>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -136,7 +136,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="email" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_MOBILE_NO');?></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <input type="text" name="user_info[mobile_no]" id="mobile_no" class="form-control" value="<?php echo $item['mobile_no'];?>"/>
+                        <input type="text" name="item[mobile_no]" id="mobile_no" class="form-control" value="<?php echo $item['mobile_no'];?>"/>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -144,7 +144,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="email" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_MOBILE_NO_PERSONAL');?></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <input type="text" name="user_info[mobile_no_personal]" id="mobile_no_personal" class="form-control" value="<?php echo $item['mobile_no_personal'];?>"/>
+                        <input type="text" name="item[mobile_no_personal]" id="mobile_no_personal" class="form-control" value="<?php echo $item['mobile_no_personal'];?>"/>
                     </div>
                 </div>
 
@@ -153,7 +153,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="designation" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_DESIGNATION_NAME');?></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <select id="designation" name="user_info[designation]" class="form-control">
+                        <select id="designation" name="item[designation]" class="form-control">
                             <option value=""><?php echo $CI->lang->line('LABEL_SELECT'); ?></option>
                             <?php
                             foreach($designations as $designation)
@@ -171,7 +171,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         <label for="user_type_id" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_USER_TYPE');?><span class="text-danger">*</span></label>
                     </div>
                     <div class="col-lg-4 col-8">
-                        <select id="user_type_id" name="user_info[user_type_id]" class="form-control">
+                        <select id="user_type_id" name="item[user_type_id]" class="form-control">
                             <option value=""><?php echo $CI->lang->line('LABEL_SELECT'); ?></option>
                             <?php
                             foreach($user_types as $user_type)

@@ -66,7 +66,7 @@ class Setup_users extends Root_Controller
         {
             $user = User_helper::get_user();
             $method='system_list';
-            $data['system_jqx_items']= System_helper::get_preference($user->user_id, $this->controller_name, $method, $this->get_jqx_items($method));
+            $data['system_jqx_items']= System_helper::get_preference($user->id, $this->controller_name, $method, $this->get_jqx_items($method));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/list',$data,true));
             $this->set_message($this->message,$ajax);
@@ -83,20 +83,16 @@ class Setup_users extends Root_Controller
         $user = User_helper::get_user();
 
         $this->db->from(TABLE_RND_SETUP_USER.' user');
-        $this->db->select('user.id,user.employee_id,user.user_name,user.status');
+        $this->db->select('user.*');
 
-        $this->db->join(TABLE_RND_SETUP_USER_INFO.' user_info','user.id = user_info.user_id','INNER');
-        $this->db->select('user_info.name,user_info.mobile_no,user_info.email,user_info.ordering');
 
-        $this->db->join(TABLE_SYSTEM_USER_GROUP.' ug','ug.id = user_info.user_group','LEFT');
+        $this->db->join(TABLE_SYSTEM_USER_GROUP.' ug','ug.id = user.user_group','LEFT');
         $this->db->select('ug.name user_group');
 
-        $this->db->join(TABLE_RND_SETUP_DESIGNATION.' designation','designation.id = user_info.designation','LEFT');
+        $this->db->join(TABLE_RND_SETUP_DESIGNATION.' designation','designation.id = user.designation','LEFT');
         $this->db->select('designation.name designation_name');
 
-
-        $this->db->where('user_info.revision',1);
-        $this->db->order_by('user_info.ordering','ASC');
+        $this->db->order_by('user.ordering','ASC');
         if($user->user_group!=1)
         {
             $this->db->where('user_info.user_group !=',1);
@@ -198,7 +194,7 @@ class Setup_users extends Root_Controller
             $this->db->trans_start(); //DB Transaction Handle START
             $revision_history_data=array();
             $revision_history_data['date_updated']=$time;
-            $revision_history_data['user_updated']=$user->user_id;
+            $revision_history_data['user_updated']=$user->id;
             Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$id), false);
 
             $revision_change_data=array();
@@ -207,7 +203,7 @@ class Setup_users extends Root_Controller
 
             $data_user_info['revision'] = 1;
             $data_user_info['user_id']=$id;
-            $data_user_info['user_created'] = $user->user_id;
+            $data_user_info['user_created'] = $user->id;
             $data_user_info['date_created'] = $time;
             Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data_user_info,false);
 
@@ -315,7 +311,7 @@ class Setup_users extends Root_Controller
             $this->db->trans_start(); //DB Transaction Handle START
             $data=array();
             $data['password']=md5($this->input->post('new_password'));
-            $data['user_updated'] = $user->user_id;
+            $data['user_updated'] = $user->id;
             $data['date_updated'] = $time;
             Query_helper::update(TABLE_RND_SETUP_USER,$data,array('id='.$id));
 
@@ -386,7 +382,7 @@ class Setup_users extends Root_Controller
 
             $revision_history_data=array();
             $revision_history_data['date_updated']=$time;
-            $revision_history_data['user_updated']=$user->user_id;
+            $revision_history_data['user_updated']=$user->id;
             Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$id),false);
 
             $this->db->set('revision', 'revision+1', FALSE);
@@ -397,7 +393,7 @@ class Setup_users extends Root_Controller
             unset($data['date_updated']);
             unset($data['user_updated']);
             $data['user_group']=$user_group;
-            $data['user_created'] = $user->user_id;
+            $data['user_created'] = $user->id;
             $data['date_created'] = $time;
             $data['revision'] = 1;
             Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data, false);
