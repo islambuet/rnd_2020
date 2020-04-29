@@ -150,13 +150,13 @@ class Setup_designation extends Root_Controller
         $this->db->trans_start();  //DB Transaction Handle START
         if($id>0)
         {
-            $data['user_updated'] = $user->user_id;
+            $data['user_updated'] = $user->id;
             $data['date_updated'] = $time;
             Query_helper::update(TABLE_RND_SETUP_DESIGNATION,$data,array("id = ".$id));
         }
         else
         {
-            $data['user_created'] = $user->user_id;
+            $data['user_created'] = $user->id;
             $data['date_created'] = time();
             Query_helper::add(TABLE_RND_SETUP_DESIGNATION,$data);
         }

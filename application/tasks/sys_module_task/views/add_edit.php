@@ -75,7 +75,7 @@ $controller_folder->close();
         <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_name.'/system_save_add_edit');?>" method="post">
             <input type="hidden" class="system_save_new_status" name="system_save_new_status" value="0" />
             <input type="hidden" id="id" name="id" value="<?php echo $item['id']; ?>" />
-            <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->user_id; ?>" />
+            <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->id; ?>" />
 
             <div class="row mb-2">
                 <div class="col-4">
