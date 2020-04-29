@@ -39,7 +39,7 @@ class User extends Root_controller
                 $data_current['image_name']=$user->image_name;
                 $data_current['image_location']=$user->image_location;
 
-
+                $this->db->trans_start(); //DB Transaction Handle START
                 $data_new['image_name']=$uploaded_image['image_profile']['info']['file_name'];
                 $data_new['image_location']="images/profiles/".$user_id.'/'.$uploaded_image['image_profile']['info']['file_name'];
                 Query_helper::update(TABLE_RND_SETUP_USER,$data_new,array("id = ".$user->id),false);

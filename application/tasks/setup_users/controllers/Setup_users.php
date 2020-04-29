@@ -115,12 +115,11 @@ class Setup_users extends Root_Controller
             {
                 $item_id=$id;
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_USER,array('id','employee_id','user_name','status'),array('id ='.$item_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('id ='.$item_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
             }
-            $data['user_info']=Query_helper::get_info(TABLE_RND_SETUP_USER_INFO,'*',array('user_id ='.$item_id,'revision =1'),1);
             if($user->user_group==1)
             {
                 $data['user_groups']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
@@ -148,23 +147,72 @@ class Setup_users extends Root_Controller
         $user=User_helper::get_user();
         $time = time();
         $id=$this->input->post('id');
-
+        $item=$this->input->post('item');
         $system_user_token = $this->input->post("system_user_token");
-        $data_user_info=$this->input->post('user_info');
+        $item_current=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('id ='.$id),1);
+        if(!$item_current)
+        {
+            $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+        }
 
         if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
         {
             $this->access_denied();
         }
-
-        if(!$this->check_validation_add_edit())
+        //validation start
+        $changed_keys=array();
+        $item['employee_id']=trim($item['employee_id']);
+        if($item['employee_id']!=$item_current['employee_id'])
         {
-            $this->validation_error($this->message['system_message']);
+            $duplicate_employee_id_check=Query_helper::get_info(TABLE_RND_SETUP_USER,array('employee_id'),array('employee_id ="'.$item['employee_id'].'"','id !='.$item_current['id'],'employee_id IS NOT NULL'),1);
+            if($duplicate_employee_id_check)
+            {
+                $this->action_error($this->lang->line("MSG_EMPLOYEE_ID_EXISTS"));
+            }
         }
-        $item=Query_helper::get_info(TABLE_RND_SETUP_USER,array('id','employee_id','user_name','status'),array('id ='.$id),1);
-        if(!$item)
+        $item['user_name']=trim($item['user_name']);
+        if($item['user_name']!=$item_current['user_name'])
         {
-            $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+            $duplicate_username_check=Query_helper::get_info(TABLE_RND_SETUP_USER,array('user_name'),array('user_name ="'.$item['user_name'].'"','id !='.$item_current['id']),1);
+            if($duplicate_username_check)
+            {
+                $this->action_error($this->lang->line("MSG_USER_NAME_EXISTS"));
+            }
+        }
+        if($item['password'])
+        {
+            $item['password']=md5($item['password']);
+        }
+        else
+        {
+            $item['password']=$item_current['password'];
+        }
+        if($item['status']!=$item_current['status'])
+        {
+            if(!$this->input->post('remarks_status_change'))
+            {
+                $this->action_error($this->lang->line("LABEL_REMARKS_STATUS_CHANGE").' Required');
+            }
+        }
+        if($item['time_mobile_authentication_off_end']>0)
+        {
+            $item['time_mobile_authentication_off_end']=System_helper::get_time(System_helper::display_date($time))+$item['time_mobile_authentication_off_end']*3600*24;
+        }
+        else
+        {
+            $item['time_mobile_authentication_off_end']=$item_current['time_mobile_authentication_off_end'];
+        }
+        $item['date_birth']=System_helper::get_time($item['date_birth']);
+        $item['date_join']=System_helper::get_time($item['date_join']);
+        $data_current=array();
+        $data_new=array();
+        foreach($item as $key=>$value)
+        {
+            if($item[$key]!=$item_current[$key])
+            {
+                $data_new[$key]=$item[$key];
+                $data_current[$key]=$item_current[$key];
+            }
         }
 
         $system_user_token_info = Token_helper::get_token($system_user_token);
@@ -173,54 +221,32 @@ class Setup_users extends Root_Controller
             $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
             $this->system_list();
         }
-
+        if(!$data_new)
         {
-            if(isset($data_user_info['date_birth']))
-            {
-                $data_user_info['date_birth']=System_helper::get_time($data_user_info['date_birth']);
-                if($data_user_info['date_birth']===0)
-                {
-                    unset($data_user_info['date_birth']);
-                }
-            }
-            if(isset($data_user_info['date_join']))
-            {
-                $data_user_info['date_join']=System_helper::get_time($data_user_info['date_join']);
-                if($data_user_info['date_join']===0)
-                {
-                    unset($data_user_info['date_join']);
-                }
-            }
-            $this->db->trans_start(); //DB Transaction Handle START
-            $revision_history_data=array();
-            $revision_history_data['date_updated']=$time;
-            $revision_history_data['user_updated']=$user->id;
-            Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_history_data,array('revision=1','user_id='.$id), false);
-
-            $revision_change_data=array();
-            $this->db->set('revision', 'revision+1', FALSE);
-            Query_helper::update(TABLE_RND_SETUP_USER_INFO,$revision_change_data,array('user_id='.$id), false);
-
-            $data_user_info['revision'] = 1;
-            $data_user_info['user_id']=$id;
-            $data_user_info['user_created'] = $user->id;
-            $data_user_info['date_created'] = $time;
-            Query_helper::add(TABLE_RND_SETUP_USER_INFO,$data_user_info,false);
-
-
-            Token_helper::update_token($system_user_token_info['id'], $system_user_token);
-
-            $this->db->trans_complete(); //DB Transaction Handle END
-            if ($this->db->trans_status()===true)
-            {
-                $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
-                $this->system_list();
-            }
-            else
-            {
-                $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
-            }
+            $this->action_error($this->lang->line("MSG_NO_CHANGE"));
         }
+
+
+
+        $this->db->trans_start(); //DB Transaction Handle START
+
+        Query_helper::update(TABLE_RND_SETUP_USER,$data_new,array("id = ".$id),false);
+        System_helper::history_user($id,$data_current,$data_new,isset($data_new['status'])?array('remarks_status_change'=>$this->input->post('remarks_status_change')):array());
+
+
+        Token_helper::update_token($system_user_token_info['id'], $system_user_token);
+
+        $this->db->trans_complete(); //DB Transaction Handle END
+        if ($this->db->trans_status()===true)
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
+            $this->system_edit($id);
+        }
+        else
+        {
+            $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
+        }
+
     }
     private function check_validation_add_edit()
     {
