@@ -41,7 +41,18 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             <input type="hidden" id="id" name="id" value="<?php echo $item['id']; ?>" />
             <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->id; ?>" />
             <div id="accordion">
-
+            <div class="card">
+                <div class="card-header">
+                    <a class="btn-link" data-toggle="collapse" href="#LABEL_TITLE_QRCODE">
+                        <?php echo $CI->lang->line('LABEL_TITLE_QRCODE');?>
+                    </a>
+                </div>
+                <div id="LABEL_TITLE_QRCODE" class="collapse show">
+                    <div class="card-body">
+                        <div id="qr_code_image" class="text-center"></div>
+                    </div>
+                </div>
+            </div>
                 <div class="card">
                     <div class="card-header">
                         <a class="btn-link" data-toggle="collapse" href="#title_identification">
@@ -484,19 +495,37 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         </div>
                     </div>
                 </div>
-
-
-
-
             </div>
         </form>
     </div>
 </div>
+<?php
+$qrcode_text=$CI->lang->line('LABEL_NAME').': '.$item['name'];
+if($item['employee_id'])
+{
+    $qrcode_text.='\n'.$CI->lang->line('LABEL_EMPLOYEE_ID').': '.$item['employee_id'];
+}
+if($item['mobile_no'])
+{
+    $qrcode_text.='\n'.$CI->lang->line('LABEL_MOBILE_NO').': '.$item['mobile_no'];
+}
+if($item['email'])
+{
+    $qrcode_text.='\n'.$CI->lang->line('LABEL_EMAIL').': '.$item['email'];
+}
+?>
 <script type="text/javascript">
 
     jQuery(document).ready(function()
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
         $('.datepicker').datepicker({dateFormat : 'dd-M-yy',changeMonth: true,changeYear: true,yearRange: "-100:+0",showButtonPanel: true});
+        $('#qr_code_image').qrcode(
+            {
+                size:100,
+                text: "<?php echo $qrcode_text; ?>",
+                render	: "image"
+            }
+        );
     });
 </script>

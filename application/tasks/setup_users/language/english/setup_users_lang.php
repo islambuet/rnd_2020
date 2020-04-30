@@ -2,6 +2,7 @@
 $lang['LABEL_TITLE_LIST'] = 'Users List';
 $lang['LABEL_TITLE_EDIT'] = 'Edit User(%s)';
 
+$lang['LABEL_TITLE_QRCODE'] = 'QR Code';
 $lang['LABEL_TITLE_IDENTIFICATION'] = 'Employee id, User name, Ordering';
 $lang['LABEL_TITLE_AUTHENTICATION'] = 'Password, Status, Maximum Browser';
 $lang['LABEL_TITLE_CONTACT_NO'] = 'mobile no, email';

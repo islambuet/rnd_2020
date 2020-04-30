@@ -77,6 +77,9 @@ $CI = & get_instance();
 
         <!-- For notificaiotn -->
         <script type="text/javascript" src="<?php echo base_url('theme/js/notify.js'); ?>"></script>
+
+        <!-- For QRcode -->
+        <script type="text/javascript" src="<?php echo base_url('theme/js/jquery-qrcode-0.17.0.js'); ?>"></script>
         <?php $CI->load->view('js_variables'); ?>
         <div id="system_main_container">
             <?php
