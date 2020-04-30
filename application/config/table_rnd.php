@@ -17,3 +17,4 @@ CONST TABLE_RND_SETUP_USER_TYPE = 'arm_rnd_2020.rnd_setup_user_type';
 CONST TABLE_RND_SETUP_DESIGNATION=  'arm_rnd_2020.rnd_setup_designation';
 
 CONST TABLE_RND_SETUP_PRINCIPAL=  'arm_rnd_2020.rnd_setup_principal';
+CONST TABLE_RND_SETUP_COMPETITOR=  'arm_rnd_2020.rnd_setup_competitor';

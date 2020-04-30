@@ -1,9 +1,9 @@
 <?php
-$lang['LABEL_TITLE_LIST'] = 'Principals List';
-$lang['LABEL_TITLE_NEW'] = 'Create New Principal';
-$lang['LABEL_TITLE_EDIT'] = 'Edit Principal(%s)';
+$lang['LABEL_TITLE_LIST'] = 'Competitor List';
+$lang['LABEL_TITLE_NEW'] = 'Create New Competitor';
+$lang['LABEL_TITLE_EDIT'] = 'Edit Competitor(%s)';
 
-$lang['MSG_INVALID_ITEM'] = 'Invalid Principal';
+$lang['MSG_INVALID_ITEM'] = 'Invalid Competitor';
 
 $lang['LABEL_CODE'] = 'Code';
 $lang['LABEL_EMAIL'] = 'Email';
