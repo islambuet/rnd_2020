@@ -175,3 +175,6 @@ a:focus {
     z-index: 1001;
     transition: all 0.5s;
 }
+.ui-datepicker{
+    z-index: 1001!important;
+}
