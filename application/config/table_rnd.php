@@ -19,3 +19,4 @@ CONST TABLE_RND_SETUP_DESIGNATION=  'arm_rnd_2020.rnd_setup_designation';
 CONST TABLE_RND_SETUP_PRINCIPAL=  'arm_rnd_2020.rnd_setup_principal';
 CONST TABLE_RND_SETUP_COMPETITOR=  'arm_rnd_2020.rnd_setup_competitor';
 CONST TABLE_RND_SETUP_SEASON=  'arm_rnd_2020.rnd_setup_season';
+CONST TABLE_RND_SETUP_CROP_FRUIT_TYPE=  'arm_rnd_2020.rnd_setup_crop_fruit_type';
