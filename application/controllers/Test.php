@@ -5,16 +5,30 @@ class Test extends CI_Controller {
 
     public function index()
     {
-//        $this->load->helper('mobile_sms');
-//        echo '<pre>';
-//        print_r(Mobile_sms_helper::send_sms(Mobile_sms_helper::$API_SENDER_ID_MALIK_SEEDS,'01713090962','Your mobile verification code for login: 285683'));
-//        echo '</pre>';
-//        $this->session->set_userdata("user_id", 2);
+        for($i=1;$i<200;$i++)
+        {
 
-        $this->load->helper('module_task');
-        $modules_tasks=Module_task_helper::get_modules_tasks_table_tree();
-        echo '<pre>';
-        print_r($modules_tasks);
-        echo '</pre>';
+
+            //echo str_pad($i^020,3,'0').'-'.str_pad($i^21,3).'-'.str_pad($i^22,3).'-'.str_pad($i^23,3).'-'.str_pad($i^24,3).'<br>';
+            //echo str_pad(117^020,3,'0').'-'.str_pad($i^21,3).'-'.str_pad($i^22,3).'-'.str_pad($i^23,3).'-'.str_pad($i^24,3).'<br>';
+            //echo str_pad(1^020,3,'0').str_pad(170^020,3,'0').'<br>';
+            //echo str_pad($i^020,3,'0',STR_PAD_LEFT).'-'.str_pad($i^020,3,'0',STR_PAD_LEFT).'-'.str_pad($i^020,3,'0',STR_PAD_LEFT).'-'.str_pad($i^020,3,'0',STR_PAD_LEFT).'-'.str_pad($i^020,3,'0',STR_PAD_LEFT).'<br>';
+            //$a=str_pad($i^2020,4,'0',STR_PAD_LEFT);
+            //$b=$a^2020;
+            $a=str_pad($i,4,0,STR_PAD_LEFT)^2020;
+            $b=$a^2020;
+            echo $i.'-'.$a.'-'.$b.'<br>';
+            $a=str_pad($i,4,0,STR_PAD_LEFT)^2021;
+            $b=$a^2021;
+            echo $i.'-'.$a.'-'.$b.'<br>';
+            $a=str_pad($i,4,0,STR_PAD_LEFT)^2022;
+            $b=$a^2022;
+            echo $i.'-'.$a.'-'.$b.'<br>';
+            $a=str_pad($i,4,0,STR_PAD_LEFT)^2023;
+            $b=$a^2023;
+            echo $i.'-'.$a.'-'.$b.'<br><br><br>';
+
+
+        }
     }
 }

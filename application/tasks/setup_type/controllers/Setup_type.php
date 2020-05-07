@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Setup_crop extends Root_Controller
+class Setup_type extends Root_Controller
 {
     public $controller_name;
     public $permissions;
@@ -12,6 +12,7 @@ class Setup_crop extends Root_Controller
         $this->controller_name = strtolower(get_class($this));
         $this->permissions = User_helper::get_permission(get_class($this));
         $this->message = array();
+        $this->lang->load('setup_crop/setup_crop');
         $this->lang->load($this->controller_name.'/'.$this->controller_name);
     }
     public function index()
@@ -38,17 +39,15 @@ class Setup_crop extends Root_Controller
         if($method=='system_list')
         {
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
+            $data['crop_name']= array('text'=>$this->lang->line('LABEL_CROP_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','filtertype'=>'"list"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
             $data['code']= array('text'=>$this->lang->line('LABEL_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"'));
-            $data['height']= array('text'=>$this->lang->line('LABEL_HEIGHT'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
-            $data['width']= array('text'=>$this->lang->line('LABEL_WIDTH'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
-            $data['fruit_type']= array('text'=>$this->lang->line('LABEL_FRUIT_TYPE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"80"'));
-            $data['sample_size']= array('text'=>$this->lang->line('LABEL_SAMPLE_SIZE'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','cellsAlign'=>'"right"'));
-            $data['plants_initial']= array('text'=>$this->lang->line('LABEL_PLANTS_INITIAL'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','cellsAlign'=>'"right"'));
-            $data['plants_per_hectare']= array('text'=>$this->lang->line('LABEL_PLANTS_PER_HECTARE'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','cellsAlign'=>'"right"'));
-            $data['optimum_transplanting_days']= array('text'=>$this->lang->line('LABEL_OPTIMUM_TRANSPLANTING_DAYS'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','cellsAlign'=>'"right"'));
+
+            $data['target_length']= array('text'=>$this->lang->line('LABEL_TARGET_LENGTH'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            $data['target_weight']= array('text'=>$this->lang->line('LABEL_TARGET_WEIGHT'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            $data['target_yield']= array('text'=>$this->lang->line('LABEL_TARGET_YIELD'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            $data['expected_seed_per_gram']= array('text'=>$this->lang->line('LABEL_EXPECTED_SEED_PER_GRAM'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
-            $data['status_replica']= array('text'=>$this->lang->line('LABEL_STATUS_REPLICA'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
         }
         return $data;
@@ -83,13 +82,13 @@ class Setup_crop extends Root_Controller
     }
     public function system_get_items_list()
     {
-        $this->db->from(TABLE_RND_SETUP_CROP.' crop');
-        $this->db->select('crop.*');
-        $this->db->join(TABLE_RND_SETUP_CROP_FRUIT_TYPE.' cft','cft.id = crop.fruit_type','INNER');
-        $this->db->select('cft.name fruit_type');
+        $this->db->from(TABLE_RND_SETUP_TYPE.' type');
+        $this->db->select('type.*');
+        $this->db->join(TABLE_RND_SETUP_CROP.' crop','crop.id = type.crop_id','INNER');
+        $this->db->select('crop.name crop_name');
 
-        $this->db->where('crop.status !=',SYSTEM_STATUS_DELETE);
-        $this->db->order_by('crop.ordering','ASC');
+        $this->db->where('type.status !=',SYSTEM_STATUS_DELETE);
+        $this->db->order_by('type.ordering','ASC');
         $items=$this->db->get()->result_array();
 
         $this->json_return($items);
@@ -99,13 +98,13 @@ class Setup_crop extends Root_Controller
         if(isset($this->permissions['action1']) && ($this->permissions['action1']==1))
         {
             $data['item']=array();
-            $table_fields = $this->db->field_data(TABLE_RND_SETUP_CROP);
+            $table_fields = $this->db->field_data(TABLE_RND_SETUP_TYPE);
 
             foreach ($table_fields as $field)
             {
                 $data['item'][$field->name]=$field->default;
             }
-            $data['fruit_types']=Query_helper::get_info(TABLE_RND_SETUP_CROP_FRUIT_TYPE,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'));
+            $data['crops']=Query_helper::get_info(TABLE_RND_SETUP_CROP,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
@@ -129,12 +128,12 @@ class Setup_crop extends Root_Controller
             {
                 $item_id=$id;
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$item_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TYPE,'*',array('id ='.$item_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
             }
-            $data['fruit_types']=Query_helper::get_info(TABLE_RND_SETUP_CROP_FRUIT_TYPE,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'));
+            $data['crops']=Query_helper::get_info(TABLE_RND_SETUP_CROP,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'));
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
@@ -186,13 +185,13 @@ class Setup_crop extends Root_Controller
             {
                 $data['user_updated']=$user->id;
                 $data['date_updated']=$time;
-                Query_helper::update(TABLE_RND_SETUP_CROP,$data,array('id='.$id));
+                Query_helper::update(TABLE_RND_SETUP_TYPE,$data,array('id='.$id));
             }
             else
             {
                 $data['user_created']=$user->id;
                 $data['date_created']=$time;
-                Query_helper::add(TABLE_RND_SETUP_CROP,$data);
+                Query_helper::add(TABLE_RND_SETUP_TYPE,$data);
             }
             Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 
@@ -220,9 +219,9 @@ class Setup_crop extends Root_Controller
     {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('', '');
+        $this->form_validation->set_rules('item[crop_id]',$this->lang->line('LABEL_CROP_NAME'),'required');
         $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_NAME'),'required');
         $this->form_validation->set_rules('item[code]',$this->lang->line('LABEL_CODE'),'required');
-        $this->form_validation->set_rules('item[fruit_type]',$this->lang->line('LABEL_FRUIT_TYPE'),'required');
         $this->form_validation->set_rules('item[status]',$this->lang->line('LABEL_STATUS'),'required');
         if($this->form_validation->run()==false)
         {

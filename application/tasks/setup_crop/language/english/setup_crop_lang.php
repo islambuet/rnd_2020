@@ -12,6 +12,7 @@ $lang['LABEL_SAMPLE_SIZE'] = 'Sample Size';
 $lang['LABEL_PLANTS_INITIAL'] = 'Initial Plants';
 $lang['LABEL_PLANTS_PER_HECTARE'] = 'Plants Per Hectare';
 $lang['LABEL_OPTIMUM_TRANSPLANTING_DAYS'] = 'Optimum Transplanting Days';
+$lang['LABEL_STATUS_REPLICA'] = 'Replica';
 
 
 
