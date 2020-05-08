@@ -172,6 +172,12 @@ class Setup_crop extends Root_Controller
         {
             $this->validation_error($this->message['system_message']);
         }
+        $item['name']=trim($item['name']);
+        $duplicate_name_check=Query_helper::get_info(TABLE_RND_SETUP_CROP,array('name'),array('name ="'.$item['name'].'"','id !='.$id),1);
+        if($duplicate_name_check)
+        {
+            $this->action_error($this->lang->line("MSG_SAME_CROP_NAME"));
+        }
         $system_user_token_info = Token_helper::get_token($system_user_token);
         if($system_user_token_info['status'])
         {

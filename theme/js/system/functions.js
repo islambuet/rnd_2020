@@ -31,3 +31,18 @@ function number_format(number, decimals, dec_point, thousands_sep)
     }
     return s.join(dec);
 }
+
+function get_dropdown_with_select(items,selected_value = '',select_label='Select')
+{
+    var dropdown_html='<option value="">'+select_label+'</option>';
+    for(var i=0;i<items.length;++i)
+    {
+        dropdown_html+='<option value="'+items[i].value+'"';
+        if(items[i].value==selected_value)
+        {
+            dropdown_html+=' selected';
+        }
+        dropdown_html+='>'+items[i].text+'</option>';
+    }
+    return dropdown_html;
+}
