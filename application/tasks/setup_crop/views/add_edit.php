@@ -83,10 +83,10 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
-                    <label for="height" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_HEIGHT');?><span class="text-danger">*</span></label>
+                    <label for="length" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_LENGTH');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">
-                    <input type="text" name="item[height]" id="height" class="form-control float_positive" value="<?php echo $item['height'];?>"/>
+                    <input type="text" name="item[length]" id="height" class="form-control float_positive" value="<?php echo $item['length'];?>"/>
                 </div>
             </div>
             <div class="row mb-2">

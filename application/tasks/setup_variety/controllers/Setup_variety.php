@@ -46,6 +46,7 @@ class Setup_variety extends Root_Controller
             $data['whose']= array('text'=>$this->lang->line('LABEL_WHOSE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"','filtertype'=>'"list"'));
             $data['principal_name']= array('text'=>$this->lang->line('LABEL_PRINCIPAL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"','filtertype'=>'"list"'));
             $data['competitor_name']= array('text'=>$this->lang->line('LABEL_COMPETITOR_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"','filtertype'=>'"list"'));
+            $data['number_seed_per_gram']= array('text'=>$this->lang->line('LABEL_NUMBER_SEED_PER_GRAM'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"'));
 
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));

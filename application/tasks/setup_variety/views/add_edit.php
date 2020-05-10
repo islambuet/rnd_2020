@@ -157,6 +157,14 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
+                    <label for="number_seed_per_gram" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_NUMBER_SEED_PER_GRAM');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <input type="text" name="item[number_seed_per_gram]" id="number_seed_per_gram" class="form-control" value="<?php echo $item['number_seed_per_gram'];?>"/>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
                     <label for="ordering" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_ORDERING');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">
@@ -223,5 +231,6 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 
             }
         });
+        $(document).off('change','#type_id');
     });
 </script>
