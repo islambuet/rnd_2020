@@ -40,7 +40,7 @@ class Setup_crop extends Root_Controller
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
             $data['code']= array('text'=>$this->lang->line('LABEL_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"'));
-            $data['height']= array('text'=>$this->lang->line('LABEL_HEIGHT'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
+            $data['crop_length']= array('text'=>$this->lang->line('LABEL_LENGTH'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['width']= array('text'=>$this->lang->line('LABEL_WIDTH'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['fruit_type']= array('text'=>$this->lang->line('LABEL_FRUIT_TYPE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"80"'));
             $data['sample_size']= array('text'=>$this->lang->line('LABEL_SAMPLE_SIZE'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','cellsAlign'=>'"right"'));
@@ -87,6 +87,7 @@ class Setup_crop extends Root_Controller
         $this->db->select('crop.*');
         $this->db->join(TABLE_RND_SETUP_CROP_FRUIT_TYPE.' cft','cft.id = crop.fruit_type','INNER');
         $this->db->select('cft.name fruit_type');
+        $this->db->select('crop.length crop_length');
 
         $this->db->where('crop.status !=',SYSTEM_STATUS_DELETE);
         $this->db->order_by('crop.ordering','ASC');

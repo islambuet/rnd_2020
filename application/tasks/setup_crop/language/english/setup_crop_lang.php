@@ -7,7 +7,7 @@ $lang['LABEL_CROP_NAME'] = 'Crop';
 
 $lang['MSG_INVALID_ITEM'] = 'Invalid Crop';
 $lang['LABEL_CODE'] = 'Code';
-$lang['LABEL_HEIGHT'] = 'Height';
+$lang['LABEL_LENGTH'] = 'Length';
 $lang['LABEL_WIDTH'] = 'Width';
 $lang['LABEL_FRUIT_TYPE'] = 'Fruit Type';
 $lang['LABEL_SAMPLE_SIZE'] = 'Sample Size';
