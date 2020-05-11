@@ -201,4 +201,26 @@ class System_helper
         );
         Query_helper::add(TABLE_RND_SETUP_USER_HISTORY,$data,false);
     }
+    public static function history_save($table_name,$item_id,$current_value=array(),$new_value=array(),$remarks=array())
+    {
+        $CI =& get_instance();
+        $time=time();
+        $user = User_helper::get_user();
+        $data = Array(
+            'controller'=>$CI->router->class,
+            'method'=>$CI->router->method,
+            'remarks'=>json_encode($remarks),
+            'item_id'=>$item_id,
+            'current_value'=>json_encode($current_value),
+            'new_value'=>json_encode($new_value),
+            'date_created'=>$time,
+            'date_created_string'=>System_helper::display_date_time($time),
+            'user_created'=>$user->id
+        );
+        Query_helper::add($table_name,$data,false);
+    }
+    public static function  get_variety_rnd_code($variety_info)
+    {
+        return $variety_info['crop_code'].'-'.$variety_info['type_code'].'-'.str_pad($variety_info['variety_index'],3,'0',STR_PAD_LEFT).'-'.$variety_info['year'];
+    }
 }

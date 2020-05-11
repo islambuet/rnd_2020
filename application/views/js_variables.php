@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 $CI = & get_instance();
-$system_crops=Query_helper::get_info(TABLE_RND_SETUP_CROP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
-$results=Query_helper::get_info(TABLE_RND_SETUP_TYPE,array('id value','name text','crop_id'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'),0,0,array('ordering ASC'));
+$system_crops=Query_helper::get_info(TABLE_RND_SETUP_CROP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'),0,0,array('ordering ASC','id ASC'));
+$results=Query_helper::get_info(TABLE_RND_SETUP_TYPE,array('id value','name text','crop_id'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'),0,0,array('ordering ASC','id ASC'));
 $system_types=array();
 foreach($results as $result)
 {

@@ -26,3 +26,7 @@ CONST TABLE_RND_SETUP_CROP_FRUIT_TYPE=  'arm_rnd_2020.rnd_setup_cc_crop_fruit_ty
 CONST TABLE_RND_SETUP_CROP=  'arm_rnd_2020.rnd_setup_cc_crop';
 CONST TABLE_RND_SETUP_TYPE=  'arm_rnd_2020.rnd_setup_cc_type';
 CONST TABLE_RND_SETUP_VARIETY=  'arm_rnd_2020.rnd_setup_cc_variety';
+
+//Variety Configuration
+CONST TABLE_RND_VC_VARIETY_SELECTION=  'arm_rnd_2020.rnd_vc_variety_selection';
+CONST TABLE_RND_VC_VARIETY_SELECTION_HISTORY=  'arm_rnd_2020.rnd_vc_variety_selection_history';
