@@ -52,4 +52,5 @@ $lang['LABEL_REMARKS_REJECT'] = 'Reject Reason';
 $lang['LABEL_SELECT'] = 'Select';
 $lang['LABEL_YEAR'] = 'Year';
 $lang['LABEL_SEASON'] = 'Season';
+$lang['LABEL_RND_CODE'] = 'R&D Code';
 
