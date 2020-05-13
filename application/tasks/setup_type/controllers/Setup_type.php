@@ -123,13 +123,13 @@ class Setup_type extends Root_Controller
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
-            if(($this->input->post('id')))
+            if($id>0)
             {
-                $item_id=$this->input->post('id');
+                $item_id=$id;
             }
             else
             {
-                $item_id=$id;
+                $item_id=$this->input->post('id');
             }
             $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TYPE,'*',array('id ='.$item_id),1);
             if(!$data['item'])

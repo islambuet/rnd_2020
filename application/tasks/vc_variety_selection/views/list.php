@@ -52,7 +52,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                 <select id="year" class="form-control">
                     <?php
                     $cur_year=date("Y");
-                    for($i=2019;$i<=($cur_year+1);$i++)
+                    for($i=2020;$i<=($cur_year+1);$i++)
                     {
                         ?>
                         <option value='<?php echo $i; ?>' <?php if($i==$year){ echo ' selected';} ?>><?php echo $i; ?></option>

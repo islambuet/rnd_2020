@@ -63,11 +63,11 @@ class Vc_variety_selection extends Root_Controller
     {
         if(isset($this->permissions['action0']) && ($this->permissions['action0']==1))
         {
-            if(($this->input->post('year')))
+            if(!($year>0))
             {
                 $year=$this->input->post('year');
             }
-            else if($year==0)
+            if(!$year)
             {
                 $year=date("Y");
             }
@@ -206,13 +206,13 @@ class Vc_variety_selection extends Root_Controller
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
-            if(($this->input->post('id')))
+            if($id>0)
             {
-                $item_id=$this->input->post('id');
+                $item_id=$id;
             }
             else
             {
-                $item_id=$id;
+                $item_id=$this->input->post('id');
             }
             $this->db->from(TABLE_RND_SETUP_VARIETY.' variety');
             $this->db->select('variety.*');

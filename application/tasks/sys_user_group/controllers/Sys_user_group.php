@@ -145,13 +145,13 @@ class Sys_user_group extends Root_Controller
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
-            if(($this->input->post('id')))
+            if($id>0)
             {
-                $item_id=$this->input->post('id');
+                $item_id=$id;
             }
             else
             {
-                $item_id=$id;
+                $item_id=$this->input->post('id');
             }
             $data['item']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('id ='.$item_id),1);
             if(!$data['item'])
@@ -258,13 +258,13 @@ class Sys_user_group extends Root_Controller
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
-            if(($this->input->post('id')))
+            if($id>0)
             {
-                $item_id=$this->input->post('id');
+                $item_id=$id;
             }
             else
             {
-                $item_id=$id;
+                $item_id=$this->input->post('id');
             }
             $this->lang->load('sys_module_task/sys_module_task');
             $this->load->helper("module_task");
