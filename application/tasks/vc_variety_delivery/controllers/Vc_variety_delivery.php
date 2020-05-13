@@ -59,6 +59,7 @@ class Vc_variety_delivery extends Root_Controller
     {
         //if necessary can rewrite it
         System_helper::save_preference();
+        System_helper::save_preference();
     }
     public function system_list($year=0)
     {
@@ -240,8 +241,8 @@ class Vc_variety_delivery extends Root_Controller
                 {
                     $data=array();
                     $data['status_delivery']=SYSTEM_STATUS_YES;
-                    $data['date_delivered']=$time;
-                    $data['user_delivered']=$user->id;
+                    $data['date_delivery_updated']=$time;
+                    $data['user_delivery_updated']=$user->id;
                     Query_helper::update(TABLE_RND_VC_VARIETY_SELECTION,$data,array('id ='.$selected_varieties[$variety_id]['id']));
 
                 }
