@@ -75,7 +75,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                 </div>
                                 <div class="col-lg-4 col-8">
                                     <input type="text" name="item[user_name]" id="user_name" class="form-control" value="<?php echo $item['user_name']; ?>">
-                                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_USER_NAME_RULE');?><</small>
+                                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_USER_NAME_RULE');?></small>
                                 </div>
                             </div>
                             <div class="row mb-2">
