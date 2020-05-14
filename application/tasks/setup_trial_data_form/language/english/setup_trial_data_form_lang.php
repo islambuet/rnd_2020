@@ -22,5 +22,6 @@ $lang['LABEL_OPTIONS_RULE'] = 'Write each option each line<br>Dont use Comma.<br
 $lang['LABEL_AVERAGE_GROUP_NAME_RULE'] = 'All Input with same name will averaged Under this column.<br>Leave Blank if no calculatoin needed';
 $lang['LABEL_AVERAGE_GROUP_NAME'] = 'Average Group.';
 $lang['LABEL_SUMMARY_REPORT_COLUMN'] = 'Show at Summary Report.';
+$lang['BUTTON_DUPLICATE'] = 'New Duplicate Input';
 
 

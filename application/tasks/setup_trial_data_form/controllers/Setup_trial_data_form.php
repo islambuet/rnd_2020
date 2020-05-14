@@ -330,6 +330,41 @@ class Setup_trial_data_form extends Root_Controller
             $this->access_denied();
         }
     }
+    public function system_duplicate_input($form_id,$crop_id,$id=0)
+    {
+        if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
+        {
+            if($id>0)
+            {
+                $item_id=$id;
+            }
+            else
+            {
+                $item_id=$this->input->post('id');
+            }
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            if(!$data['item'])
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
+            }
+            $data['item']['id']=0;
+            $data['item']['name']='';
+            $data['item']['options']=str_replace(",",PHP_EOL,$data['item']['options']);
+
+
+            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$form_id),1);
+            $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
+            $ajax['status']=true;
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_add_input/'.$form_id.'/'.$crop_id);
+            $this->json_return($ajax);
+        }
+        else
+        {
+            $this->access_denied();
+        }
+    }
     public function system_save_add_edit_input()
     {
         $user=User_helper::get_user();

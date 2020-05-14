@@ -28,6 +28,16 @@ if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
         'data-action-link'=>site_url($CI->controller_name.'/system_edit_input/'.$item['id'].'/'.$crop_id)
     );
 }
+if(isset($CI->permissions['action2']) && ($CI->permissions['action2']==1))
+{
+    $action_buttons[]=array(
+        'type'=>'button',
+        'label'=>$CI->lang->line("BUTTON_DUPLICATE"),
+        'class'=>'button_jqx_action',
+        'data-target-element'=>$jqx_container,
+        'data-action-link'=>site_url($CI->controller_name.'/system_duplicate_input/'.$item['id'].'/'.$crop_id)
+    );
+}
 
 if (isset($CI->permissions['action6']) && ($CI->permissions['action6'] == 1)) {
     $action_buttons[] = array
