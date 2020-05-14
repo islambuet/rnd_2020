@@ -55,6 +55,8 @@ class Setup_trial_data_form extends Root_Controller
             $data['default']= array('text'=>$this->lang->line('LABEL_DEFAULT'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"'));
             $data['mandatory']= array('text'=>$this->lang->line('LABEL_MANDATORY'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
             $data['class']= array('text'=>$this->lang->line('LABEL_CLASS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            $data['average_group_name']= array('text'=>$this->lang->line('LABEL_AVERAGE_GROUP_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"250"','filtertype'=>'"list"'));
+            $data['summary_report_column']= array('text'=>$this->lang->line('LABEL_SUMMARY_REPORT_COLUMN'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','filtertype'=>'"list"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
         }
@@ -90,7 +92,7 @@ class Setup_trial_data_form extends Root_Controller
     }
     public function system_get_items_list()
     {
-        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,array('id','name','remarks','status','ordering'),array('status !="'.SYSTEM_STATUS_DELETE.'"'));
+        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,array('id','name','remarks','status','ordering'),array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
         $this->json_return($items);
     }
     public function system_add()
@@ -270,7 +272,7 @@ class Setup_trial_data_form extends Root_Controller
     }
     public function system_get_items_list_input($form_id,$crop_id)
     {
-        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'',array('status !="'.SYSTEM_STATUS_DELETE.'"','form_id ='.$form_id,'crop_id ='.$crop_id));
+        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'',array('status !="'.SYSTEM_STATUS_DELETE.'"','form_id ='.$form_id,'crop_id ='.$crop_id),0,0,array('ordering ASC','id ASC'));
         $this->json_return($items);
     }
     public function system_add_input($form_id,$crop_id)
@@ -337,7 +339,7 @@ class Setup_trial_data_form extends Root_Controller
         $form_id=$this->input->post('form_id');
         $system_user_token = $this->input->post("system_user_token");
         $item = $this->input->post('item');
-        $item['options']=str_replace(PHP_EOL,",",$item['options']);
+        $item['options']=str_replace(PHP_EOL,",",trim($item['options']));
 
 
         if($id>0)

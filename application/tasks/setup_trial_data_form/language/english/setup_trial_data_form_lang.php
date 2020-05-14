@@ -19,5 +19,8 @@ $lang['LABEL_CLASS'] = 'Class';
 $lang['LABEL_CLASS_RULE'] = 'float_positive=Only Positive floating number<br>integer_positive=Only Positive Integer number<br>float_all=Positive and negetive floating number<br>integer_all=Positive and negetive Integer number';
 $lang['LABEL_DEFAULT'] = 'Default';
 $lang['LABEL_OPTIONS_RULE'] = 'Write each option each line<br>Dont use Comma.<br>Comma will treat as new line.';
+$lang['LABEL_AVERAGE_GROUP_NAME_RULE'] = 'All Input with same name will averaged Under this column.<br>Leave Blank if no calculatoin needed';
+$lang['LABEL_AVERAGE_GROUP_NAME'] = 'Average Group.';
+$lang['LABEL_SUMMARY_REPORT_COLUMN'] = 'Show at Summary Report.';
 
 

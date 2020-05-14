@@ -141,7 +141,26 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_CLASS_RULE');?></small>
                 </div>
             </div>
-
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="average_group_name" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_AVERAGE_GROUP_NAME');?></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <input type="text" name="item[average_group_name]" id="average_group_name" class="form-control" value="<?php echo $item['average_group_name']; ?>">
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_AVERAGE_GROUP_NAME_RULE');?></small>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="summary_report_column" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_SUMMARY_REPORT_COLUMN');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="summary_report_column" name="item[summary_report_column]" class="form-control">
+                        <option value="<?php echo SYSTEM_STATUS_YES; ?>" <?php if ($item['summary_report_column'] == SYSTEM_STATUS_YES) { echo "selected='selected'"; } ?> ><?php echo SYSTEM_STATUS_YES; ?></option>
+                        <option value="<?php echo SYSTEM_STATUS_NO; ?>" <?php if ($item['summary_report_column'] == SYSTEM_STATUS_NO) { echo "selected='selected'"; } ?> ><?php echo SYSTEM_STATUS_NO; ?></option>
+                    </select>
+                </div>
+            </div>
             <div class="row mb-2">
                 <div class="col-4">
                     <label for="ordering" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_ORDERING');?><span class="text-danger">*</span></label>
