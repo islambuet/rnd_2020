@@ -10,7 +10,7 @@ $action_buttons[]=array(
 );
 $action_buttons[]=array(
     'type'=>'button',
-    'label'=>$is_delivered?$CI->lang->line("BUTTON_SAVE_DELIVERED"):$CI->lang->line("BUTTON_SAVE_NOT_DELIVERED"),
+    'label'=>$is_sowed?$CI->lang->line("BUTTON_SAVE_SOWED"):$CI->lang->line("BUTTON_SAVE_NOT_SOWED"),
     'class'=>'button_action_save',
     'data-target-element'=>'#save_form'
 );
@@ -23,7 +23,7 @@ $action_buttons[]=array(
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_REFRESH"),
     'class'=>'system_ajax',
-    'href'=>site_url($CI->controller_name.'/system_edit/'.$year.'/'.$is_delivered.'/'.$season['value'])
+    'href'=>site_url($CI->controller_name.'/system_edit/'.$year.'/'.$is_sowed.'/'.$season['value'])
 );
 
 $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
@@ -31,7 +31,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 <div class="card mt-2">
     <div class="card-header font-weight-bold">
         <?php
-        echo $is_delivered?$CI->lang->line('LABEL_TITLE_LIST_DELIVERED'):$CI->lang->line('LABEL_TITLE_LIST_NOT_DELIVERED');
+        echo $is_sowed?$CI->lang->line('LABEL_TITLE_LIST_SOWED'):$CI->lang->line('LABEL_TITLE_LIST_NOT_SOWED');
 
         ?>
     </div>
@@ -40,7 +40,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             <input type="hidden" class="system_save_new_status" name="system_save_new_status" value="0" />
             <input type="hidden" id="id" name="id" value="<?php echo $season['value']; ?>" />
             <input type="hidden" name="year" value="<?php echo $year; ?>" />
-            <input type="hidden" name="is_delivered" value="<?php echo $is_delivered; ?>" />
+            <input type="hidden" name="is_sowed" value="<?php echo $is_sowed; ?>" />
             <input type="hidden" id="system_user_token" name="system_user_token" value="<?php echo time().'_'.$user->id; ?>" />
             <div class="row mb-2">
                 <div class="col-4">
@@ -61,16 +61,16 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 
             <div id="accordion">
             <?php
-            if(!$is_delivered)
+            if(!$is_sowed)
             {
                 ?>
                 <div class="row mb-2">
                     <div class="col-4">
-                        <label for="date_delivery" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_DATE_DELIVERY');?></label>
+                        <label for="date_sowing" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_DATE_SOWING');?></label>
                     </div>
                     <div class="col-lg-4 col-8">
                         <div class="input-group">
-                            <input type="text" name="date_delivery" id="date_delivery" class="form-control datepicker" value="" readonly/>
+                            <input type="text" name="date_sowing" id="date_sowing" class="form-control datepicker" value="" readonly/>
                             <div class="input-group-append datepicker_handeler" style="cursor: pointer;">
                                 <span class="input-group-text"><i class="fe-calendar"></i></span>
                             </div>
@@ -100,11 +100,12 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                         <th><?php echo $CI->lang->line("LABEL_TYPE_NAME"); ?></th>
                                         <th><?php echo $CI->lang->line("LABEL_VARIETY_NAME"); ?></th>
                                         <th><?php echo $CI->lang->line("LABEL_RND_CODE"); ?></th>
+                                        <th><?php echo $CI->lang->line("LABEL_DATE_DELIVERY"); ?></th>
                                         <?php
-                                        if($is_delivered)
+                                        if($is_sowed)
                                         {
                                             ?>
-                                            <th><?php echo $CI->lang->line("LABEL_DATE_DELIVERY"); ?></th>
+                                            <th><?php echo $CI->lang->line("LABEL_DATE_SOWING"); ?></th>
                                             <?php
                                         }
                                         ?>
@@ -120,11 +121,12 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                             <td><?php echo $variety['type_name']; ?></td>
                                             <td><?php echo $variety['variety_name']; ?></td>
                                             <td><?php echo $variety['rnd_code']; ?></td>
+                                            <td><?php echo System_helper::display_date($variety['date_delivery']); ?></td>
                                             <?php
-                                            if($is_delivered)
+                                            if($is_sowed)
                                             {
                                                 ?>
-                                                <td><?php echo System_helper::display_date($variety['date_delivery']); ?></td>
+                                                <td><?php echo System_helper::display_date($variety['date_sowing']); ?></td>
                                             <?php
                                             }
                                             ?>

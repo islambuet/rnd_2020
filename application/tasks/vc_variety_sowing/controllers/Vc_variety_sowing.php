@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Vc_variety_delivery extends Root_Controller
+class Vc_variety_sowing extends Root_Controller
 {
     public $controller_name;
     public $permissions;
@@ -43,9 +43,9 @@ class Vc_variety_delivery extends Root_Controller
         {
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['season_name']= array('text'=>$this->lang->line('LABEL_SEASON_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','filtertype'=>'"list"'));
-            $data['num_variety_selected']= array('text'=>$this->lang->line('LABEL_NUM_VARIETY_SELECTED'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['num_variety_delivered']= array('text'=>$this->lang->line('LABEL_NUM_VARIETY_DELIVERED'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
-            $data['num_variety_not_delivered']= array('text'=>$this->lang->line('LABEL_NUM_VARIETY_NOT_DELIVERED'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
+            $data['num_variety_sowed']= array('text'=>$this->lang->line('LABEL_NUM_VARIETY_SOWED'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
+            $data['num_variety_not_sowed']= array('text'=>$this->lang->line('LABEL_NUM_VARIETY_NOT_SOWED'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
 
         }
         return $data;
@@ -92,8 +92,9 @@ class Vc_variety_delivery extends Root_Controller
     {
         $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
         $this->db->select('vc.season_id');
-        $this->db->select('SUM(CASE WHEN vc.status_selection="'.SYSTEM_STATUS_YES.'" then 1 ELSE 0 END) num_variety_selected',false);
+
         $this->db->select('SUM(CASE WHEN vc.status_selection="'.SYSTEM_STATUS_YES.'" AND vc.status_delivery="'.SYSTEM_STATUS_YES.'" then 1 ELSE 0 END) num_variety_delivered',false);
+        $this->db->select('SUM(CASE WHEN vc.status_selection="'.SYSTEM_STATUS_YES.'" AND vc.status_delivery="'.SYSTEM_STATUS_YES.'" AND vc.status_sowing="'.SYSTEM_STATUS_YES.'" then 1 ELSE 0 END) num_variety_sowed',false);
         $this->db->where('vc.year',$year);
         $this->db->group_by('vc.season_id');
         $results=$this->db->get()->result_array();
@@ -109,21 +110,22 @@ class Vc_variety_delivery extends Root_Controller
         {
             if(isset($seasons_variety[$item['id']]))
             {
-                $item['num_variety_selected']=$seasons_variety[$item['id']]['num_variety_selected'];
+
                 $item['num_variety_delivered']=$seasons_variety[$item['id']]['num_variety_delivered'];
+                $item['num_variety_sowed']=$seasons_variety[$item['id']]['num_variety_sowed'];
             }
             else
             {
-                $item['num_variety_selected']=0;
                 $item['num_variety_delivered']=0;
+                $item['num_variety_sowed']=0;
             }
-            $item['num_variety_not_delivered']=$item['num_variety_selected']-$item['num_variety_delivered'];
+            $item['num_variety_not_sowed']=$item['num_variety_delivered']-$item['num_variety_sowed'];
 
         }
 
         $this->json_return($items);
     }
-    public function system_edit($year,$is_delivered,$id=0)
+    public function system_edit($year,$is_sowed,$id=0)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
@@ -137,17 +139,18 @@ class Vc_variety_delivery extends Root_Controller
             }
             //item id=season id
             $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
-            $this->db->select('vc.variety_index,vc.year,vc.date_delivery');
+            $this->db->select('vc.variety_index,vc.year,vc.date_delivery,vc.date_sowing');
             $this->db->where('vc.status_selection',SYSTEM_STATUS_YES);
+            $this->db->where('vc.status_delivery',SYSTEM_STATUS_YES);
             $this->db->where('vc.year',$year);
             $this->db->where('vc.season_id',$item_id);
-            if($is_delivered)
+            if($is_sowed)
             {
-                $this->db->where('vc.status_delivery',SYSTEM_STATUS_YES);
+                $this->db->where('vc.status_sowing',SYSTEM_STATUS_YES);
             }
             else
             {
-                $this->db->where('vc.status_delivery',SYSTEM_STATUS_NO);
+                $this->db->where('vc.status_sowing',SYSTEM_STATUS_NO);
             }
             $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
             $this->db->select('variety.name variety_name,variety.id variety_id');
@@ -174,13 +177,13 @@ class Vc_variety_delivery extends Root_Controller
                 $data['crop_varieties'][$result['crop_id']]['varieties'][]=$result;
             }
             $data['year']=$year;
-            $data['is_delivered']=$is_delivered;
+            $data['is_sowed']=$is_sowed;
             $data['season']=Query_helper::get_info(TABLE_RND_SETUP_SEASON,array('id value','name text'),array('id ="'.$item_id.'"'),1);
 
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/edit',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit/'.$year.'/'.$is_delivered.'/'.$item_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit/'.$year.'/'.$is_sowed.'/'.$item_id);
             $this->json_return($ajax);
         }
         else
@@ -194,19 +197,19 @@ class Vc_variety_delivery extends Root_Controller
         $time = time();
         $season_id=$this->input->post('id');
         $year=$this->input->post('year');
-        $is_delivered=$this->input->post('is_delivered');
-        $date_delivery=$this->input->post('date_delivery');
+        $is_sowed=$this->input->post('is_sowed');
+        $date_sowing=$this->input->post('date_sowing');
         $varieties=$this->input->post('varieties');
         $system_user_token = $this->input->post("system_user_token");
         if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
         {
             $this->access_denied();
         }
-        if(!$is_delivered)
+        if(!$is_sowed)
         {
-            if(!$date_delivery)
+            if(!$date_sowing)
             {
-                $this->action_error($this->lang->line('MSG_DELIVERY_DATE_REQUIRE'));
+                $this->action_error($this->lang->line('MSG_SOWING_DATE_REQUIRE'));
             }
         }
         $system_user_token_info = Token_helper::get_token($system_user_token);
@@ -229,21 +232,21 @@ class Vc_variety_delivery extends Root_Controller
         {
             if(isset($selected_varieties[$variety_id]))
             {
-                if($is_delivered)//return
+                if($is_sowed)//cancel sowing
                 {
                     $data=array();
-                    $data['status_delivery']=SYSTEM_STATUS_NO;
+                    $data['status_sowing']=SYSTEM_STATUS_NO;
                     Query_helper::update(TABLE_RND_VC_VARIETY_SELECTION,$data,array('id ='.$selected_varieties[$variety_id]['id']),false);
-                    System_helper::history_save(TABLE_RND_VC_VARIETY_SELECTION_HISTORY,$selected_varieties[$variety_id]['id'],array('status_delivery'=>$selected_varieties[$variety_id]['status_delivery']),array('status_delivery'=>SYSTEM_STATUS_NO));
+                    System_helper::history_save(TABLE_RND_VC_VARIETY_SELECTION_HISTORY,$selected_varieties[$variety_id]['id'],array('status_sowing'=>$selected_varieties[$variety_id]['status_sowing']),array('status_sowing'=>SYSTEM_STATUS_NO));
 
                 }
                 else//send
                 {
                     $data=array();
-                    $data['date_delivery']=System_helper::get_time($date_delivery);
-                    $data['status_delivery']=SYSTEM_STATUS_YES;
-                    $data['date_delivery_updated']=$time;
-                    $data['user_delivery_updated']=$user->id;
+                    $data['date_sowing']=System_helper::get_time($date_sowing);
+                    $data['status_sowing']=SYSTEM_STATUS_YES;
+                    $data['date_sowing_updated']=$time;
+                    $data['user_sowing_updated']=$user->id;
                     Query_helper::update(TABLE_RND_VC_VARIETY_SELECTION,$data,array('id ='.$selected_varieties[$variety_id]['id']));
 
                 }
