@@ -382,4 +382,79 @@ class Sys_user_group extends Root_Controller
             $this->action_error($this->lang->line("MSG_SAVE_FAIL_ROLE"));
         }
     }
+    public function system_trail_data($id=0)
+    {
+        if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
+        {
+            if($id>0)
+            {
+                $item_id=$id;
+            }
+            else
+            {
+                $item_id=$this->input->post('id');
+            }
+            $data['item']=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('id ='.$item_id),1);
+            if(!$data['item'])
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_USER_GROUP"));
+            }
+            $data['trail_data_forms']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
+            $ajax['status']=true;
+            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name.'/trail_data',$data,true));
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_trail_data/'.$item_id);
+            $this->json_return($ajax);
+        }
+        else
+        {
+            $this->access_denied();
+        }
+    }
+    public function system_save_trail_data()
+    {
+        $user=User_helper::get_user();
+        $time = time();
+        $system_user_token = $this->input->post("system_user_token");
+        $item_id=$this->input->post('id');
+        $trail_data_edit=','.implode(",", $this->input->post('trail_data_edit')?$this->input->post('trail_data_edit'):array()).',';
+        $trail_data_report=','.implode(",", $this->input->post('trail_data_report')?$this->input->post('trail_data_report'):array()).',';
+        $result=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('id ='.$item_id),1);
+        if(!$result)
+        {
+            $this->action_error($this->lang->line("MSG_INVALID_USER_GROUP"));
+        }
+
+        if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
+        {
+            $this->access_denied();
+        }
+        $system_user_token_info = Token_helper::get_token($system_user_token);
+        if($system_user_token_info['status'])
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
+            $this->system_list();
+        }
+
+        $this->db->trans_start(); //DB Transaction Handle START
+        $data=array();
+        $data['trail_data_edit']=$trail_data_edit;
+        $data['trail_data_report']=$trail_data_report;
+        $data['date_trail_data_updated']=$time;
+        $data['user_trail_data_updated']=$user->id;
+        Query_helper::update(TABLE_SYSTEM_USER_GROUP,$data,array('id='.$item_id));
+        Token_helper::update_token($system_user_token_info['id'], $system_user_token);
+
+        $this->db->trans_complete(); //DB Transaction Handle END
+
+        if ($this->db->trans_status()===true)
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
+            $this->system_list();
+        }
+        else
+        {
+            $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
+        }
+    }
 }
