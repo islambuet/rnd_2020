@@ -24,6 +24,14 @@ class User_helper
                 $this->username_password_same=true;
             }
         }
+        $result=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('trail_data_edit','trail_data_report'),array('id ='.$this->user_group),1);
+        if ($result)
+        {
+            foreach ($result as $key => $value)
+            {
+                $this->$key = $value;
+            }
+        }
     }
     public static function get_user()
     {
@@ -307,14 +315,9 @@ class User_helper
             $html='';
             if($sub_html)
             {
-
-
                 $html.='<li>';
-                $html.='<a href="#sub_'.$menu_data['items'][$parent]['id'].'" data-toggle="collapse" aria-expanded="false">'.$menu_data['items'][$parent]['name'].'<span class="fe-menu-arrow"></span></a>';
-                //$html.='<a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$menu_data['items'][$parent]['name'].'</a>';
-
-
-                $html.='<ul class="collapse list-unstyled" id="sub_'.$menu_data['items'][$parent]['id'].'">';
+                $html.='<a href="#left_menu_sub_'.$menu_data['items'][$parent]['id'].'" data-toggle="collapse" aria-expanded="false">'.$menu_data['items'][$parent]['name'].'<span class="fe-menu-arrow"></span></a>';
+                $html.='<ul class="collapse list-unstyled" id="left_menu_sub_'.$menu_data['items'][$parent]['id'].'">';
                 $html.=$sub_html;
                 $html.='</ul></li>';
             }
