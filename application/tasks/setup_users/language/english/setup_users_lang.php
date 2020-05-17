@@ -1,6 +1,7 @@
 <?php
 $lang['LABEL_TITLE_LIST'] = 'Users List';
 $lang['LABEL_TITLE_EDIT'] = 'Edit User(%s)';
+$lang['LABEL_TITLE_CROP_ACCESS'] = 'Assign Crop to(%s)';
 
 $lang['LABEL_TITLE_QRCODE'] = 'QR Code';
 $lang['LABEL_TITLE_IDENTIFICATION'] = 'Employee id, User name, Ordering';
@@ -56,6 +57,9 @@ $lang['LABEL_CONTACT_PERSON'] = 'Contact Person';
 $lang['LABEL_CONTACT_NO'] = 'Contact Number';
 $lang['LABEL_BLOOD_GROUP'] = 'Blood Group';
 $lang['LABEL_NEW_PASSWORD'] = 'New Password';
+$lang['BUTTON_EDIT_CROP_ACCESS'] = 'Assign Crops';
+$lang['LABEL_ACCESS'] = 'Access';
+$lang['LABEL_CROP_NAME'] = 'Crop';
 
 
 

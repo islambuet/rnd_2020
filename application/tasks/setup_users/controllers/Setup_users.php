@@ -248,6 +248,82 @@ class Setup_users extends Root_Controller
         }
 
     }
+    public function system_edit_crop_access($id=0)
+    {
+        if(isset($this->permissions['action7']) && ($this->permissions['action7']==1))
+        {
+            $user=User_helper::get_user();
+            if($id>0)
+            {
+                $item_id=$id;
+            }
+            else
+            {
+                $item_id=$this->input->post('id');
+            }
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('id ='.$item_id),1);
+            if(!$data['item'])
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+            }
+            $data['crops']=Query_helper::get_info(TABLE_RND_SETUP_CROP,array('id value','name text'),array('status ="'.SYSTEM_STATUS_ACTIVE.'"'));
+            $ajax['status']=true;
+            $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/crop_access',$data,true));
+            $this->set_message($this->message,$ajax);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit_crop_access/'.$item_id);
+            $this->json_return($ajax);
+        }
+        else
+        {
+            $this->access_denied();
+        }
+    }
+    public function system_save_crop_access()//only edit--add removed
+    {
+        $user=User_helper::get_user();
+        $time = time();
+        $item_id=$this->input->post('id');
+        $crop_ids=','.implode(",", $this->input->post('crop_ids')?$this->input->post('crop_ids'):array()).',';
+
+        $system_user_token = $this->input->post("system_user_token");
+        $item_current=Query_helper::get_info(TABLE_RND_SETUP_USER,'*',array('id ='.$item_id),1);
+        if(!$item_current)
+        {
+            $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
+        }
+
+        if(!(isset($this->permissions['action7']) && ($this->permissions['action7']==1)))
+        {
+            $this->access_denied();
+        }
+
+        $system_user_token_info = Token_helper::get_token($system_user_token);
+        if($system_user_token_info['status'])
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
+            $this->system_list();
+        }
+        $this->db->trans_start(); //DB Transaction Handle START
+        $data=array();
+        $data['crop_ids']=$crop_ids;
+        Query_helper::update(TABLE_RND_SETUP_USER,$data,array("id = ".$item_id),false);
+        System_helper::history_user($item_id,array('crop_ids'=>$item_current['crop_ids']),array('crop_ids'=>$crop_ids));
+
+
+        Token_helper::update_token($system_user_token_info['id'], $system_user_token);
+
+        $this->db->trans_complete(); //DB Transaction Handle END
+        if ($this->db->trans_status()===true)
+        {
+            $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
+            $this->system_list();
+        }
+        else
+        {
+            $this->action_error($this->lang->line("MSG_SAVE_FAIL"));
+        }
+
+    }
 
 
 }
