@@ -5,10 +5,9 @@ class Test extends CI_Controller {
 
     public function index()
     {
-        $a="amara sonar bangla";
-        $b[$a]=100;
+        $this->load->helper('season');
         echo '<pre>';
-        print_r($b);
+        print_r(Season_helper::get_current_season());
         echo '</pre>';
 
     }
