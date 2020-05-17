@@ -74,6 +74,19 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
+                    <label for="season_start_date" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_SEASON_START_DATE');?></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <div class="input-group">
+                        <input type="text" name="item[season_start_date]" id="season_start_date" class="form-control datepicker" value="<?php echo $item['season_start_date'];?>" readonly/>
+                        <div class="input-group-append datepicker_handeler" style="cursor: pointer;">
+                            <span class="input-group-text"><i class="fe-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
                     <label for="expected_sowing_start" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_EXPECTED_SOWING_START');?></label>
                 </div>
                 <div class="col-lg-4 col-8">

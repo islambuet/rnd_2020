@@ -39,6 +39,7 @@ class Setup_season extends Root_Controller
         {
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
+            $data['season_start_date']= array('text'=>$this->lang->line('LABEL_SEASON_START_DATE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
             $data['expected_sowing_start']= array('text'=>$this->lang->line('LABEL_EXPECTED_SOWING_START'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
             $data['expected_sowing_end']= array('text'=>$this->lang->line('LABEL_EXPECTED_SOWING_END'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
             $data['estimated_delivery_date']= array('text'=>$this->lang->line('LABEL_ESTIMATED_DELIVERY_DATE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
@@ -205,6 +206,7 @@ class Setup_season extends Root_Controller
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('', '');
         $this->form_validation->set_rules('item[name]',$this->lang->line('LABEL_NAME'),'required');
+        $this->form_validation->set_rules('item[season_start_date]',$this->lang->line('LABEL_SEASON_START_DATE'),'required');
         $this->form_validation->set_rules('item[expected_sowing_start]',$this->lang->line('LABEL_EXPECTED_SOWING_START'),'required');
         $this->form_validation->set_rules('item[expected_sowing_end]',$this->lang->line('LABEL_EXPECTED_SOWING_END'),'required');
         $this->form_validation->set_rules('item[estimated_delivery_date]',$this->lang->line('LABEL_ESTIMATED_DELIVERY_DATE'),'required');
