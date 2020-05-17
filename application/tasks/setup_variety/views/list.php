@@ -93,7 +93,9 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             type: 'POST'
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
+        var filter_items_type_name=[];
         // create jqxgrid.
+
         $("<?php echo $jqx_container; ?>").jqxGrid(
         {
             width: '100%',
@@ -139,6 +141,47 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                 }
                 ?>
             ]
+        });
+
+        $("<?php echo $jqx_container; ?>").on('filter', function(event)
+        {
+            var filters = $("<?php echo $jqx_container; ?>").jqxGrid('getfilterinformation');
+            while(filter_items_type_name.length > 0)
+            {
+                filter_items_type_name.pop();
+            }
+            var crop_name='';
+            var type_name='';
+
+            for(var i=0;i<filters.length;i++)
+            {
+                if(filters[i].filtercolumn=='crop_name')
+                {
+                    crop_name=filters[i].filter.getfilters()[0].value;
+                }
+                else if(filters[i].filtercolumn=='type_name')
+                {
+                    type_name=filters[i].filter.getfilters()[0].value;
+                }
+            }
+            if(crop_name=='')
+            {
+                $("<?php echo $jqx_container; ?>").jqxGrid('refreshfilterrow');
+            }
+            else if(type_name=='')
+            {
+                //var rows = $('#jqxGrid').jqxGrid('getrows');
+                console.log('reload grid');
+                var filtered_rows = $("<?php echo $jqx_container; ?>").jqxGrid('getrows');
+                for (i = 0; i < filtered_rows.length; i++)
+                {
+                    if(filter_items_type_name.indexOf(filtered_rows[i].type_name)==-1)
+                    {
+                        filter_items_type_name.push(filtered_rows[i].type_name);
+                    }
+                }
+                $("<?php echo $jqx_container; ?>").jqxGrid('refreshfilterrow');
+            }
         });
     });
 </script>
