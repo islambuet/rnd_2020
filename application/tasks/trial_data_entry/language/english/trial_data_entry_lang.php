@@ -4,7 +4,8 @@ $lang['LABEL_TRIAL_NAME'] = 'Trial';
 $lang['MSG_INVALID_ITEM'] = 'Invalid Variety';
 $lang['LABEL_TITLE_EDIT'] = 'Trail data for Variety';
 
-$lang['MSG_VARIETY_ADDED_ALREADY'] = "This Variety already Added.\nPlease Edit From the list.";
+$lang['MSG_NORMAL_INPUT_REQUIRED'] = "%s Required.";
+$lang['MSG_REPLICA_INPUT_REQUIRED'] = "Replica %s Required.";
 
 
 

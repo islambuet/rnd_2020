@@ -110,7 +110,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                 $default_normal['name']='trial_data[normal]['.$input_field['id'].']';
                 if($input_field['type']==SYSTEM_INPUT_TYPE_IMAGE)
                 {
-                    $default_normal['name']='trial_data_normal_'.$input_field['id'];
+                    $default_normal['name']='trial_data_image_normal_'.$input_field['id'];
                 }
                 $default_normal['value']=isset($trial_data['normal'][$input_field['id']])?$trial_data['normal'][$input_field['id']]:$input_field['default'];
                 ?>
@@ -128,7 +128,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                         $default_replica['name']='trial_data[replica]['.$input_field['id'].']';
                         if($input_field['type']==SYSTEM_INPUT_TYPE_IMAGE)
                         {
-                            $default_replica['name']='trial_data_replica_'.$input_field['id'];
+                            $default_replica['name']='trial_data_image_replica_'.$input_field['id'];
                         }
                         $default_replica['value']=isset($trial_data['replica'][$input_field['id']])?$trial_data['replica'][$input_field['id']]:$input_field['default'];
                         ?>

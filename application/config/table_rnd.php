@@ -32,3 +32,8 @@ CONST TABLE_RND_SETUP_VARIETY=  'arm_rnd_2020.rnd_setup_cc_variety';
 //Variety Configuration
 CONST TABLE_RND_VC_VARIETY_SELECTION=  'arm_rnd_2020.rnd_vc_variety_selection';
 CONST TABLE_RND_VC_VARIETY_SELECTION_HISTORY=  'arm_rnd_2020.rnd_vc_variety_selection_history';
+
+//trail data
+
+CONST TABLE_RND_TRIAL_DATA= 'arm_rnd_2020.rnd_trial_data';
+CONST TABLE_RND_TRIAL_DATA_HISTORY= 'arm_rnd_2020.rnd_trial_data_history';

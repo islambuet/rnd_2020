@@ -167,7 +167,7 @@ class Trial_data_entry extends Root_Controller
             $this->db->where('vc.status_sowing',SYSTEM_STATUS_YES);
             if(strlen($user->crop_ids)>2)
             {
-                $this->db->where_in('vc.status_sowing',SYSTEM_STATUS_YES);
+                $this->db->where_in('crop.id',explode(',',trim($user->crop_ids, ",")));
             }
             $data['item']=$this->db->get()->row_array();
             if(!$data['item'])
@@ -198,119 +198,140 @@ class Trial_data_entry extends Root_Controller
     {
         $user=User_helper::get_user();
         $time = time();
-        $variety_id=$this->input->post('id');
+
+        $trial_id=$this->input->post('trial_id');
         $year=$this->input->post('year');
+        $season_id=$this->input->post('season_id');
+        $variety_id=$this->input->post('variety_id');
+        $trial_data=$this->input->post('trial_data');
         $system_user_token = $this->input->post("system_user_token");
+        $data_normal=array();
+        $data_replica=array();
 
-        $selected_seasons=$this->input->post('selected_seasons');
-
-        $variety_index=0;
-        $selected_seasons_old=array();
-        $results=Query_helper::get_info(TABLE_RND_VC_VARIETY_SELECTION,'*',array('year ='.$year,'variety_id ='.$variety_id));
-        foreach($results as $result)
-        {
-            $variety_index=$result['variety_index'];
-            $selected_seasons_old[$result['season_id']]=$result;
-        }
-        $this->db->from(TABLE_RND_SETUP_VARIETY.' variety');
-        $this->db->select('variety.*');
+        $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
+        $this->db->select('vc.variety_index,vc.year,vc.status_replica');
+        $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
+        $this->db->select('variety.name variety_name,variety.id variety_id');
         $this->db->join(TABLE_RND_SETUP_TYPE.' type','type.id = variety.type_id','INNER');
-        $this->db->select('type.crop_id');
+        $this->db->select('type.name type_name,type.code type_code');
+        $this->db->join(TABLE_RND_SETUP_CROP.' crop','crop.id = type.crop_id','INNER');
+        $this->db->select('crop.name crop_name,crop.code crop_code,crop.id crop_id');
+
+        $this->db->where('vc.year',$year);
+        $this->db->where('vc.season_id',$season_id);
         $this->db->where('variety.id',$variety_id);
+        $this->db->where('vc.status_selection',SYSTEM_STATUS_YES);
+        $this->db->where('vc.status_delivery',SYSTEM_STATUS_YES);
+        $this->db->where('vc.status_sowing',SYSTEM_STATUS_YES);
+        if(strlen($user->crop_ids)>2)
+        {
+            $this->db->where_in('crop.id',explode(',',trim($user->crop_ids, ",")));
+        }
         $item=$this->db->get()->row_array();
         if(!$item)
         {
             $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
         }
 
-        if(sizeof($selected_seasons_old)>0)
-        {
-            if(!(isset($this->permissions['action2']) && ($this->permissions['action2']==1)))
-            {
-                $this->access_denied();
-            }
+        $uploaded_images = Upload_helper::upload_file("images/trail_data/".$year.'/'.$season_id.'/'.$trial_id);
+        $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('form_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
 
-        }
-        else
-        {
-            if(!(isset($this->permissions['action1']) && ($this->permissions['action1']==1)))
-            {
-                $this->access_denied();
-            }
-            $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
-            $this->db->select('COUNT(DISTINCT(vc.variety_id)) total_variety');
-            $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
-            $this->db->join(TABLE_RND_SETUP_TYPE.' type','type.id = variety.type_id','INNER');
-            $this->db->where('type.crop_id',$item['crop_id']);
-            $this->db->where('vc.year',$year);
-            $result=$this->db->get()->row_array();
-            $variety_index=$result['total_variety']+1;
+        $data['trial_id']=$trial_id;
+        $data['year']=$year;
+        $data['season_id']=$season_id;
+        $data['variety_id']=$variety_id;
 
+        foreach($trail_input_fields as $input_field)
+        {
+            if($input_field['type']==SYSTEM_INPUT_TYPE_IMAGE)
+            {
+                $normal_uploaded=false;
+                $replica_uploaded=false;
+                if(array_key_exists('trial_data_image_normal_'.$input_field['id'],$uploaded_images))
+                {
+                    if($uploaded_images['trial_data_image_normal_'.$input_field['id']]['status'])
+                    {
+                        $normal_uploaded=true;
+                        $data_normal[$input_field['id']]="images/trail_data/".$year.'/'.$season_id.'/'.$trial_id.'/'.$uploaded_images['trial_data_image_normal_'.$input_field['id']]['info']['file_name'];
+                    }
+                    else
+                    {
+                        $this->action_error(strip_tags($uploaded_images['trial_data_image_normal_'.$input_field['id']]['message']));
+                    }
+                }
+                if($item['status_replica']==SYSTEM_STATUS_YES)
+                {
+                    if(array_key_exists('trial_data_image_replica_'.$input_field['id'],$uploaded_images))
+                    {
+                        if($uploaded_images['trial_data_image_replica_'.$input_field['id']]['status'])
+                        {
+                            $replica_uploaded=true;
+                            $data_replica[$input_field['id']]="images/trail_data/".$year.'/'.$season_id.'/'.$trial_id.'/'.$uploaded_images['trial_data_image_replica_'.$input_field['id']]['info']['file_name'];
+                        }
+                        else
+                        {
+                            $this->action_error(strip_tags($uploaded_images['trial_data_image_replica_'.$input_field['id']]['message']));
+                        }
+                    }
+                }
+                if($input_field['mandatory']==SYSTEM_STATUS_YES)
+                {
+                    if(!$normal_uploaded)
+                    {
+                        $this->action_error(sprintf($this->lang->line("MSG_NORMAL_INPUT_REQUIRED"),$input_field['name']));
+                    }
+                    if($item['status_replica']==SYSTEM_STATUS_YES)
+                    {
+                        if(!$replica_uploaded)
+                        {
+                            $this->action_error(sprintf($this->lang->line("MSG_REPLICA_INPUT_REQUIRED"),$input_field['name']));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if($input_field['mandatory']==SYSTEM_STATUS_YES)
+                {
+                    if($input_field['type']!=SYSTEM_INPUT_TYPE_IMAGE)
+                    {
+                        if(!$trial_data['normal'][$input_field['id']])
+                        {
+                            $this->action_error(sprintf($this->lang->line("MSG_NORMAL_INPUT_REQUIRED"),$input_field['name']));
+                        }
+                        if($item['status_replica']==SYSTEM_STATUS_YES)
+                        {
+                            if(!$trial_data['replica'][$input_field['id']])
+                            {
+                                $this->action_error(sprintf($this->lang->line("MSG_REPLICA_INPUT_REQUIRED"),$input_field['name']));
+                            }
+                        }
+                    }
+
+                }
+                $data_normal[$input_field['id']]=$trial_data['normal'][$input_field['id']];
+                if($item['status_replica']==SYSTEM_STATUS_YES)
+                {
+                    $data_replica[$input_field['id']]=$trial_data['replica'][$input_field['id']];
+                }
+            }
         }
+        $data['trial_normal']=json_encode($data_normal,JSON_FORCE_OBJECT);
+        $data['trial_replica']=json_encode($data_replica,JSON_FORCE_OBJECT);
+
+
         $system_user_token_info = Token_helper::get_token($system_user_token);
         if($system_user_token_info['status'])
         {
             $this->message['system_message']=$this->lang->line('MSG_SAVE_ALREADY');
-            $this->system_list($year);
+            $this->system_list($trial_id,$year,$season_id);
         }
         $this->db->trans_start(); //DB Transaction Handle START
 
-        foreach($selected_seasons as $selected_season)
-        {
-            if(isset($selected_season['season_id']))
-            {
-                if(isset($selected_seasons_old[$selected_season['season_id']]))
-                {
-                    $data_new=array();
-                    $data_old=array();
-                    $selected_season['status_selection']=SYSTEM_STATUS_YES;
-                    foreach($selected_season as $key=>$value)
-                    {
-                        if($value!= $selected_seasons_old[$selected_season['season_id']][$key])
-                        {
-                            $data_new[$key]=$value;
-                            $data_old[$key]=$selected_seasons_old[$selected_season['season_id']][$key];
-                        }
-                    }
-                    if($data_new)
-                    {
-                        $selected_season['date_selection_updated']=$time;
-                        $selected_season['user_selection_updated']=$user->id;
-                        Query_helper::update(TABLE_RND_VC_VARIETY_SELECTION,$selected_season,array('id ='.$selected_seasons_old[$selected_season['season_id']]['id']));
-                        System_helper::history_save(TABLE_RND_VC_VARIETY_SELECTION_HISTORY,$selected_seasons_old[$selected_season['season_id']]['id'],$data_old,$data_new);
-                    }
-                    unset($selected_seasons_old[$selected_season['season_id']]);
+        $data['date_created']=$time;
+        $data['user_created']=$user->id;
+        Query_helper::add(TABLE_RND_TRIAL_DATA,$data,false);
 
-                }
-                else
-                {
-                    $selected_season['variety_index']=$variety_index;
-                    $selected_season['year']=$year;
-                    $selected_season['variety_id']=$variety_id;
-                    $selected_season['status_selection']=SYSTEM_STATUS_YES;
-                    $selected_season['date_selection_created']=$time;
-                    $selected_season['user_selection_created']=$user->id;
-                    Query_helper::add(TABLE_RND_VC_VARIETY_SELECTION,$selected_season,false);
-
-                }
-            }
-        }
-        foreach($selected_seasons_old as $season_old)
-        {
-            if($season_old['status_selection']==SYSTEM_STATUS_YES)
-            {
-                //TODO maybe reset delivery and sowing status no
-                $data=array();
-                $data['status_selection']=SYSTEM_STATUS_NO;
-                $data['date_selection_updated']=$time;
-                $data['user_selection_updated']=$user->id;
-
-                Query_helper::update(TABLE_RND_VC_VARIETY_SELECTION,$data,array('id ='.$season_old['id']));
-                System_helper::history_save(TABLE_RND_VC_VARIETY_SELECTION_HISTORY,$season_old['id'],array('status_selection'=>SYSTEM_STATUS_YES),array('status_selection'=>SYSTEM_STATUS_NO));
-            }
-
-
-        }
         Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 
         $this->db->trans_complete(); //DB Transaction Handle END
@@ -318,14 +339,8 @@ class Trial_data_entry extends Root_Controller
         {
             $save_and_new=$this->input->post('system_save_new_status');
             $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
-            if($save_and_new==1)
-            {
-                $this->system_search_add($year);
-            }
-            else
-            {
-                $this->system_list($year);
-            }
+            $this->system_list($trial_id,$year,$season_id);
+
         }
         else
         {
