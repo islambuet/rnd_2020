@@ -149,7 +149,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
     jQuery(document).ready(function()
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
-        $('.datepicker').datepicker({dateFormat : 'dd-M-yy',changeMonth: true,changeYear: true,yearRange: "-100:+0",showButtonPanel: true});
+        $('.datepicker').datepicker({dateFormat : SYSTEM_DATE_FORMAT,changeMonth: true,changeYear: true,yearRange: "2020:c+1",showButtonPanel: true});
         $(document).off("click", ".select_all");
         $(document).on("click",'.select_all',function()
         {

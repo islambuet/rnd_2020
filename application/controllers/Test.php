@@ -5,10 +5,11 @@ class Test extends CI_Controller {
 
     public function index()
     {
-        $this->load->helper('season');
+        $a[1]='hi';
+        $a[2]='hi';
         echo '<pre>';
-        print_r(Season_helper::get_current_season());
-        print_r(Season_helper::get_all_seasons());
+        print_r(json_encode($a,JSON_FORCE_OBJECT ));
+
         echo '</pre>';
 
     }

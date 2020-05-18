@@ -153,6 +153,6 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 
     jQuery(document).ready(function()
     {
-        $('.datepicker').datepicker({dateFormat : 'dd-M',changeMonth: true,changeYear: true,yearRange: "-100:+0",showButtonPanel: true});
+        $('.datepicker').datepicker({dateFormat : 'dd-M',changeMonth: true,changeYear: true,yearRange: "2020:c+1",showButtonPanel: true});
     });
 </script>

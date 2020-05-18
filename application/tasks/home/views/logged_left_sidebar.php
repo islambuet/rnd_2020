@@ -23,7 +23,7 @@ $user=User_helper::get_user();
                         if(strpos($user->trail_data_edit, ','.$result['value'].',') !== FALSE)
                         {
                         ?>
-                        <li><a class="system_ajax" href="<?php echo site_url('trail_data_entry/'.$result['value']); ?>"><?php echo $result['text']; ?></a></li>
+                        <li><a class="system_ajax" href="<?php echo site_url('trial_data_entry/index/'.$result['value']); ?>"><?php echo $result['text']; ?></a></li>
                         <?php
                         }
                     }

@@ -19,5 +19,6 @@ foreach($results as $result)
     var ALERT_SELECT_ONE_ITEM = "<?php echo $CI->lang->line('ALERT_SELECT_ONE_ITEM'); ?>";
     var SYSTEM_CROPS=JSON.parse('<?php echo json_encode($system_crops);?>');
     var SYSTEM_TYPES=JSON.parse('<?php echo json_encode($system_types);?>');
+    var SYSTEM_DATE_FORMAT = "dd-M-yy";
 
 </script>

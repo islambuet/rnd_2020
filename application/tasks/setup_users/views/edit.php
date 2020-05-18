@@ -519,7 +519,7 @@ if($item['email'])
     jQuery(document).ready(function()
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
-        $('.datepicker').datepicker({dateFormat : 'dd-M-yy',changeMonth: true,changeYear: true,yearRange: "-100:+0",showButtonPanel: true});
+        $('.datepicker').datepicker({dateFormat : SYSTEM_DATE_FORMAT,changeMonth: true,changeYear: true,yearRange: "-100:+0",showButtonPanel: true});
         $('#qr_code_image').qrcode(
             {
                 size:100,
