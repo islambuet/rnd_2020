@@ -196,7 +196,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 
             if(type=='<?php echo SYSTEM_INPUT_TYPE_IMAGE; ?>')
             {
-                $("#default").val('no_image.jpg');
+                $("#default").val('images/no_image.jpg');
             }
             else
             {
