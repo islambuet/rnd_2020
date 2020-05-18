@@ -8,6 +8,7 @@ class Test extends CI_Controller {
         $this->load->helper('season');
         echo '<pre>';
         print_r(Season_helper::get_current_season());
+        print_r(Season_helper::get_all_seasons());
         echo '</pre>';
 
     }
