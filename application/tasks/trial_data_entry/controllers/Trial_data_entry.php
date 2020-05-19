@@ -47,6 +47,7 @@ class Trial_data_entry extends Root_Controller
             $data['type_name']= array('text'=>$this->lang->line('LABEL_TYPE_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','filtertype'=>'"list"','filteritems'=>'filter_items_type_name'));
             $data['variety_name']= array('text'=>$this->lang->line('LABEL_VARIETY_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
             $data['rnd_code']= array('text'=>$this->lang->line('LABEL_RND_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            $data['status_data_entered']= array('text'=>$this->lang->line('LABEL_STATUS_DATA_ENTERED'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
         }
         return $data;
     }
@@ -105,6 +106,20 @@ class Trial_data_entry extends Root_Controller
     public function system_get_items_list($trial_id,$year,$season_id)
     {
         $user=User_helper::get_user();
+        $this->db->from(TABLE_RND_TRIAL_DATA.' data');
+        $this->db->select('data.id,data.variety_id');
+        $this->db->where('data.year',$year);
+        $this->db->where('data.season_id',$season_id);
+        $this->db->where('data.trial_id',$trial_id);
+        $results=$this->db->get()->result_array();
+        $data_trail=array();
+        foreach($results as $result)
+        {
+            $data_trail[$result['variety_id']]=$result['id'];
+        }
+
+
+
         $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
         $this->db->select('vc.variety_index,vc.year');
         $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
@@ -123,8 +138,6 @@ class Trial_data_entry extends Root_Controller
         {
             $this->db->where_in('crop.id',explode(',',trim($user->crop_ids, ",")));
         }
-        //$this->db->group_by('variety.id');
-
         $this->db->order_by('crop.ordering','ASC');
         $this->db->order_by('crop.id','ASC');
         $this->db->order_by('type.ordering','DESC');
@@ -136,6 +149,14 @@ class Trial_data_entry extends Root_Controller
         foreach($items as &$item)
         {
             $item['rnd_code']=System_helper::get_variety_rnd_code($item);
+            if(isset($data_trail[$item['variety_id']]))
+            {
+                $item['status_data_entered']=SYSTEM_STATUS_YES;
+            }
+            else
+            {
+                $item['status_data_entered']=SYSTEM_STATUS_NO;
+            }
         }
 
         $this->json_return($items);
@@ -180,9 +201,12 @@ class Trial_data_entry extends Root_Controller
             $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$trial_id),1,0);
             $data['season']=Query_helper::get_info(TABLE_RND_SETUP_SEASON,'*',array('id ='.$trial_id),1,0);
             $data['trail_input_fields']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('form_id ='.$trial_id,'crop_id ='.$data['item']['crop_id']),0,0,array('ordering ASC','id ASC'));
-            //$data['trial_data']['normal']=array();
-            //$data['trial_data']['replica']=array();
-            $data['trial_data']=array();
+            $data['trial_data']=Query_helper::get_info(TABLE_RND_TRIAL_DATA,'*',array('year ='.$year,'season_id ='.$season_id,'trial_id ='.$trial_id,'variety_id ='.$variety_id),1,0);
+            if($data['trial_data'])
+            {
+                $data['trial_data']['normal']=json_decode($data['trial_data']['trial_normal'],true);
+                $data['trial_data']['replica']=json_decode($data['trial_data']['trial_replica'],true);
+            }
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit',$data,true));
             $this->set_message($this->message,$ajax);
@@ -232,6 +256,16 @@ class Trial_data_entry extends Root_Controller
         {
             $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
         }
+        $current_normal=array();
+        $current_replica=array();
+        $trial_data_current=Query_helper::get_info(TABLE_RND_TRIAL_DATA,'*',array('year ='.$year,'season_id ='.$season_id,'trial_id ='.$trial_id,'variety_id ='.$variety_id),1,0);
+        if($trial_data_current)
+        {
+            $current_normal=json_decode($trial_data_current['trial_normal'],true);
+            $current_replica=json_decode($trial_data_current['trial_replica'],true);
+        }
+
+
 
         $uploaded_images = Upload_helper::upload_file("images/trail_data/".$year.'/'.$season_id.'/'.$trial_id);
         $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('form_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
@@ -245,6 +279,18 @@ class Trial_data_entry extends Root_Controller
         {
             if($input_field['type']==SYSTEM_INPUT_TYPE_IMAGE)
             {
+                if($trial_data_current)//load first item
+                {
+                    if(isset($current_normal[$input_field['id']]))
+                    {
+                        $data_normal[$input_field['id']]=$current_normal[$input_field['id']];
+                    }
+                    if(isset($current_replica[$input_field['id']]))
+                    {
+                        $data_replica[$input_field['id']]=$current_replica[$input_field['id']];
+                    }
+
+                }
                 $normal_uploaded=false;
                 $replica_uploaded=false;
                 if(array_key_exists('trial_data_image_normal_'.$input_field['id'],$uploaded_images))
@@ -276,15 +322,18 @@ class Trial_data_entry extends Root_Controller
                 }
                 if($input_field['mandatory']==SYSTEM_STATUS_YES)
                 {
-                    if(!$normal_uploaded)
+                    if(!$trial_data_current)
                     {
-                        $this->action_error(sprintf($this->lang->line("MSG_NORMAL_INPUT_REQUIRED"),$input_field['name']));
-                    }
-                    if($item['status_replica']==SYSTEM_STATUS_YES)
-                    {
-                        if(!$replica_uploaded)
+                        if(!$normal_uploaded)
                         {
-                            $this->action_error(sprintf($this->lang->line("MSG_REPLICA_INPUT_REQUIRED"),$input_field['name']));
+                            $this->action_error(sprintf($this->lang->line("MSG_NORMAL_INPUT_REQUIRED"),$input_field['name']));
+                        }
+                        if($item['status_replica']==SYSTEM_STATUS_YES)
+                        {
+                            if(!$replica_uploaded)
+                            {
+                                $this->action_error(sprintf($this->lang->line("MSG_REPLICA_INPUT_REQUIRED"),$input_field['name']));
+                            }
                         }
                     }
                 }
@@ -327,10 +376,32 @@ class Trial_data_entry extends Root_Controller
             $this->system_list($trial_id,$year,$season_id);
         }
         $this->db->trans_start(); //DB Transaction Handle START
+        if($trial_data_current)
+        {
+            $data['date_updated']=$time;
+            $data['user_updated']=$user->id;
+            Query_helper::update(TABLE_RND_TRIAL_DATA,$data,array('id ='.$trial_data_current['id']),false);
 
-        $data['date_created']=$time;
-        $data['user_created']=$user->id;
-        Query_helper::add(TABLE_RND_TRIAL_DATA,$data,false);
+            $data_current=array();
+            $data_new=array();
+            $data_new['trial_normal']=$data['trial_normal'];
+            $data_current['trial_normal']=$trial_data_current['trial_normal'];
+            if($item['status_replica']==SYSTEM_STATUS_YES)
+            {
+                $data_new['trial_replica']=$data['trial_replica'];
+                $data_current['trial_replica']=$trial_data_current['trial_replica'];
+            }
+
+            System_helper::history_save(TABLE_RND_TRIAL_DATA_HISTORY,$trial_data_current['id'],$data_current,$data_new);
+        }
+        else
+        {
+            $data['date_created']=$time;
+            $data['user_created']=$user->id;
+            Query_helper::add(TABLE_RND_TRIAL_DATA,$data,false);
+        }
+
+
 
         Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 
