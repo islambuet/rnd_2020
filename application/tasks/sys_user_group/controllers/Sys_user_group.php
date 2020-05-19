@@ -399,7 +399,7 @@ class Sys_user_group extends Root_Controller
             {
                 $this->action_error($this->lang->line("MSG_INVALID_USER_GROUP"));
             }
-            $data['trail_data_forms']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
+            $data['trail_data_forms']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
             $ajax['status']=true;
             $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name.'/trail_data',$data,true));
             $this->set_message($this->message,$ajax);

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Setup_trial_data_form extends Root_Controller
+class Setup_trial_data extends Root_Controller
 {
     public $controller_name;
     public $permissions;
@@ -42,6 +42,7 @@ class Setup_trial_data_form extends Root_Controller
         {
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
+            $data['type']= array('text'=>$this->lang->line('LABEL_TRIAL_TYPE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"120"','filtertype'=>'"list"'));
             $data['remarks']= array('text'=>$this->lang->line('LABEL_REMARKS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"350"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
@@ -92,7 +93,7 @@ class Setup_trial_data_form extends Root_Controller
     }
     public function system_get_items_list()
     {
-        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,array('id','name','remarks','status','ordering'),array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
+        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
         $this->json_return($items);
     }
     public function system_add()
@@ -100,7 +101,7 @@ class Setup_trial_data_form extends Root_Controller
         if(isset($this->permissions['action1']) && ($this->permissions['action1']==1))
         {
             $data['item']=array();
-            $table_fields = $this->db->field_data(TABLE_RND_SETUP_TRIAL_DATA_FORM);
+            $table_fields = $this->db->field_data(TABLE_RND_SETUP_TRIAL_DATA);
 
             foreach ($table_fields as $field)
             {
@@ -129,7 +130,7 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $item_id=$this->input->post('id');
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$item_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$item_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
@@ -185,13 +186,13 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $data['user_updated']=$user->id;
                 $data['date_updated']=$time;
-                Query_helper::update(TABLE_RND_SETUP_TRIAL_DATA_FORM,$data,array('id='.$id));
+                Query_helper::update(TABLE_RND_SETUP_TRIAL_DATA,$data,array('id='.$id));
             }
             else
             {
                 $data['user_created']=$user->id;
                 $data['date_created']=$time;
-                Query_helper::add(TABLE_RND_SETUP_TRIAL_DATA_FORM,$data);
+                Query_helper::add(TABLE_RND_SETUP_TRIAL_DATA,$data);
             }
             Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 
@@ -250,7 +251,7 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $crop_id=1;
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$item_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$item_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM"));
@@ -272,7 +273,7 @@ class Setup_trial_data_form extends Root_Controller
     }
     public function system_get_items_list_input($form_id,$crop_id)
     {
-        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'',array('status !="'.SYSTEM_STATUS_DELETE.'"','form_id ='.$form_id,'crop_id ='.$crop_id),0,0,array('ordering ASC','id ASC'));
+        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'',array('status !="'.SYSTEM_STATUS_DELETE.'"','form_id ='.$form_id,'crop_id ='.$crop_id),0,0,array('ordering ASC','id ASC'));
         $this->json_return($items);
     }
     public function system_add_input($form_id,$crop_id)
@@ -280,13 +281,13 @@ class Setup_trial_data_form extends Root_Controller
         if(isset($this->permissions['action1']) && ($this->permissions['action1']==1))
         {
             $data['item']=array();
-            $table_fields = $this->db->field_data(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT);
+            $table_fields = $this->db->field_data(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS);
 
             foreach ($table_fields as $field)
             {
                 $data['item'][$field->name]=$field->default;
             }
-            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$form_id),1);
+            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$form_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
@@ -311,13 +312,13 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $item_id=$this->input->post('id');
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
             }
             $data['item']['options']=str_replace(",",PHP_EOL,$data['item']['options']);
-            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$form_id),1);
+            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$form_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
@@ -342,7 +343,7 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $item_id=$this->input->post('id');
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
@@ -352,7 +353,7 @@ class Setup_trial_data_form extends Root_Controller
             $data['item']['options']=str_replace(",",PHP_EOL,$data['item']['options']);
 
 
-            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$form_id),1);
+            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$form_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
@@ -383,7 +384,7 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $this->access_denied();
             }
-            $result=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('id ='.$id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            $result=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
             if(!$result)
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
@@ -415,7 +416,7 @@ class Setup_trial_data_form extends Root_Controller
             {
                 $data['user_updated']=$user->id;
                 $data['date_updated']=$time;
-                Query_helper::update(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,$data,array('id='.$id));
+                Query_helper::update(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,$data,array('id='.$id));
             }
             else
             {
@@ -423,7 +424,7 @@ class Setup_trial_data_form extends Root_Controller
                 $data['form_id']=$form_id;
                 $data['user_created']=$user->id;
                 $data['date_created']=$time;
-                Query_helper::add(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,$data);
+                Query_helper::add(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,$data);
             }
             Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 

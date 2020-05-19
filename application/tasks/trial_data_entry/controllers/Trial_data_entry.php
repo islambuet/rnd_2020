@@ -87,7 +87,7 @@ class Trial_data_entry extends Root_Controller
             $data['season_id']=$season_id;
             $data['trial_id']=$trial_id;
             $data['seasons']=Season_helper::get_all_seasons();
-            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$trial_id),1,0);
+            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$trial_id),1,0);
 
             $user = User_helper::get_user();
             $method='system_list';
@@ -198,9 +198,9 @@ class Trial_data_entry extends Root_Controller
             $data['year']=$year;
             $data['trial_id']=$trial_id;
             $data['season_id']=$season_id;
-            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,'*',array('id ='.$trial_id),1,0);
+            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$trial_id),1,0);
             $data['season']=Query_helper::get_info(TABLE_RND_SETUP_SEASON,'*',array('id ='.$trial_id),1,0);
-            $data['trail_input_fields']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('form_id ='.$trial_id,'crop_id ='.$data['item']['crop_id']),0,0,array('ordering ASC','id ASC'));
+            $data['trail_input_fields']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('form_id ='.$trial_id,'crop_id ='.$data['item']['crop_id']),0,0,array('ordering ASC','id ASC'));
             $data['trial_data']=Query_helper::get_info(TABLE_RND_TRIAL_DATA,'*',array('year ='.$year,'season_id ='.$season_id,'trial_id ='.$trial_id,'variety_id ='.$variety_id),1,0);
             if($data['trial_data'])
             {
@@ -268,7 +268,7 @@ class Trial_data_entry extends Root_Controller
 
 
         $uploaded_images = Upload_helper::upload_file("images/trail_data/".$year.'/'.$season_id.'/'.$trial_id);
-        $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM_INPUT,'*',array('form_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
+        $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('form_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
 
         $data['trial_id']=$trial_id;
         $data['year']=$year;

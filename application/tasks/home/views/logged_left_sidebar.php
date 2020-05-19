@@ -10,7 +10,7 @@ $user=User_helper::get_user();
             $menu=User_helper::get_html_menu();
             echo $menu;
         //trial menu section
-        $results=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_FORM,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
+        $results=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
         if(strlen($user->trail_data_edit)>2)
         {
             ?>
@@ -35,7 +35,7 @@ $user=User_helper::get_user();
         if(strlen($user->trail_data_report)>2)
         {
         ?>
-        <li><a class="system_ajax" href="<?php echo site_url('trail_data_report'); ?>">Trail Data Report</a></li>
+        <li><a class="system_ajax" href="<?php echo site_url('trial_data_report'); ?>">Trail Data Report</a></li>
         <?php
         }
         ?>

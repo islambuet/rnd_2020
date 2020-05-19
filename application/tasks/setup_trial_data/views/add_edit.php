@@ -75,6 +75,18 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
+                    <label for="type" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_TRIAL_TYPE');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="status" name="item[type]" class="form-control">
+                        <!--<option value=""></option>-->
+                        <option value="<?php echo SYSTEM_TRIAL_TYPE_TEXT; ?>" <?php if ($item['type'] == SYSTEM_TRIAL_TYPE_TEXT) { echo "selected='selected'"; } ?> ><?php echo SYSTEM_TRIAL_TYPE_TEXT; ?></option>
+                        <option value="<?php echo SYSTEM_TRIAL_TYPE_IMAGE; ?>" <?php if ($item['type'] == SYSTEM_TRIAL_TYPE_IMAGE) { echo "selected='selected'"; } ?> ><?php echo SYSTEM_TRIAL_TYPE_IMAGE; ?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
                     <label for="remarks" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_REMARKS');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">
