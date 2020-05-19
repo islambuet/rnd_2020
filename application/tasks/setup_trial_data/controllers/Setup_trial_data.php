@@ -229,15 +229,15 @@ class Setup_trial_data extends Root_Controller
         }
         return true;
     }
-    public function system_list_input($form_id=0,$crop_id=0)
+    public function system_list_input($trial_id=0,$crop_id=0)
     {
         if(isset($this->permissions['action0']) && ($this->permissions['action0']==1))
         {
             $user = User_helper::get_user();
             $method='system_list_input';
-            if($form_id>0)
+            if($trial_id>0)
             {
-                $item_id=$form_id;
+                $item_id=$trial_id;
             }
             else
             {
@@ -271,12 +271,12 @@ class Setup_trial_data extends Root_Controller
             $this->access_denied();
         }
     }
-    public function system_get_items_list_input($form_id,$crop_id)
+    public function system_get_items_list_input($trial_id,$crop_id)
     {
-        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'',array('status !="'.SYSTEM_STATUS_DELETE.'"','form_id ='.$form_id,'crop_id ='.$crop_id),0,0,array('ordering ASC','id ASC'));
+        $items=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'',array('status !="'.SYSTEM_STATUS_DELETE.'"','trial_id ='.$trial_id,'crop_id ='.$crop_id),0,0,array('ordering ASC','id ASC'));
         $this->json_return($items);
     }
-    public function system_add_input($form_id,$crop_id)
+    public function system_add_input($trial_id,$crop_id)
     {
         if(isset($this->permissions['action1']) && ($this->permissions['action1']==1))
         {
@@ -287,12 +287,12 @@ class Setup_trial_data extends Root_Controller
             {
                 $data['item'][$field->name]=$field->default;
             }
-            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$form_id),1);
+            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$trial_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_add_input/'.$form_id.'/'.$crop_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_add_input/'.$trial_id.'/'.$crop_id);
             $this->json_return($ajax);
         }
         else
@@ -300,7 +300,7 @@ class Setup_trial_data extends Root_Controller
             $this->access_denied();
         }
     }
-    public function system_edit_input($form_id,$crop_id,$id=0)
+    public function system_edit_input($trial_id,$crop_id,$id=0)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
@@ -312,18 +312,18 @@ class Setup_trial_data extends Root_Controller
             {
                 $item_id=$this->input->post('id');
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$item_id,'trial_id ='.$trial_id,'crop_id ='.$crop_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
             }
             $data['item']['options']=str_replace(",",PHP_EOL,$data['item']['options']);
-            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$form_id),1);
+            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$trial_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit_input/'.$form_id.'/'.$crop_id.'/'.$item_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_edit_input/'.$trial_id.'/'.$crop_id.'/'.$item_id);
             $this->json_return($ajax);
         }
         else
@@ -331,7 +331,7 @@ class Setup_trial_data extends Root_Controller
             $this->access_denied();
         }
     }
-    public function system_duplicate_input($form_id,$crop_id,$id=0)
+    public function system_duplicate_input($trial_id,$crop_id,$id=0)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
@@ -343,7 +343,7 @@ class Setup_trial_data extends Root_Controller
             {
                 $item_id=$this->input->post('id');
             }
-            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$item_id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$item_id,'trial_id ='.$trial_id,'crop_id ='.$crop_id),1);
             if(!$data['item'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
@@ -353,12 +353,12 @@ class Setup_trial_data extends Root_Controller
             $data['item']['options']=str_replace(",",PHP_EOL,$data['item']['options']);
 
 
-            $data['form']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$form_id),1);
+            $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$trial_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/add_edit_input',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_add_input/'.$form_id.'/'.$crop_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_add_input/'.$trial_id.'/'.$crop_id);
             $this->json_return($ajax);
         }
         else
@@ -372,7 +372,7 @@ class Setup_trial_data extends Root_Controller
         $time = time();
         $id=$this->input->post('id');
         $crop_id=$this->input->post('crop_id');
-        $form_id=$this->input->post('form_id');
+        $trial_id=$this->input->post('trial_id');
         $system_user_token = $this->input->post("system_user_token");
         $item = $this->input->post('item');
         $item['options']=str_replace(PHP_EOL,",",trim($item['options']));
@@ -384,7 +384,7 @@ class Setup_trial_data extends Root_Controller
             {
                 $this->access_denied();
             }
-            $result=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$id,'form_id ='.$form_id,'crop_id ='.$crop_id),1);
+            $result=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('id ='.$id,'trial_id ='.$trial_id,'crop_id ='.$crop_id),1);
             if(!$result)
             {
                 $this->action_error($this->lang->line("MSG_INVALID_ITEM_INPUT"));
@@ -421,7 +421,7 @@ class Setup_trial_data extends Root_Controller
             else
             {
                 $data['crop_id']=$crop_id;
-                $data['form_id']=$form_id;
+                $data['trial_id']=$trial_id;
                 $data['user_created']=$user->id;
                 $data['date_created']=$time;
                 Query_helper::add(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,$data);
@@ -435,11 +435,11 @@ class Setup_trial_data extends Root_Controller
                 $this->message['system_message']=$this->lang->line('MSG_SAVE_DONE');
                 if($save_and_new==1)
                 {
-                    $this->system_add_input($form_id,$crop_id);
+                    $this->system_add_input($trial_id,$crop_id);
                 }
                 else
                 {
-                    $this->system_list_input($form_id,$crop_id);
+                    $this->system_list_input($trial_id,$crop_id);
                 }
             }
             else

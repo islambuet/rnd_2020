@@ -268,7 +268,7 @@ class Trial_data_entry extends Root_Controller
 
 
         $uploaded_images = Upload_helper::upload_file("images/trail_data/".$year.'/'.$season_id.'/'.$trial_id);
-        $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('form_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
+        $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('trial_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
 
         $data['trial_id']=$trial_id;
         $data['year']=$year;
