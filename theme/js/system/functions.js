@@ -46,3 +46,24 @@ function get_dropdown_with_select(items,selected_value = '',select_label='Select
     }
     return dropdown_html;
 }
+var header_render=function (text, align)
+{
+    var words = text.split(" ");
+    var label=words[0];
+    var count=words[0].length;
+    for (i = 1; i < words.length; i++)
+    {
+        if((count+words[i].length)>10)
+        {
+            label=label+'</br>'+words[i];
+            count=words[i].length;
+        }
+        else
+        {
+            label=label+' '+words[i];
+            count=count+words[i].length;
+        }
+
+    }
+    return '<div style="margin: 5px;">'+label+'</div>';
+};
