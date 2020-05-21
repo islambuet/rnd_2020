@@ -42,7 +42,6 @@ class Setup_trial_data extends Root_Controller
         {
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
-            $data['type']= array('text'=>$this->lang->line('LABEL_TRIAL_TYPE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"120"','filtertype'=>'"list"'));
             $data['remarks']= array('text'=>$this->lang->line('LABEL_REMARKS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"350"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
@@ -56,8 +55,6 @@ class Setup_trial_data extends Root_Controller
             $data['default']= array('text'=>$this->lang->line('LABEL_DEFAULT'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"100"'));
             $data['mandatory']= array('text'=>$this->lang->line('LABEL_MANDATORY'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
             $data['class']= array('text'=>$this->lang->line('LABEL_CLASS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
-            $data['average_group_name']= array('text'=>$this->lang->line('LABEL_AVERAGE_GROUP_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"250"','filtertype'=>'"list"'));
-            $data['summary_report_column']= array('text'=>$this->lang->line('LABEL_SUMMARY_REPORT_COLUMN'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','filtertype'=>'"list"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
         }
@@ -242,6 +239,10 @@ class Setup_trial_data extends Root_Controller
             else
             {
                 $item_id=$this->input->post('id');
+            }
+            if(!$item_id)
+            {
+                $this->system_list();
             }
             if(!($crop_id>0))
             {
