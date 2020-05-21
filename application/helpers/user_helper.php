@@ -24,7 +24,7 @@ class User_helper
                 $this->username_password_same=true;
             }
         }
-        $result=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('trail_data_edit','trail_data_report'),array('id ='.$this->user_group),1);
+        $result=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('trial_data','trial_report'),array('id ='.$this->user_group),1);
         if ($result)
         {
             foreach ($result as $key => $value)

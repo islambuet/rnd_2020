@@ -23,6 +23,8 @@ $lang['MSG_SAVE_FAIL_ROLE'] = 'UserGroup Role Saved Failed.';
 $lang['LABEL_FORM_NAME'] = 'Form Name';
 $lang['LABEL_TRAIL_ACTION_EDIT'] = 'Entry Access';
 $lang['LABEL_TRAIL_ACTION_REPORT'] = 'Report Access';
+$lang['LABEL_TITLE_TRIAL_DATA'] = 'Trail Data';
+$lang['LABEL_TITLE_TRIAL_REPORT'] = 'Trail Report';
 
 
 

@@ -382,7 +382,7 @@ class Sys_user_group extends Root_Controller
             $this->action_error($this->lang->line("MSG_SAVE_FAIL_ROLE"));
         }
     }
-    public function system_trail_data($id=0)
+    public function system_trial_data($id=0)
     {
         if(isset($this->permissions['action2']) && ($this->permissions['action2']==1))
         {
@@ -399,11 +399,12 @@ class Sys_user_group extends Root_Controller
             {
                 $this->action_error($this->lang->line("MSG_INVALID_USER_GROUP"));
             }
-            $data['trail_data_forms']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
+            $data['trial_data']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('status ="'.SYSTEM_STATUS_ACTIVE.'"'),0,0,array('ordering ASC','id ASC'));
+            $data['trial_report']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT,'*',array('status ="'.SYSTEM_STATUS_ACTIVE.'"'),0,0,array('ordering ASC','id ASC'));
             $ajax['status']=true;
-            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name.'/trail_data',$data,true));
+            $ajax['system_content'][]=array("id"=>"#system_content","html"=>$this->load->view($this->controller_name.'/trial_data',$data,true));
             $this->set_message($this->message,$ajax);
-            $ajax['system_page_url']=site_url($this->controller_name.'/system_trail_data/'.$item_id);
+            $ajax['system_page_url']=site_url($this->controller_name.'/system_trial_data/'.$item_id);
             $this->json_return($ajax);
         }
         else
@@ -411,14 +412,14 @@ class Sys_user_group extends Root_Controller
             $this->access_denied();
         }
     }
-    public function system_save_trail_data()
+    public function system_save_trial_data()
     {
         $user=User_helper::get_user();
         $time = time();
         $system_user_token = $this->input->post("system_user_token");
         $item_id=$this->input->post('id');
-        $trail_data_edit=','.implode(",", $this->input->post('trail_data_edit')?$this->input->post('trail_data_edit'):array()).',';
-        $trail_data_report=','.implode(",", $this->input->post('trail_data_report')?$this->input->post('trail_data_report'):array()).',';
+        $trial_data=','.implode(",", $this->input->post('trial_data')?$this->input->post('trial_data'):array()).',';
+        $trial_report=','.implode(",", $this->input->post('trial_report')?$this->input->post('trial_report'):array()).',';
         $result=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('id ='.$item_id),1);
         if(!$result)
         {
@@ -438,10 +439,10 @@ class Sys_user_group extends Root_Controller
 
         $this->db->trans_start(); //DB Transaction Handle START
         $data=array();
-        $data['trail_data_edit']=$trail_data_edit;
-        $data['trail_data_report']=$trail_data_report;
-        $data['date_trail_data_updated']=$time;
-        $data['user_trail_data_updated']=$user->id;
+        $data['trial_data']=$trial_data;
+        $data['trial_report']=$trial_report;
+        $data['date_trial_data_updated']=$time;
+        $data['user_trial_data_updated']=$user->id;
         Query_helper::update(TABLE_SYSTEM_USER_GROUP,$data,array('id='.$item_id));
         Token_helper::update_token($system_user_token_info['id'], $system_user_token);
 
