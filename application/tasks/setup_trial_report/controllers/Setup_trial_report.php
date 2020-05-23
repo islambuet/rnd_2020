@@ -303,6 +303,9 @@ class Setup_trial_report extends Root_Controller
             $this->db->select('input.name input_name,input.id input_id');
             $this->db->join(TABLE_RND_SETUP_TRIAL_DATA.' trial','trial.id = input.trial_id','INNER');
             $this->db->select('trial.id trial_id,trial.name trial_name');
+            $this->db->where('input.crop_id',$crop_id);
+            $this->db->where('input.status',SYSTEM_STATUS_ACTIVE);
+
             $this->db->order_by('trial.ordering ASC');
             $this->db->order_by('trial.id ASC');
             $this->db->order_by('input.ordering ASC');
@@ -317,10 +320,6 @@ class Setup_trial_report extends Root_Controller
                 $data['trail_inputs'][$result['trial_id']]['inputs'][]=$result;
             }
             $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS,'*',array('report_id ='.$report_id,'crop_id ='.$crop_id),1);
-            /*if(!$data['selected_inputs'])
-            {
-
-            }*/
             $data['report']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT,'*',array('id ='.$report_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;

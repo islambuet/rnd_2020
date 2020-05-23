@@ -64,7 +64,7 @@ class Trial_data_entry extends Root_Controller
     public function system_list($trial_id,$year=0,$season_id=0)
     {
         $user=User_helper::get_user();
-        if(strpos($user->trail_data_edit, ','.$trial_id.',') !== FALSE)
+        if(strpos($user->trial_data, ','.$trial_id.',') !== FALSE)
         {
             if(!($year>0))
             {
@@ -112,10 +112,10 @@ class Trial_data_entry extends Root_Controller
         $this->db->where('data.season_id',$season_id);
         $this->db->where('data.trial_id',$trial_id);
         $results=$this->db->get()->result_array();
-        $data_trail=array();
+        $data_trial=array();
         foreach($results as $result)
         {
-            $data_trail[$result['variety_id']]=$result['id'];
+            $data_trial[$result['variety_id']]=$result['id'];
         }
 
 
@@ -149,7 +149,7 @@ class Trial_data_entry extends Root_Controller
         foreach($items as &$item)
         {
             $item['rnd_code']=System_helper::get_variety_rnd_code($item);
-            if(isset($data_trail[$item['variety_id']]))
+            if(isset($data_trial[$item['variety_id']]))
             {
                 $item['status_data_entered']=SYSTEM_STATUS_YES;
             }
@@ -165,7 +165,7 @@ class Trial_data_entry extends Root_Controller
     public function system_edit($trial_id,$year,$season_id,$variety_id=0)
     {
         $user=User_helper::get_user();
-        if(strpos($user->trail_data_edit, ','.$trial_id.',') !== FALSE)
+        if(strpos($user->trial_data, ','.$trial_id.',') !== FALSE)
         {
             if(!($variety_id>0))
             {
@@ -200,7 +200,7 @@ class Trial_data_entry extends Root_Controller
             $data['season_id']=$season_id;
             $data['trial']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,'*',array('id ='.$trial_id),1,0);
             $data['season']=Query_helper::get_info(TABLE_RND_SETUP_SEASON,'*',array('id ='.$trial_id),1,0);
-            $data['trail_input_fields']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('trial_id ='.$trial_id,'crop_id ='.$data['item']['crop_id']),0,0,array('ordering ASC','id ASC'));
+            $data['trial_input_fields']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('trial_id ='.$trial_id,'crop_id ='.$data['item']['crop_id'],'status ="'.SYSTEM_STATUS_ACTIVE.'"'),0,0,array('ordering ASC','id ASC'));
             $data['trial_data']=Query_helper::get_info(TABLE_RND_TRIAL_DATA,'*',array('year ='.$year,'season_id ='.$season_id,'trial_id ='.$trial_id,'variety_id ='.$variety_id),1,0);
             if($data['trial_data'])
             {
@@ -267,15 +267,15 @@ class Trial_data_entry extends Root_Controller
 
 
 
-        $uploaded_images = Upload_helper::upload_file("images/trail_data/".$year.'/'.$season_id.'/'.$trial_id);
-        $trail_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('trial_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
+        $uploaded_images = Upload_helper::upload_file("images/trial_data/".$year.'/'.$season_id.'/'.$trial_id);
+        $trial_input_fields=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS,'*',array('trial_id ='.$trial_id,'crop_id ='.$item['crop_id']),0,0,array('ordering ASC','id ASC'));
 
         $data['trial_id']=$trial_id;
         $data['year']=$year;
         $data['season_id']=$season_id;
         $data['variety_id']=$variety_id;
 
-        foreach($trail_input_fields as $input_field)
+        foreach($trial_input_fields as $input_field)
         {
             if($input_field['type']==SYSTEM_INPUT_TYPE_IMAGE)
             {
@@ -298,7 +298,7 @@ class Trial_data_entry extends Root_Controller
                     if($uploaded_images['trial_data_image_normal_'.$input_field['id']]['status'])
                     {
                         $normal_uploaded=true;
-                        $data_normal[$input_field['id']]="images/trail_data/".$year.'/'.$season_id.'/'.$trial_id.'/'.$uploaded_images['trial_data_image_normal_'.$input_field['id']]['info']['file_name'];
+                        $data_normal[$input_field['id']]="images/trial_data/".$year.'/'.$season_id.'/'.$trial_id.'/'.$uploaded_images['trial_data_image_normal_'.$input_field['id']]['info']['file_name'];
                     }
                     else
                     {
@@ -312,7 +312,7 @@ class Trial_data_entry extends Root_Controller
                         if($uploaded_images['trial_data_image_replica_'.$input_field['id']]['status'])
                         {
                             $replica_uploaded=true;
-                            $data_replica[$input_field['id']]="images/trail_data/".$year.'/'.$season_id.'/'.$trial_id.'/'.$uploaded_images['trial_data_image_replica_'.$input_field['id']]['info']['file_name'];
+                            $data_replica[$input_field['id']]="images/trial_data/".$year.'/'.$season_id.'/'.$trial_id.'/'.$uploaded_images['trial_data_image_replica_'.$input_field['id']]['info']['file_name'];
                         }
                         else
                         {

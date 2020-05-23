@@ -104,7 +104,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                 </div>
                 <?php
             }
-            foreach($trail_input_fields as $input_field)
+            foreach($trial_input_fields as $input_field)
             {
                 $default_normal=array();
                 $default_normal['name']='trial_data[normal]['.$input_field['id'].']';
