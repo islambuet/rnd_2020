@@ -15,11 +15,6 @@ $action_buttons[] = array
 <div class="card mt-2">
     <div class="card-body">
 
-        <?php
-        {
-            $CI->load->view('jqx_column_handler',array('system_jqx_items'=>$system_jqx_items,'jqx_container'=>$jqx_container));
-        }
-        ?>
         <div id="<?php echo substr($jqx_container,1);?>">
 
         </div>

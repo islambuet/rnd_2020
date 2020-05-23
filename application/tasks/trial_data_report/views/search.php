@@ -60,22 +60,29 @@ $user=User_helper::get_user();
                             </div>
                             <div class="col-lg-4 col-8">
                                 <select id="crop_id" name="search_items[crop_id]" class="form-control">
-                                    <option value=""><?php echo $this->lang->line('SELECT');?></option>
+                                    <option value=""><?php echo $this->lang->line('LABEL_SELECT');?></option>
+                                    <?php
+                                    foreach($crops as $crop)
+                                    {
+                                        ?>
+                                        <option value='<?php echo $crop['value']; ?>' ><?php echo $crop['text']; ?></option>
+                                    <?php
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4">
-                                <label for="trial_id" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_TRIAL_NAME');?><span class="text-danger">*</span></label>
+                                <label for="report_id" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_REPORT_NAME');?><span class="text-danger">*</span></label>
                             </div>
                             <div class="col-lg-4 col-8">
-                                <select id="trial_id" name="search_items[trial_id]" class="form-control">
-                                    <option value="0"><?php echo $this->lang->line('Summary Report');?></option>
+                                <select id="report_id" name="search_items[report_id]" class="form-control">
                                     <?php
-                                    foreach($trials as $trial)
+                                    foreach($reports as $report)
                                     {
                                         ?>
-                                        <option value='<?php echo $trial['value']; ?>'><?php echo $trial['text']; ?></option>
+                                        <option value='<?php echo $report['value']; ?>'><?php echo $report['text']; ?></option>
                                     <?php
                                     }
                                     ?>
@@ -102,13 +109,8 @@ $user=User_helper::get_user();
 
     jQuery(document).ready(function()
     {
-        $('#crop_id').html(get_dropdown_with_select(SYSTEM_CROPS));
         $(document).off('change','#year');
         $(document).off('change','#season_id');
         $(document).off('change', '#crop_id');
-
-
-
-        //$('.datepicker').datepicker({dateFormat : SYSTEM_DATE_FORMAT,changeMonth: true,changeYear: true,yearRange: "2020:c+1",showButtonPanel: true});
     });
 </script>

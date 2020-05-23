@@ -80,25 +80,35 @@ class Trial_data_report extends Root_Controller
         }
         return $data;
     }
-    public function system_preference($method='system_list')
-    {
-        //if necessary can rewrite it
-        System_helper::system_preference($method);
-    }
-    public function system_save_preference()
-    {
-        //if necessary can rewrite it
-        System_helper::save_preference();
-    }
     public function system_search()
     {
         $user=User_helper::get_user();
-        if(strlen($user->trail_data_report)>2)
+        if(strlen($user->trial_report)>2)
         {
             $data['year']=date("Y");
             $data['season_id']=Season_helper::get_current_season()['id'];
             $data['seasons']=Season_helper::get_all_seasons();
-            $data['trials']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_DATA,array('id value','name text'),array('status !="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC','id ASC'));
+
+
+            $this->db->from(TABLE_RND_SETUP_TRIAL_REPORT.' report');
+            $this->db->select('report.id value,report.name text');
+            $this->db->where('status',SYSTEM_STATUS_ACTIVE);
+            $this->db->where_in('report.id',explode(',',trim($user->trial_report, ",")));
+            $this->db->order_by('report.ordering ASC');
+            $this->db->order_by('report.id ASC');
+            $data['reports']=$this->db->get()->result_array();
+
+
+            $this->db->from(TABLE_RND_SETUP_CROP.' crop');
+            $this->db->select('crop.id value,crop.name text');
+            if(strlen($user->crop_ids)>2)
+            {
+                $this->db->where_in('crop.id',explode(',',trim($user->crop_ids, ",")));
+            }
+            $this->db->order_by('crop.ordering ASC');
+            $this->db->order_by('crop.id ASC');
+            $data['crops']=$this->db->get()->result_array();
+
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#system_content','html'=>$this->load->view($this->controller_name.'/search',$data,true));
             $this->set_message($this->message,$ajax);
@@ -115,18 +125,33 @@ class Trial_data_report extends Root_Controller
         $method='system_list';
         $user=User_helper::get_user();
         $search_items = $this->input->post('search_items');
-        if(strlen($user->trail_data_report)>2)
+        if(strpos($user->trial_report, ','.$search_items['report_id'].',') !== FALSE)
         {
             if(!$this->check_validation_report())
             {
                 $this->validation_error($this->message['system_message']);
             }
             $data['search_items']=$search_items;
-            $data['system_jqx_items']= System_helper::get_preference($user->id, $this->controller_name, $method, $this->get_jqx_items($method,$search_items['crop_id'],$search_items['trial_id']));
+            $data['system_jqx_items']= array();
+            $data['system_jqx_items']['variety_id']= array('text'=>$this->lang->line('LABEL_VARIETY_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
+            $data['system_jqx_items']['variety_name']= array('text'=>$this->lang->line('LABEL_VARIETY_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            $data['system_jqx_items']['rnd_code']= array('text'=>$this->lang->line('LABEL_RND_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+
+            $report_info=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS,'*',array('id ='.$search_items['report_id']),1);
+            if(!$report_info)
+            {
+                $this->action_error($this->lang->line("MSG_INVALID_REPORT"));
+            }
+
+
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#report_container','html'=>$this->load->view($this->controller_name.'/list',$data,true));
             $this->set_message($this->message,$ajax);
             $this->json_return($ajax);
+        }
+        else
+        {
+            $this->access_denied();
         }
 
     }
@@ -137,6 +162,7 @@ class Trial_data_report extends Root_Controller
         $this->form_validation->set_rules('search_items[year]',$this->lang->line('LABEL_YEAR'),'required');
         $this->form_validation->set_rules('search_items[season_id]',$this->lang->line('LABEL_SEASON_NAME'),'required');
         $this->form_validation->set_rules('search_items[crop_id]',$this->lang->line('LABEL_CROP_NAME'),'required');
+        $this->form_validation->set_rules('search_items[report_id]',$this->lang->line('LABEL_REPORT_NAME'),'required');
         if($this->form_validation->run()==false)
         {
             $this->message['system_message']=validation_errors();
@@ -149,6 +175,8 @@ class Trial_data_report extends Root_Controller
         //$trial_id=5;
         $year=$this->input->post('year');
         $season_id=$this->input->post('season_id');
+        $crop_id=$this->input->post('crop_id');
+        $report_id=$this->input->post('report_id');
 
         $user=User_helper::get_user();
 
@@ -180,10 +208,7 @@ class Trial_data_report extends Root_Controller
         $this->db->where('vc.status_selection',SYSTEM_STATUS_YES);
         $this->db->where('vc.status_delivery',SYSTEM_STATUS_YES);
         $this->db->where('vc.status_sowing',SYSTEM_STATUS_YES);
-        if(strlen($user->crop_ids)>2)
-        {
-            $this->db->where_in('crop.id',explode(',',trim($user->crop_ids, ",")));
-        }
+        $this->db->where('crop.id',$crop_id);
         $this->db->order_by('crop.ordering','ASC');
         $this->db->order_by('crop.id','ASC');
         $this->db->order_by('type.ordering','DESC');
