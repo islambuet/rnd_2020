@@ -35,14 +35,6 @@ class Trial_data_report extends Root_Controller
             $data['seasons']=Season_helper::get_all_seasons();
 
 
-            $this->db->from(TABLE_RND_SETUP_TRIAL_REPORT.' report');
-            $this->db->select('report.id value,report.name text');
-            $this->db->where('status',SYSTEM_STATUS_ACTIVE);
-            $this->db->where_in('report.id',explode(',',trim($user->trial_report, ",")));
-            $this->db->order_by('report.ordering ASC');
-            $this->db->order_by('report.id ASC');
-            $data['reports']=$this->db->get()->result_array();
-
 
             $this->db->from(TABLE_RND_SETUP_CROP.' crop');
             $this->db->select('crop.id value,crop.name text');
@@ -65,17 +57,38 @@ class Trial_data_report extends Root_Controller
             $this->access_denied();
         }
     }
+    public function system_search_variety()
+    {
+        $user=User_helper::get_user();
+        $data= $this->input->post('search_items');
+
+        $this->db->from(TABLE_RND_SETUP_TRIAL_REPORT.' report');
+        $this->db->select('report.id value,report.name text');
+        $this->db->where('status',SYSTEM_STATUS_ACTIVE);
+        $this->db->where_in('report.id',explode(',',trim($user->trial_report, ",")));
+        $this->db->order_by('report.ordering ASC');
+        $this->db->order_by('report.id ASC');
+        $data['reports']=$this->db->get()->result_array();
+
+        $ajax['status']=true;
+        $ajax['system_content'][]=array('id'=>'#variety_container','html'=>$this->load->view($this->controller_name.'/search_variety',$data,true));
+        $this->set_message($this->message,$ajax);
+
+        $this->json_return($ajax);
+
+
+    }
     public function system_report()
     {
         $method='system_list';
         $user=User_helper::get_user();
         $search_items = $this->input->post('search_items');
+        $search_items['variety_ids'][]=1;
+        $search_items['variety_ids'][]=4;
+        $search_items['variety_ids'][]=5;
+
         if(strpos($user->trial_report, ','.$search_items['report_id'].',') !== FALSE)
         {
-            if(!$this->check_validation_report())
-            {
-                $this->validation_error($this->message['system_message']);
-            }
             $data['search_items']=$search_items;
             $data['system_jqx_items']= array();
             $data['system_jqx_items']['variety_id']= array('text'=>$this->lang->line('LABEL_VARIETY_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
@@ -93,7 +106,7 @@ class Trial_data_report extends Root_Controller
                 $this->action_error($this->lang->line("MSG_INVALID_REPORT"));
             }
             $report_input_ids=explode(',',trim($data['report']['input_ids'],','));
-            $data['has_image']=false;
+
 
             $this->db->from(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS.' input');
             $this->db->select('input.name input_name,input.id input_id,input.type input_type');
@@ -116,12 +129,7 @@ class Trial_data_report extends Root_Controller
                 {
                     $data['system_jqx_items']['calc_'.$i]= array('text'=>$data['report']['calc_name_'.$i],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
                 }
-                //$data['calc_name_'.$i]= array('text'=>$this->lang->line('LABEL_CALC_NAME_'.$i),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
-                //$data['calc_value_'.$i]= array('text'=>$this->lang->line('LABEL_CALC_VALUE_'.$i),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
             }
-
-
-
 
             $ajax['status']=true;
             $ajax['system_content'][]=array('id'=>'#report_container','html'=>$this->load->view($this->controller_name.'/list',$data,true));
@@ -134,21 +142,6 @@ class Trial_data_report extends Root_Controller
         }
 
     }
-    private function check_validation_report()
-    {
-        $this->load->library('form_validation');
-        $this->form_validation->set_error_delimiters('', '');
-        $this->form_validation->set_rules('search_items[year]',$this->lang->line('LABEL_YEAR'),'required');
-        $this->form_validation->set_rules('search_items[season_id]',$this->lang->line('LABEL_SEASON_NAME'),'required');
-        $this->form_validation->set_rules('search_items[crop_id]',$this->lang->line('LABEL_CROP_NAME'),'required');
-        $this->form_validation->set_rules('search_items[report_id]',$this->lang->line('LABEL_REPORT_NAME'),'required');
-        if($this->form_validation->run()==false)
-        {
-            $this->message['system_message']=validation_errors();
-            return false;
-        }
-        return true;
-    }
     public function system_get_items_list()
     {
         //$trial_id=5;
@@ -156,6 +149,10 @@ class Trial_data_report extends Root_Controller
         $season_id=$this->input->post('season_id');
         $crop_id=$this->input->post('crop_id');
         $report_id=$this->input->post('report_id');
+        echo '<pre>';
+        print_r($this->input->post());
+        echo '</pre>';
+        die();
 
         $user=User_helper::get_user();
 
