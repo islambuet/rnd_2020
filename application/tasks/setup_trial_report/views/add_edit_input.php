@@ -91,7 +91,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                 <thead class="text-center thead-light">
                                 <tr>
                                     <th><?php echo $CI->lang->line("LABEL_ID"); ?></th>
-                                    <th class="text-center"><input type="checkbox" data-trial-id='<?php echo $trial['trial_id']; ?>' class="select_all"></th>
+                                    <th class="text-center"><input type="checkbox" data-type='select_trail_<?php echo $trial['trial_id']; ?>' class="select_all"></th>
                                     <th><?php echo $CI->lang->line("LABEL_HEADER_NAME"); ?></th>
                                 </tr>
                                 </thead>
@@ -102,7 +102,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                     ?>
                                     <tr>
                                         <td><?php echo $input['input_id']; ?></td>
-                                        <td class="text-center"><input type="checkbox" class='select_<?php echo $trial['trial_id']; ?>' name="input_ids[]" <?php if(strpos($item['input_ids'], ','.$input['input_id'].',') !== FALSE){echo 'checked';}?>  value="<?php echo $input['input_id']; ?>"></td>
+                                        <td class="text-center"><input type="checkbox" class='select_trail_<?php echo $trial['trial_id']; ?>' name="input_ids[]" <?php if(strpos($item['input_ids'], ','.$input['input_id'].',') !== FALSE){echo 'checked';}?>  value="<?php echo $input['input_id']; ?>"></td>
                                         <td><?php echo $input['input_name']; ?></td>
                                     </tr>
                                 <?php
@@ -142,23 +142,3 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
         </form>
     </div>
 </div>
-
-<script type="text/javascript">
-
-    jQuery(document).ready(function()
-    {
-        system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
-        $(document).off("click", ".select_all");
-        $(document).on("click",'.select_all',function()
-        {
-            if($(this).is(':checked'))
-            {
-                $('.select_'+$(this).attr('data-trial-id')).prop('checked', true);
-            }
-            else
-            {
-                $('.select_'+$(this).attr('data-trial-id')).prop('checked', false);
-            }
-        });
-    });
-</script>

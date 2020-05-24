@@ -139,5 +139,10 @@ $user=User_helper::get_user();
             }
         });
         $(document).off('change', '#type_id');
+        $(document).on("change","#type_id",function()
+        {
+            $("#variety_container").html('');
+            $("#report_container").html('');
+        });
     });
 </script>

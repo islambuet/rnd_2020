@@ -31,7 +31,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 <div class="card mt-2">
     <div class="card-header font-weight-bold">
 
-        <?php echo sprintf($CI->lang->line('LABEL_TITLE_USER_GROUP_trial_DATA'),$item['name']);?>
+        <?php echo sprintf($CI->lang->line('LABEL_TITLE_USER_GROUP_TRIAL_DATA'),$item['name']);?>
     </div>
     <div class="card-body">
         <form id="save_form" class="system_ajax" action="<?php echo site_url($CI->controller_name.'/system_save_trial_data');?>" method="post">
@@ -112,22 +112,3 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
         </form>
     </div>
 </div>
-<script type="text/javascript">
-    jQuery(document).ready(function()
-    {
-        system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
-
-        $(document).off("click", ".select_all");
-        $(document).on("click",'.select_all',function()
-        {
-            if($(this).is(':checked'))
-            {
-                $('.'+$(this).attr('data-type')).prop('checked', true);
-            }
-            else
-            {
-                $('.'+$(this).attr('data-type')).prop('checked', false);
-            }
-        });
-    });
-</script>

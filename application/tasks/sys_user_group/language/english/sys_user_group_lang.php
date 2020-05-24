@@ -5,7 +5,7 @@ $lang['LABEL_TITLE_USER_GROUP_LIST'] = 'User Groups';
 $lang['LABEL_TITLE_USER_GROUP_NEW'] = 'Create New User Group';
 $lang['LABEL_TITLE_USER_GROUP_EDIT'] = 'Edit User Group (%s)';
 $lang['LABEL_TITLE_USER_GROUP_ROLE'] = 'Edit user group(%s) Role';
-$lang['LABEL_TITLE_USER_GROUP_TRAIL_DATA'] = 'Edit user group(%s) Trail Data Access';
+$lang['LABEL_TITLE_USER_GROUP_TRIAL_DATA'] = 'Edit user group(%s) Trail Data Access';
 $lang['LABEL_TOTAL_TASK'] = 'Total task';
 $lang['LABEL_USER_GROUP_NAME'] = 'Group Name';
 

@@ -96,7 +96,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                 <table class="table table-hover table-bordered">
                                     <thead class="text-center thead-light">
                                     <tr>
-                                        <th class="text-center"><input type="checkbox" data-crop-id='<?php echo $crop_info['crop_id']; ?>' class="select_all"></th>
+                                        <th class="text-center"><input type="checkbox" data-type='select_crop_<?php echo $crop_info['crop_id']; ?>' class="select_all"></th>
                                         <th><?php echo $CI->lang->line("LABEL_TYPE_NAME"); ?></th>
                                         <th><?php echo $CI->lang->line("LABEL_VARIETY_NAME"); ?></th>
                                         <th><?php echo $CI->lang->line("LABEL_RND_CODE"); ?></th>
@@ -116,7 +116,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                                     {
                                         ?>
                                         <tr>
-                                            <td class="text-center"><input type="checkbox" class='select_<?php echo $crop_info['crop_id']; ?>' name="varieties[]" value="<?php echo $variety['variety_id']; ?>"></td>
+                                            <td class="text-center"><input type="checkbox" class='select_crop_<?php echo $crop_info['crop_id']; ?>' name="varieties[]" value="<?php echo $variety['variety_id']; ?>"></td>
                                             <td><?php echo $variety['type_name']; ?></td>
                                             <td><?php echo $variety['variety_name']; ?></td>
                                             <td><?php echo $variety['rnd_code']; ?></td>
@@ -150,18 +150,6 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
     {
         system_pre_tasks({controller:'<?php echo $CI->router->class; ?>'});
         $('.datepicker').datepicker({dateFormat : SYSTEM_DATE_FORMAT,changeMonth: true,changeYear: true,yearRange: "2020:c+1",showButtonPanel: true});
-        $(document).off("click", ".select_all");
-        $(document).on("click",'.select_all',function()
-        {
-            if($(this).is(':checked'))
-            {
-                $('.select_'+$(this).attr('data-crop-id')).prop('checked', true);
-            }
-            else
-            {
-                $('.select_'+$(this).attr('data-crop-id')).prop('checked', false);
-            }
-        });
 
     });
 </script>

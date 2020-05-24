@@ -62,6 +62,40 @@ class Trial_data_report extends Root_Controller
         $user=User_helper::get_user();
         $data= $this->input->post('search_items');
 
+        $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
+        $this->db->select('vc.variety_index,vc.year');
+        $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
+        $this->db->select('variety.name variety_name,variety.id variety_id');
+        $this->db->join(TABLE_RND_SETUP_TYPE.' type','type.id = variety.type_id','INNER');
+        $this->db->select('type.name type_name,type.code type_code');
+        $this->db->join(TABLE_RND_SETUP_CROP.' crop','crop.id = type.crop_id','INNER');
+        $this->db->select('crop.name crop_name,crop.code crop_code');
+
+        $this->db->where('vc.year',$data['year']);
+        $this->db->where('vc.season_id',$data['season_id']);
+        $this->db->where('crop.id',$data['crop_id']);
+        if($data['type_id']>0)
+        {
+            $this->db->where('type.id',$data['type_id']);
+        }
+        $this->db->where('vc.status_selection',SYSTEM_STATUS_YES);
+        $this->db->where('vc.status_delivery',SYSTEM_STATUS_YES);
+        $this->db->where('vc.status_sowing',SYSTEM_STATUS_YES);
+
+        $this->db->order_by('crop.ordering','ASC');
+        $this->db->order_by('crop.id','ASC');
+        $this->db->order_by('type.ordering','DESC');
+        $this->db->order_by('type.id','ASC');
+        $this->db->order_by('variety.ordering','ASC');
+        $this->db->order_by('variety.id','ASC');
+
+        $data['varieties']=$this->db->get()->result_array();
+        if(!(sizeof($data['varieties'])>0))
+        {
+            $this->action_error($this->lang->line("MSG_VARIETY_NOT_FOUND"));
+        }
+
+
         $this->db->from(TABLE_RND_SETUP_TRIAL_REPORT.' report');
         $this->db->select('report.id value,report.name text');
         $this->db->where('status',SYSTEM_STATUS_ACTIVE);
@@ -69,6 +103,8 @@ class Trial_data_report extends Root_Controller
         $this->db->order_by('report.ordering ASC');
         $this->db->order_by('report.id ASC');
         $data['reports']=$this->db->get()->result_array();
+
+
 
         $ajax['status']=true;
         $ajax['system_content'][]=array('id'=>'#variety_container','html'=>$this->load->view($this->controller_name.'/search_variety',$data,true));
@@ -83,9 +119,10 @@ class Trial_data_report extends Root_Controller
         $method='system_list';
         $user=User_helper::get_user();
         $search_items = $this->input->post('search_items');
-        $search_items['variety_ids'][]=1;
-        $search_items['variety_ids'][]=4;
-        $search_items['variety_ids'][]=5;
+        if(!(isset($search_items['variety_ids'])))
+        {
+            $this->action_error($this->lang->line("MSG_NO_VARIETY_SELECTED"));
+        }
 
         if(strpos($user->trial_report, ','.$search_items['report_id'].',') !== FALSE)
         {

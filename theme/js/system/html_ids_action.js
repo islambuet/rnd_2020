@@ -155,6 +155,17 @@ $(document).ready(function ()
     {
         this.value = this.value.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '');
     });
+    $(document).on("click",'.select_all',function()
+    {
+        if($(this).is(':checked'))
+        {
+            $('.'+$(this).attr('data-type')).prop('checked', true);
+        }
+        else
+        {
+            $('.'+$(this).attr('data-type')).prop('checked', false);
+        }
+    });
 
 
 
