@@ -320,6 +320,15 @@ class Setup_trial_report extends Root_Controller
                 $data['trail_inputs'][$result['trial_id']]['inputs'][]=$result;
             }
             $data['item']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS,'*',array('report_id ='.$report_id,'crop_id ='.$crop_id),1);
+            if(!$data['item'])//new
+            {
+                $table_fields = $this->db->field_data(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS);
+
+                foreach ($table_fields as $field)
+                {
+                    $data['item'][$field->name]=$field->default;
+                }
+            }
             $data['report']=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT,'*',array('id ='.$report_id),1);
             $data['crop']=Query_helper::get_info(TABLE_RND_SETUP_CROP,'*',array('id ='.$crop_id),1);
             $ajax['status']=true;

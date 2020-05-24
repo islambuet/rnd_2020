@@ -56,6 +56,24 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     <?php echo $crop['name'];?>
                 </div>
             </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="rowsheight" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_ROWS_HEIGHT');?></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <input type="text" name="item[rowsheight]" id="rowsheight" class="form-control" value="<?php echo $item['rowsheight'];?>"/>
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_ROWS_HEIGHT_RULE');?></small>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="columnsheight" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_COLUMNS_HEIGHT');?></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <input type="text" name="item[columnsheight]" id="columnsheight" class="form-control" value="<?php echo $item['columnsheight'];?>"/>
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_COLUMNS_HEIGHT_RULE');?></small>
+                </div>
+            </div>
             <?php
             foreach($trail_inputs as $trial_id=>$trial)
             {

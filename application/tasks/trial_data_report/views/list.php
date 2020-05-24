@@ -78,8 +78,8 @@ $action_buttons[] = array
             pagesize:50,
             pagesizeoptions: ['20', '50', '100', '200','300','500'],
             selectionmode: 'singlerow',
-            rowsheight: 40,
-            columnsheight: 80,
+            rowsheight: <?php echo $report['rowsheight'] ?>,
+            columnsheight: <?php echo $report['columnsheight'] ?>,
 
             columns: [
                 <?php

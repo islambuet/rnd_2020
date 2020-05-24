@@ -18,7 +18,7 @@ CONST TABLE_RND_SETUP_DESIGNATION=  'arm_rnd_2020.rnd_setup_admin_designation';
 CONST TABLE_RND_SETUP_TRIAL_DATA=  'arm_rnd_2020.rnd_setup_admin_trail_data';
 CONST TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS=  'arm_rnd_2020.rnd_setup_admin_trail_data_input_fields';
 CONST TABLE_RND_SETUP_TRIAL_REPORT=  'arm_rnd_2020.rnd_setup_admin_trail_report';
-CONST TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS=  'arm_rnd_2020.rnd_setup_admin_trail_data_report_fields';
+CONST TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS=  'arm_rnd_2020.rnd_setup_admin_trial_report_input_fields';
 
 //primary setup
 CONST TABLE_RND_SETUP_PRINCIPAL=  'arm_rnd_2020.rnd_setup_primary_principal';

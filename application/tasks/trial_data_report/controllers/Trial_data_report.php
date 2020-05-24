@@ -12,6 +12,7 @@ class Trial_data_report extends Root_Controller
         $this->message = array();
         $this->load->helper('season');
         $this->load->config('system_input_type');
+        $this->load->config('system_trial');
         $this->lang->load('upload');
         $this->lang->load('setup_season/setup_season');
         $this->lang->load('setup_crop/setup_crop');
@@ -23,62 +24,6 @@ class Trial_data_report extends Root_Controller
     public function index()
     {
         $this->system_search();
-    }
-    /*get_jqx_items
-     *
-     * preference =default preference
-     * jqx_column = as column
-     * data_attributes = other optional jqx data attributes
-     *      format
-     * column_attributes = other optional jqx column attributes
-     *      width
-     *      filtertype
-     *      cellsAlign
-     *      cellsrenderer
-     *      cellsformat
-    */
-
-    public function get_jqx_items($method,$crop_id,$trail_id=0)
-    {
-        $data=array();
-        if($method=='system_list')
-        {
-            $data['variety_id']= array('text'=>$this->lang->line('LABEL_VARIETY_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
-            $data['variety_name']= array('text'=>$this->lang->line('LABEL_VARIETY_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
-            $data['rnd_code']= array('text'=>$this->lang->line('LABEL_RND_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
-            if($trail_id==0)
-            {
-                $this->db->from(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS.' input');
-                $this->db->select('input.name input_name,input.id input_id');
-                $this->db->join(TABLE_RND_SETUP_TRIAL_DATA.' trial','trial.id = input.trial_id','INNER');
-                $this->db->select('trial.name trial_name');
-                $this->db->where('input.crop_id',$crop_id);
-                $this->db->where('input.summary_report_column',SYSTEM_STATUS_YES);
-                $this->db->order_by('trial.ordering','ASC');
-                $this->db->order_by('input.id','ASC');
-                $results=$this->db->get()->result_array();
-                foreach($results as $result)
-                {
-                    $data['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
-                }
-            }
-            else
-            {
-                $this->db->from(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS.' input');
-                $this->db->select('input.name input_name,input.id input_id');
-                $this->db->where('input.crop_id',$crop_id);
-                $this->db->where('input.trial_id',$trail_id);
-                $this->db->order_by('input.id','ASC');
-                $results=$this->db->get()->result_array();
-                foreach($results as $result)
-                {
-                    $data['input_'.$result['input_id']]= array('text'=>$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
-                }
-
-            }
-
-        }
-        return $data;
     }
     public function system_search()
     {
@@ -137,11 +82,45 @@ class Trial_data_report extends Root_Controller
             $data['system_jqx_items']['variety_name']= array('text'=>$this->lang->line('LABEL_VARIETY_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
             $data['system_jqx_items']['rnd_code']= array('text'=>$this->lang->line('LABEL_RND_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
 
-            $report_info=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS,'*',array('id ='.$search_items['report_id']),1);
-            if(!$report_info)
+            $this->db->from(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS.' input');
+            $this->db->select('input.*');
+            $this->db->join(TABLE_RND_SETUP_TRIAL_REPORT.' report','report.id = input.report_id','INNER');
+            $this->db->select('report.name report_name');
+            $this->db->where('report.id',$search_items['report_id']);
+            $data['report']=$this->db->get()->row_array();
+            if(!$data['report'])
             {
                 $this->action_error($this->lang->line("MSG_INVALID_REPORT"));
             }
+            $report_input_ids=explode(',',trim($data['report']['input_ids'],','));
+            $data['has_image']=false;
+
+            $this->db->from(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS.' input');
+            $this->db->select('input.name input_name,input.id input_id,input.type input_type');
+            $this->db->join(TABLE_RND_SETUP_TRIAL_DATA.' trial','trial.id = input.trial_id','INNER');
+            $this->db->select('trial.name trial_name');
+            $this->db->where_in('input.id',$report_input_ids);
+
+            $this->db->order_by('trial.ordering ASC');
+            $this->db->order_by('trial.id ASC');
+            $this->db->order_by('input.ordering ASC');
+            $this->db->order_by('input.id ASC');
+            $results=$this->db->get()->result_array();
+            foreach($results as $result)
+            {
+                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
+            }
+            for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
+            {
+                if(strlen($data['report']['calc_name_'.$i])>0)
+                {
+                    $data['system_jqx_items']['calc_'.$i]= array('text'=>$data['report']['calc_name_'.$i],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
+                }
+                //$data['calc_name_'.$i]= array('text'=>$this->lang->line('LABEL_CALC_NAME_'.$i),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
+                //$data['calc_value_'.$i]= array('text'=>$this->lang->line('LABEL_CALC_VALUE_'.$i),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
+            }
+
+
 
 
             $ajax['status']=true;
