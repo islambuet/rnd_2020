@@ -182,7 +182,6 @@ class Trial_data_report extends Root_Controller
     }
     public function system_get_items_list()
     {
-        //$trial_id=5;
         $year=$this->input->post('year');
         $season_id=$this->input->post('season_id');
         $crop_id=$this->input->post('crop_id');
@@ -195,7 +194,7 @@ class Trial_data_report extends Root_Controller
         }
         $report_input_ids=array();
         $report_input_ids[0]=0;
-        //from setup
+        //input ids from report inputs
         if(strlen($report_info['input_ids'])>2)
         {
             $input_ids=explode(',',trim($report_info['input_ids'],','));
@@ -204,7 +203,7 @@ class Trial_data_report extends Root_Controller
                 $report_input_ids[$input_id]=$input_id;
             }
         }
-        //from calculation
+        //input ids from report calculation
         for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
         {
             if(strlen($report_info['calc_name_'.$i])>0)
@@ -275,8 +274,39 @@ class Trial_data_report extends Root_Controller
 
             }
         }
+        //trail data
 
-
+        $this->db->from(TABLE_RND_TRIAL_DATA.' data');
+        $this->db->select('data.*');
+        $this->db->where('data.year',$year);
+        $this->db->where('data.season_id',$season_id);
+        $this->db->where_in('data.variety_id',$variety_ids);
+        $results=$this->db->get()->result_array();
+        foreach($results as $result)
+        {
+            if(strlen($result['trial_normal'])>0)
+            {
+                $input_data=json_decode($result['trial_normal'],true);
+                foreach($input_data as $input_id=>$input_value)
+                {
+                    if(in_array($input_id,$report_input_ids))
+                    {
+                        $varieties[$result['variety_id']]['trial_normal'][$input_id]=$input_value;
+                    }
+                }
+            }
+            if(strlen($result['trial_replica'])>0)
+            {
+                $input_data=json_decode($result['trial_replica'],true);
+                foreach($input_data as $input_id=>$input_value)
+                {
+                    if(in_array($input_id,$report_input_ids))
+                    {
+                        $varieties[$result['variety_id']]['trial_replica'][$input_id]=$input_value;
+                    }
+                }
+            }
+        }
         $items=array();
 
         foreach($varieties as $variety)
