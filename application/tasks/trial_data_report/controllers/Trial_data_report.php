@@ -159,13 +159,13 @@ class Trial_data_report extends Root_Controller
             $results=$this->db->get()->result_array();
             foreach($results as $result)
             {
-                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
+                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$data['report']['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
             }
             for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
             {
                 if(strlen($data['report']['calc_name_'.$i])>0)
                 {
-                    $data['system_jqx_items']['calc_'.$i]= array('text'=>$data['report']['calc_name_'.$i],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"','renderer'=>'header_render'));
+                    $data['system_jqx_items']['calc_'.$i]= array('text'=>$data['report']['calc_name_'.$i],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$data['report']['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
                 }
             }
 
@@ -257,8 +257,24 @@ class Trial_data_report extends Root_Controller
         foreach($results as $result)
         {
             $varieties[$result['variety_id']]=$result;
-        }
+            $varieties[$result['variety_id']]['trial_normal']=array();
+            $varieties[$result['variety_id']]['trial_replica']=array();
 
+            foreach($report_inputs as $report_input)
+            {
+                if($report_input['type']==SYSTEM_INPUT_TYPE_IMAGE)
+                {
+                    $varieties[$result['variety_id']]['trial_normal'][$report_input['id']]='images/no_image.jpg';
+                    $varieties[$result['variety_id']]['trial_replica'][$report_input['id']]='images/no_image.jpg';
+                }
+                else
+                {
+                    $varieties[$result['variety_id']]['trial_normal'][$report_input['id']]='amar sonara bangal ami tomai valo basi';
+                    $varieties[$result['variety_id']]['trial_replica'][$report_input['id']]=200;
+                }
+
+            }
+        }
 
 
         $items=array();
@@ -268,11 +284,49 @@ class Trial_data_report extends Root_Controller
             $item=array();
             $item['variety_id']=$variety['variety_id'];
             $item['rnd_code']=System_helper::get_variety_rnd_code($variety);
+            foreach($variety['trial_normal'] as $input_id=>$input_value)
+            {
+                if($report_inputs[$input_id]['type']==SYSTEM_INPUT_TYPE_IMAGE)
+                {
+                    $item['input_'.$input_id]='<img src="'.Upload_helper::$IMAGE_BASE_URL.$input_value.'" style="max-height: 100%;max-width:100%">';
+                }
+                else
+                {
+                    $item['input_'.$input_id]=$input_value;
+                }
+
+            }
+            for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
+            {
+                if(strlen($report_info['calc_name_'.$i])>0)
+                {
+                    $item['calc_'.$i]=@eval ('return '.str_replace('a[','$variety["trial_normal"][',$report_info['calc_value_'.$i]).';');
+                }
+            }
             $items[]=$item;
             if($variety['status_replica']==SYSTEM_STATUS_YES)
             {
+                $item=array();
                 $item['variety_id']=$variety['variety_id'];
                 $item['rnd_code']=System_helper::get_variety_rnd_code($variety,true);
+                foreach($variety['trial_replica'] as $input_id=>$input_value)
+                {
+                    if($report_inputs[$input_id]['type']==SYSTEM_INPUT_TYPE_IMAGE)
+                    {
+                        $item['input_'.$input_id]='<img src="'.Upload_helper::$IMAGE_BASE_URL.$input_value.'" style="max-height: 100%;max-width:100%">';
+                    }
+                    else
+                    {
+                        $item['input_'.$input_id]=$input_value;
+                    }
+                }
+                for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
+                {
+                    if(strlen($report_info['calc_name_'.$i])>0)
+                    {
+                        $item['calc_'.$i]=@eval ('return '.str_replace('a[','$variety["trial_replica"][',$report_info['calc_value_'.$i]).';');
+                    }
+                }
                 $items[]=$item;
             }
         }

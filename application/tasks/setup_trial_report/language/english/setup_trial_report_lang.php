@@ -24,7 +24,13 @@ $lang['LABEL_HEADER_NAME'] = 'Header';
 $lang['LABEL_CALC_RULE'] = 'Use Input ids and write php code.<br> max(a[1],a[2]) for maximum.';
 $lang['LABEL_JQX_HEIGHT'] = 'Grid Height';
 $lang['LABEL_JQX_HEIGHT_RULE'] = 'Default 350';
-$lang['LABEL_JQX_ROWSHEIGHT'] = 'Grid Row Height';
-$lang['LABEL_JQX_ROWSHEIGHT_RULE'] = 'Default 40.<br>If report has image set 113.<br>Or set to adjust texts.';
-$lang['LABEL_JQX_COLUMNSHEIGHT'] = 'Grid Header Height.';
+$lang['LABEL_JQX_COLUMNSHEIGHT'] = 'Grid Header Height';
 $lang['LABEL_JQX_COLUMNSHEIGHT_RULE'] = 'Default 80.<br>Change to adjust text.';
+
+$lang['LABEL_JQX_COLUMNWIDTH'] = 'Grid Cell Width.';
+$lang['LABEL_JQX_COLUMNWIDTH_RULE'] = 'Default 150.<br>Change to adjust text.';
+$lang['LABEL_JQX_ROWSHEIGHT'] = 'Grid Cell Height';
+$lang['LABEL_JQX_ROWSHEIGHT_RULE'] = 'Default 40.<br>If report has image set minimum 133.<br>Or set to adjust texts.';
+
+
+

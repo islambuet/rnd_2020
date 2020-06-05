@@ -4,13 +4,22 @@ $CI=& get_instance();
 $user=User_helper::get_user();
 $action_buttons=array();
 $jqx_container='#system_jqx_container';
-$action_buttons[] = array
-(
-    'label'=>$CI->lang->line("BUTTON_PREFERENCE"),
-    'class'=>'system_ajax',
-    'href' => site_url($CI->controller_name . '/system_preference')
+$action_buttons[]=array(
+    'type'=>'button',
+    'label'=>$CI->lang->line("BUTTON_DOWNLOAD_PRINT"),
+    'class'=>'button_jqx_action_download',
+    'data-title'=>$CI->lang->line('LABEL_TITLE_LIST'),
+    'data-target-element'=>$jqx_container,
+    'data-print'=>true
 );
-
+$action_buttons[]=array(
+    'type'=>'button',
+    'label'=>$CI->lang->line("BUTTON_DOWNLOAD_NOPRINT"),
+    'class'=>'button_jqx_action_download',
+    'data-title'=>$CI->lang->line('LABEL_TITLE_LIST'),
+    'data-target-element'=>$jqx_container
+);
+$CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
 ?>
 <div class="card mt-2">
     <div class="card-body">
@@ -58,6 +67,15 @@ $action_buttons[] = array
             data:JSON.parse('<?php echo json_encode($search_items);?>')
         };
         var dataAdapter = new $.jqx.dataAdapter(source);
+        var cellsrenderer = function(row, column, value, defaultHtml, columnSettings, record)
+        {
+            var element = $(defaultHtml);
+            element.css({'margin': '0px','width': '100%', 'height': '100%',padding:'5px'});
+            //element.css({'margin': '0px',padding:'5px'});
+
+            return element[0].outerHTML;
+
+        };
         var filter_items_type_name=[];
         // create jqxgrid.
         $("<?php echo $jqx_container; ?>").jqxGrid(
