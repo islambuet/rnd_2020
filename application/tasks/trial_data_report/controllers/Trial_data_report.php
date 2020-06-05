@@ -129,13 +129,14 @@ class Trial_data_report extends Root_Controller
             $data['search_items']=$search_items;
             $data['system_jqx_items']= array();
             $data['system_jqx_items']['variety_id']= array('text'=>$this->lang->line('LABEL_VARIETY_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
-            $data['system_jqx_items']['variety_name']= array('text'=>$this->lang->line('LABEL_VARIETY_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
+            //$data['system_jqx_items']['variety_name']= array('text'=>$this->lang->line('LABEL_VARIETY_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
             $data['system_jqx_items']['rnd_code']= array('text'=>$this->lang->line('LABEL_RND_CODE'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"150"'));
 
             $this->db->from(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS.' input');
             $this->db->select('input.*');
             $this->db->join(TABLE_RND_SETUP_TRIAL_REPORT.' report','report.id = input.report_id','INNER');
             $this->db->select('report.name report_name');
+            $this->db->where('input.crop_id',$search_items['crop_id']);
             $this->db->where('report.id',$search_items['report_id']);
             $data['report']=$this->db->get()->row_array();
             if(!$data['report'])
@@ -186,29 +187,50 @@ class Trial_data_report extends Root_Controller
         $season_id=$this->input->post('season_id');
         $crop_id=$this->input->post('crop_id');
         $report_id=$this->input->post('report_id');
-        echo '<pre>';
-        print_r($this->input->post());
-        echo '</pre>';
-        die();
-
-        $user=User_helper::get_user();
-
-        /*$this->db->from(TABLE_RND_TRIAL_DATA.' data');
-        $this->db->select('data.id,data.variety_id');
-        $this->db->where('data.year',$year);
-        $this->db->where('data.season_id',$season_id);
-        $this->db->where('data.trial_id',$trial_id);
+        $variety_ids=$this->input->post('variety_ids');
+        $report_info=Query_helper::get_info(TABLE_RND_SETUP_TRIAL_REPORT_INPUT_FIELDS,'*',array('report_id ='.$report_id,'crop_id ='.$crop_id),1);
+        if(!$report_info)
+        {
+            $this->json_return(array());
+        }
+        $report_input_ids=array();
+        $report_input_ids[0]=0;
+        //from setup
+        if(strlen($report_info['input_ids'])>2)
+        {
+            $input_ids=explode(',',trim($report_info['input_ids'],','));
+            foreach($input_ids as $input_id)
+            {
+                $report_input_ids[$input_id]=$input_id;
+            }
+        }
+        //from calculation
+        for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
+        {
+            if(strlen($report_info['calc_name_'.$i])>0)
+            {
+                preg_match_all('!\[(\d+)\]!', $report_info['calc_value_'.$i], $matches);
+                foreach($matches[1] as $match)
+                {
+                    $report_input_ids[$match]=$match;
+                }
+            }
+        }
+        $this->db->from(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS.' input');
+        $this->db->select('input.*');
+        $this->db->where_in('input.id',$report_input_ids);
         $results=$this->db->get()->result_array();
-        $data_trail=array();
+        $report_inputs=array();
         foreach($results as $result)
         {
-            $data_trail[$result['variety_id']]=$result['id'];
-        }*/
+            $report_inputs[$result['id']]=$result;
+        }
 
 
+        //varieties
 
         $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
-        $this->db->select('vc.variety_index,vc.year');
+        $this->db->select('vc.variety_index,vc.year,vc.status_replica');
         $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
         $this->db->select('variety.name variety_name,variety.id variety_id');
         $this->db->join(TABLE_RND_SETUP_TYPE.' type','type.id = variety.type_id','INNER');
@@ -218,23 +240,42 @@ class Trial_data_report extends Root_Controller
 
         $this->db->where('vc.year',$year);
         $this->db->where('vc.season_id',$season_id);
+        $this->db->where_in('vc.variety_id',$variety_ids);
         $this->db->where('vc.status_selection',SYSTEM_STATUS_YES);
         $this->db->where('vc.status_delivery',SYSTEM_STATUS_YES);
         $this->db->where('vc.status_sowing',SYSTEM_STATUS_YES);
-        $this->db->where('crop.id',$crop_id);
+
         $this->db->order_by('crop.ordering','ASC');
         $this->db->order_by('crop.id','ASC');
         $this->db->order_by('type.ordering','DESC');
         $this->db->order_by('type.id','ASC');
         $this->db->order_by('variety.ordering','ASC');
         $this->db->order_by('variety.id','ASC');
-
-        $items=$this->db->get()->result_array();
-        foreach($items as &$item)
+        $results=$this->db->get()->result_array();
+        //initialize
+        $varieties=array();
+        foreach($results as $result)
         {
-            $item['rnd_code']=System_helper::get_variety_rnd_code($item);
+            $varieties[$result['variety_id']]=$result;
         }
 
+
+
+        $items=array();
+
+        foreach($varieties as $variety)
+        {
+            $item=array();
+            $item['variety_id']=$variety['variety_id'];
+            $item['rnd_code']=System_helper::get_variety_rnd_code($variety);
+            $items[]=$item;
+            if($variety['status_replica']==SYSTEM_STATUS_YES)
+            {
+                $item['variety_id']=$variety['variety_id'];
+                $item['rnd_code']=System_helper::get_variety_rnd_code($variety,true);
+                $items[]=$item;
+            }
+        }
         $this->json_return($items);
     }
 }

@@ -63,7 +63,7 @@ $action_buttons[] = array
         $("<?php echo $jqx_container; ?>").jqxGrid(
         {
             width: '100%',
-            height:'350px',
+            height:'<?php echo $report['jqx_height'] ?>px',
             source: dataAdapter,
             columnsresize: true,
             columnsreorder: true,
@@ -78,8 +78,8 @@ $action_buttons[] = array
             pagesize:50,
             pagesizeoptions: ['20', '50', '100', '200','300','500'],
             selectionmode: 'singlerow',
-            rowsheight: <?php echo $report['rowsheight'] ?>,
-            columnsheight: <?php echo $report['columnsheight'] ?>,
+            rowsheight: <?php echo $report['jqx_rowsheight'] ?>,
+            columnsheight: <?php echo $report['jqx_columnsheight'] ?>,
 
             columns: [
                 <?php

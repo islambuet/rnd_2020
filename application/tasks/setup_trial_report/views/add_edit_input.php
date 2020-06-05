@@ -58,20 +58,29 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
-                    <label for="rowsheight" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_ROWS_HEIGHT');?></label>
+                    <label for="jqx_height" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_JQX_HEIGHT');?></label>
                 </div>
                 <div class="col-lg-4 col-8">
-                    <input type="text" name="item[rowsheight]" id="rowsheight" class="form-control" value="<?php echo $item['rowsheight'];?>"/>
-                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_ROWS_HEIGHT_RULE');?></small>
+                    <input type="text" name="item[jqx_height]" id="jqx_height" class="form-control" value="<?php echo $item['jqx_height'];?>"/>
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_JQX_HEIGHT_RULE');?></small>
                 </div>
             </div>
             <div class="row mb-2">
                 <div class="col-4">
-                    <label for="columnsheight" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_COLUMNS_HEIGHT');?></label>
+                    <label for="jqx_rowsheight" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_JQX_ROWSHEIGHT');?></label>
                 </div>
                 <div class="col-lg-4 col-8">
-                    <input type="text" name="item[columnsheight]" id="columnsheight" class="form-control" value="<?php echo $item['columnsheight'];?>"/>
-                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_COLUMNS_HEIGHT_RULE');?></small>
+                    <input type="text" name="item[jqx_rowsheight]" id="jqx_rowsheight" class="form-control" value="<?php echo $item['jqx_rowsheight'];?>"/>
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_JQX_ROWSHEIGHT_RULE');?></small>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
+                    <label for="jqx_columnsheight" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_JQX_COLUMNSHEIGHT');?></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <input type="text" name="item[jqx_columnsheight]" id="jqx_columnsheight" class="form-control" value="<?php echo $item['jqx_columnsheight'];?>"/>
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_JQX_COLUMNSHEIGHT_RULE');?></small>
                 </div>
             </div>
             <?php

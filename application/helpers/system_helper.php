@@ -219,8 +219,13 @@ class System_helper
         );
         Query_helper::add($table_name,$data,false);
     }
-    public static function  get_variety_rnd_code($variety_info)
+    public static function  get_variety_rnd_code($variety_info,$show_replica=false)
     {
-        return $variety_info['crop_code'].'-'.$variety_info['type_code'].'-'.str_pad($variety_info['variety_index'],3,'0',STR_PAD_LEFT).'-'.$variety_info['year'];
+        $code=$variety_info['crop_code'].'-'.$variety_info['type_code'].'-'.str_pad($variety_info['variety_index'],3,'0',STR_PAD_LEFT).'-'.$variety_info['year'];
+        if($show_replica)
+        {
+            $code=$code.'-'.'R';
+        }
+        return $code;
     }
 }
