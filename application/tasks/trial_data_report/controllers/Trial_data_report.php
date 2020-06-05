@@ -147,7 +147,7 @@ class Trial_data_report extends Root_Controller
 
 
             $this->db->from(TABLE_RND_SETUP_TRIAL_DATA_INPUT_FIELDS.' input');
-            $this->db->select('input.name input_name,input.id input_id,input.type input_type');
+            $this->db->select('input.name input_name,input.id input_id,input.type input_type,input.jqx_columnwidth');
             $this->db->join(TABLE_RND_SETUP_TRIAL_DATA.' trial','trial.id = input.trial_id','INNER');
             $this->db->select('trial.name trial_name');
             $this->db->where_in('input.id',$report_input_ids);
@@ -159,13 +159,13 @@ class Trial_data_report extends Root_Controller
             $results=$this->db->get()->result_array();
             foreach($results as $result)
             {
-                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$data['report']['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
+                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$result['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
             }
             for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
             {
                 if(strlen($data['report']['calc_name_'.$i])>0)
                 {
-                    $data['system_jqx_items']['calc_'.$i]= array('text'=>$data['report']['calc_name_'.$i],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$data['report']['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
+                    $data['system_jqx_items']['calc_'.$i]= array('text'=>$data['report']['calc_name_'.$i],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$data['report']['calc_jqx_columnwidth_'.$i].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
                 }
             }
 
@@ -269,8 +269,8 @@ class Trial_data_report extends Root_Controller
                 }
                 else
                 {
-                    $varieties[$result['variety_id']]['trial_normal'][$report_input['id']]='amar sonara bangal ami tomai valo basi';
-                    $varieties[$result['variety_id']]['trial_replica'][$report_input['id']]=200;
+                    $varieties[$result['variety_id']]['trial_normal'][$report_input['id']]='';
+                    $varieties[$result['variety_id']]['trial_replica'][$report_input['id']]='';
                 }
 
             }

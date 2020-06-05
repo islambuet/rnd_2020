@@ -75,15 +75,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                 </div>
             </div>
 
-            <div class="row mb-2">
-                <div class="col-4">
-                    <label for="jqx_columnwidth" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_JQX_COLUMNWIDTH');?></label>
-                </div>
-                <div class="col-lg-4 col-8">
-                    <input type="text" name="item[jqx_columnwidth]" id="jqx_columnwidth" class="form-control" value="<?php echo $item['jqx_columnwidth'];?>"/>
-                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_JQX_COLUMNWIDTH_RULE');?></small>
-                </div>
-            </div>
+
 
             <div class="row mb-2">
                 <div class="col-4">
@@ -144,7 +136,7 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                             <label class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_CALC_NAME_'.$i);?></label>
                         </div>
                         <div class="col-lg-4 col-8">
-                            <input type="text" name="item[calc_name_<?php echo $i; ?>]" id="height" class="form-control" value="<?php echo $item['calc_name_'.$i];?>"/>
+                            <input type="text" name="item[calc_name_<?php echo $i; ?>]" class="form-control" value="<?php echo $item['calc_name_'.$i];?>"/>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -152,8 +144,17 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                             <label class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_CALC_VALUE_'.$i);?></label>
                         </div>
                         <div class="col-lg-4 col-8">
-                            <input type="text" name="item[calc_value_<?php echo $i; ?>]" id="height" class="form-control" value="<?php echo $item['calc_value_'.$i];?>"/>
+                            <input type="text" name="item[calc_value_<?php echo $i; ?>]" class="form-control" value="<?php echo $item['calc_value_'.$i];?>"/>
                             <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_CALC_RULE');?></small>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <label class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_JQX_COLUMNWIDTH');?></label>
+                        </div>
+                        <div class="col-lg-4 col-8">
+                            <input type="text" name="item[calc_jqx_columnwidth_<?php echo $i; ?>]" class="form-control" value="<?php echo $item['calc_jqx_columnwidth_'.$i];?>"/>
+                            <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_JQX_COLUMNWIDTH_RULE');?></small>
                         </div>
                     </div>
                     <?php

@@ -152,6 +152,15 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
+                    <label for="options" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_JQX_COLUMNWIDTH');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <input type="text" class="form-control integer_positive" name="item[jqx_columnwidth]" id="jqx_columnwidth" value="<?php echo $item['jqx_columnwidth']; ?>" >
+                    <small class="form-text text-muted"><?php echo $CI->lang->line('LABEL_JQX_COLUMNWIDTH_RULE');?></small>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
                     <label for="status" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_STATUS');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">

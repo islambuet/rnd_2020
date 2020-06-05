@@ -24,5 +24,8 @@ $lang['LABEL_AVERAGE_GROUP_NAME_RULE'] = 'All Input with same name will averaged
 $lang['LABEL_AVERAGE_GROUP_NAME'] = 'Average Group.';
 $lang['LABEL_SUMMARY_REPORT_COLUMN'] = 'Show at Summary Report.';
 $lang['BUTTON_DUPLICATE'] = 'New Duplicate Input';
+$lang['LABEL_JQX_COLUMNWIDTH'] = 'Report Column Width';
+$lang['LABEL_JQX_COLUMNWIDTH_RULE'] = 'Default 150.<br>Change to adjust text.';
+
 
 
