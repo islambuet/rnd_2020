@@ -230,6 +230,7 @@ class Trial_data_report extends Root_Controller
 
         $this->db->from(TABLE_RND_VC_VARIETY_SELECTION.' vc');
         $this->db->select('vc.variety_index,vc.year,vc.status_replica');
+        $this->db->select('vc.length,vc.width,vc.plants_initial,vc.optimum_transplanting_days,vc.expected_seed_per_gram,vc.number_seed_per_gram');
         $this->db->join(TABLE_RND_SETUP_VARIETY.' variety','variety.id = vc.variety_id','INNER');
         $this->db->select('variety.name variety_name,variety.id variety_id');
         $this->db->join(TABLE_RND_SETUP_TYPE.' type','type.id = variety.type_id','INNER');
@@ -330,7 +331,9 @@ class Trial_data_report extends Root_Controller
             {
                 if(strlen($report_info['calc_name_'.$i])>0)
                 {
-                    $item['calc_'.$i]=@eval ('return '.str_replace('a[','$variety["trial_normal"][',$report_info['calc_value_'.$i]).';');
+                    $eval_string=str_replace('a[','$variety["trial_normal"][',$report_info['calc_value_'.$i]);
+                    $eval_string=str_replace('b[','$variety[',$eval_string);
+                    $item['calc_'.$i]=@eval ('return '.$eval_string.';');
                 }
             }
             $items[]=$item;
@@ -354,7 +357,9 @@ class Trial_data_report extends Root_Controller
                 {
                     if(strlen($report_info['calc_name_'.$i])>0)
                     {
-                        $item['calc_'.$i]=@eval ('return '.str_replace('a[','$variety["trial_replica"][',$report_info['calc_value_'.$i]).';');
+                        $eval_string=str_replace('a[','$variety["trial_replica"][',$report_info['calc_value_'.$i]);
+                        $eval_string=str_replace('b[','$variety[',$eval_string);
+                        $item['calc_'.$i]=@eval ('return '.$eval_string.';');
                     }
                 }
                 $items[]=$item;
