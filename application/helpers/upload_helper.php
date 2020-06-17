@@ -7,7 +7,7 @@ class Upload_helper
     public static $IMAGE_BASE_URL = 'http://45.251.59.5/rnd_2020/';
     public static $SITE_ROOT_FOLDER = 'rnd_2020';
     public static $UPLOAD_IMAGE_AUTH_KEY = 'rnd_2020';
-    public static function upload_file($save_dir='images',$allowed_types='gif|jpg|png',$max_size=10240)
+    public static function upload_file($save_dir='images',$allowed_types='gif|jpg|png|jpeg',$max_size=10240)
     {
         $CI= & get_instance();
         $uploaded_files=array();
