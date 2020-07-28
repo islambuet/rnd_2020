@@ -132,7 +132,7 @@ class CI_DB_pdo_mysql_driver extends CI_DB_pdo_driver {
 			{
 				$sql = 'REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
                                         @@sql_mode,
-                                        "STRICT_ALL_TABLES,", ""),
+                                        "ONLY_FULL_GROUP_BY,", ""),
                                         ",STRICT_ALL_TABLES", ""),
                                         "STRICT_ALL_TABLES", ""),
                                         "STRICT_TRANS_TABLES,", ""),

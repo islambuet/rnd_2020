@@ -5,7 +5,7 @@ $CI = & get_instance();
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>A R MaliksSeeds</title>
+        <title>RND New</title>
         <link rel="shortcut icon" href="http://malikseeds.com/favicon.ico">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
