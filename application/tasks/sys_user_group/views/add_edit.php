@@ -75,6 +75,17 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
             </div>
             <div class="row mb-2">
                 <div class="col-4">
+                    <label for="status_replica" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_SHOW_VARIETY');?><span class="text-danger">*</span></label>
+                </div>
+                <div class="col-lg-4 col-8">
+                    <select id="show_variety" name="item[show_variety]" class="form-control">
+                        <option value="<?php echo SYSTEM_STATUS_NO; ?>"<?php if($item['show_variety']==SYSTEM_STATUS_NO){echo ' selected';}?> ><?php echo SYSTEM_STATUS_NO; ?></option>
+                        <option value="<?php echo SYSTEM_STATUS_YES; ?>"<?php if($item['show_variety']==SYSTEM_STATUS_YES){echo ' selected';}?> ><?php echo SYSTEM_STATUS_YES; ?></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-4">
                     <label for="ordering" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_ORDERING');?><span class="text-danger">*</span></label>
                 </div>
                 <div class="col-lg-4 col-8">

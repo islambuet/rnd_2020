@@ -8,6 +8,7 @@ $lang['LABEL_TITLE_USER_GROUP_ROLE'] = 'Edit user group(%s) Role';
 $lang['LABEL_TITLE_USER_GROUP_TRIAL_DATA'] = 'Edit user group(%s) Trail Data Access';
 $lang['LABEL_TOTAL_TASK'] = 'Total task';
 $lang['LABEL_USER_GROUP_NAME'] = 'Group Name';
+$lang['LABEL_SHOW_VARIETY'] = 'Show Variety';
 
 
 $lang['BUTTON_ROLE'] = 'Assign Group Role';

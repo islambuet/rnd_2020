@@ -47,6 +47,7 @@ class Sys_user_group extends Root_Controller
         {
             $data['id']= array('text'=>$this->lang->line('LABEL_ID'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"50"','cellsAlign'=>'"right"'));
             $data['name']= array('text'=>$this->lang->line('LABEL_NAME'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"200"'));
+            $data['show_variety']= array('text'=>$this->lang->line('LABEL_SHOW_VARIETY'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
             $data['total_task']= array('text'=>$this->lang->line('LABEL_TOTAL_TASK'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['ordering']= array('text'=>$this->lang->line('LABEL_ORDERING'),'type'=>'number','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"number"','cellsAlign'=>'"right"'));
             $data['status']= array('text'=>$this->lang->line('LABEL_STATUS'),'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"70"','filtertype'=>'"list"'));
@@ -86,11 +87,11 @@ class Sys_user_group extends Root_Controller
         $user=User_helper::get_user();
         if($user->user_group==1)
         {
-            $user_groups=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id','name','status','ordering'),array('status!="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC'));
+            $user_groups=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('status!="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC'));
         }
         else
         {
-            $user_groups=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,array('id','name','status','ordering'),array('id!=1','status!="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC'));
+            $user_groups=Query_helper::get_info(TABLE_SYSTEM_USER_GROUP,'*',array('id!=1','status!="'.SYSTEM_STATUS_DELETE.'"'),0,0,array('ordering ASC'));
         }
 
         $this->db->from(TABLE_SYSTEM_USER_GROUP_ROLE);
@@ -127,6 +128,7 @@ class Sys_user_group extends Root_Controller
             (
                 'id'=>0,
                 'name'=>'',
+                'show_variety'=>'No',
                 'ordering'=>99,
                 'status'=>SYSTEM_STATUS_ACTIVE
             );
