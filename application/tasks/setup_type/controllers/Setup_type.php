@@ -175,7 +175,7 @@ class Setup_type extends Root_Controller
             $this->validation_error($this->message['system_message']);
         }
         $item['name']=trim($item['name']);
-        $duplicate_name_check=Query_helper::get_info(TABLE_RND_SETUP_TYPE,array('name'),array('name ="'.$item['name'].'"','id !='.$id),1);
+        $duplicate_name_check=Query_helper::get_info(TABLE_RND_SETUP_TYPE,array('name'),array('name ="'.$item['name'].'"','id !='.$id,'crop_id ='.$item['crop_id']),1);
         if($duplicate_name_check)
         {
             $this->action_error($this->lang->line("MSG_SAME_TYPE_NAME"));
