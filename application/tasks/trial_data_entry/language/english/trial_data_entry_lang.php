@@ -1,6 +1,6 @@
 <?php
 $lang['LABEL_TITLE_LIST'] = 'Sowed Variety List';
-$lang['LABEL_TRIAL_NAME'] = 'Trial';
+$lang['LABEL_TRIAL_NAME'] = 'Title';
 $lang['MSG_INVALID_ITEM'] = 'Invalid Variety';
 $lang['LABEL_TITLE_EDIT'] = 'Trail data for Variety';
 
