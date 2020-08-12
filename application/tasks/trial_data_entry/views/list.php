@@ -11,12 +11,12 @@ $action_buttons[]=array(
     'data-target-element'=>$jqx_container,
     'data-action-link'=>site_url($CI->controller_name.'/system_edit/'.$trial_id.'/'.$year.'/'.$season_id)
 );
-$action_buttons[] = array
+/*$action_buttons[] = array
 (
     'label'=>$CI->lang->line("BUTTON_PREFERENCE"),
     'class'=>'system_ajax',
     'href' => site_url($CI->controller_name . '/system_preference')
-);
+);*/
 $action_buttons[]=array(
     'label'=>$CI->lang->line("BUTTON_REFRESH"),
     'class'=>'system_ajax',

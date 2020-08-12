@@ -70,6 +70,10 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     <?php echo $item['type_name'];?>
                 </div>
             </div>
+            <?php
+            if($user->show_variety==SYSTEM_STATUS_YES)
+            {
+            ?>
             <div class="row mb-2">
                 <div class="col-4">
                     <label for="width" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_VARIETY_NAME');?></label>
@@ -78,6 +82,9 @@ $CI->load->view('action_buttons',array('action_buttons'=>$action_buttons));
                     <?php echo $item['variety_name'];?>
                 </div>
             </div>
+            <?php
+            }
+            ?>
             <div class="row mb-2">
                 <div class="col-4">
                     <label for="width" class="font-weight-bold float-right"><?php echo $CI->lang->line('LABEL_RND_CODE');?></label>
