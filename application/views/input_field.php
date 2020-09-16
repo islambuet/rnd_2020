@@ -37,7 +37,7 @@ else if($input_field['type']==SYSTEM_INPUT_TYPE_DROPDOWN)
         foreach(explode(',',trim($input_field['options'],',')) as $option)
         {
             ?>
-            <option value='<?php echo $option; ?>' <?php if($option==$default_data['value']){ echo ' selected';} ?>><?php echo $option; ?></option>
+            <option value='<?php echo trim($option); ?>' <?php if(trim($option)==$default_data['value']){ echo ' selected';} ?>><?php echo trim($option); ?></option>
         <?php
         }
         ?>

@@ -159,7 +159,8 @@ class Trial_data_report extends Root_Controller
             $results=$this->db->get()->result_array();
             foreach($results as $result)
             {
-                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$result['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
+                //$data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['trial_name'].' - '.$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$result['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
+                $data['system_jqx_items']['input_'.$result['input_id']]= array('text'=>$result['input_name'],'type'=>'string','preference'=>1,'jqx_column'=>true,'column_attributes'=>array('width'=>'"'.$result['jqx_columnwidth'].'"','renderer'=>'header_render','cellsrenderer'=>'cellsrenderer'));
             }
             for($i=1;$i<=SYSTEM_TRIAL_REPORT_MAX_CALCULATION;$i++)
             {
